@@ -20,9 +20,9 @@ try:
       if "=" in linha and not linha.startswith("#"):
         chave, valor = linha.strip().split("=", 1)
         configuracoes[chave.strip()] = valor.strip()
-  print("✅ Credenciais carregadas com segurança do arquivo externo!")
+  print("Credenciais carregadas com segurança do arquivo externo!")
 except Exception as e:
-  print(f"❌ Erro ao ler o arquivo de configuração em {CONFIG_PATH}: {e}")
+  print(f"Erro ao ler o arquivo de configuração em {CONFIG_PATH}: {e}")
 
 # Atribuindo às variáveis do bot
 SMTP_SERVER = "smtp.gmail.com"
@@ -39,7 +39,7 @@ URL_BUSCA = "https://remotar.com.br/search/jobs?q={termo}"
 # False = confia na busca do site (que também olha descrição e tags da vaga).
 FILTRAR_POR_TITULO = True
 
-# 🚫 Se o título tiver qualquer um destes termos, a vaga é descartada.
+# Se o título tiver qualquer um destes termos, a vaga é descartada.
 # Não precisa se preocupar com acento nem maiúscula ("hibrido" pega "Híbrido").
 EXCLUIR_NO_TITULO = [
     "engenheiro de dados",
@@ -70,6 +70,14 @@ def normalizar(texto):
 
 EXCLUIR_NORMALIZADO = [normalizar(t) for t in EXCLUIR_NO_TITULO]
 
+# Se o CARD da vaga (tags como "Vaga híbrida") tiver algum destes, descarta.
+# "hibrid" pega híbrido/híbrida; "presencial" pega vaga presencial.
+EXCLUIR_NO_CARD = [
+    "hibrid",
+    "presencial",
+]
+EXCLUIR_CARD_NORMALIZADO = [normalizar(t) for t in EXCLUIR_NO_CARD]
+
 # Quanto vale cada unidade, em minutos (pra ordenar por data)
 UNIDADES_MIN = {
     "minuto": 1,
@@ -83,18 +91,20 @@ UNIDADES_MIN = {
 # Pega o texto do card da vaga (sobe a partir do link até achar o "X atrás")
 JS_TEXTO_CARD = """
 (a) => {
+  const links = (n) => {
+    const h = new Set(
+      [...n.querySelectorAll('a[href*="/job/"]')].map(x => x.getAttribute('href'))
+    );
+    if (n.matches && n.matches('a[href*="/job/"]')) h.add(n.getAttribute('href'));
+    return h;
+  };
   let n = a;
-  for (let i = 0; i < 6 && n; i++, n = n.parentElement) {
-    const t = n.innerText || "";
-    if (/atr[aá]s/i.test(t)) {
-      const hrefs = new Set(
-        [...n.querySelectorAll('a[href*="/job/"]')].map(x => x.getAttribute('href'))
-      );
-      if (n.matches('a[href*="/job/"]')) hrefs.add(n.getAttribute('href'));
-      return hrefs.size <= 1 ? t : "";
-    }
+  for (let i = 0; i < 8 && n.parentElement; i++) {
+    if (links(n.parentElement).size > 1) break;
+    n = n.parentElement;
   }
-  return "";
+  const t = n.innerText || "";
+  return t.length > 1500 ? "" : t;
 }
 """
 
@@ -150,6 +160,15 @@ def extrair_data_atualizacao(texto):
   return minutos, f"atualizada em {dia:02d}/{mes:02d}/{ano}"
 
 
+def tags_excluidas_na_pagina(texto):
+  """Olha só o topo da página da vaga (título, subtítulo e tags) atrás de
+  'híbrida'/'presencial'. Não olha a descrição, pra não errar à toa."""
+  t = normalizar(texto or "")
+  i = t.find("ultima atualizacao")
+  trecho = t[i : i + 450] if i >= 0 else ""
+  return any(ruim in trecho for ruim in EXCLUIR_CARD_NORMALIZADO)
+
+
 # --- SEU PERFIL E PALAVRAS-CHAVE ---
 PERFIL_SERGIO = {
     "nome": "Sérgio",
@@ -196,7 +215,7 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
     )
 
     for termo in palavras_chave:
-      print(f"🔍 Buscando termo '{termo}'")
+      print(f"Buscando termo '{termo}'")
 
       try:
         if URL_BUSCA:
@@ -216,12 +235,12 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
           caixa.press("Enter")
           page.wait_for_timeout(4000)
 
-        print(f"   🌐 URL da busca: {page.url}")
+        print(f"   URL da busca: {page.url}")
 
         try:
           page.wait_for_selector('a[href*="/job/"]', timeout=15000)
         except Exception:
-          print(f"   ⚠️ Nenhum link de vaga apareceu para '{termo}'")
+          print(f"   Nenhum link de vaga apareceu para '{termo}'")
           page.screenshot(path=f"debug_{termo.replace(' ', '_')}.png")
           continue
 
@@ -265,21 +284,32 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
           page.wait_for_timeout(700)
 
         aceitas = 0
-        cortes = {"estágio": 0, "termo proibido": 0, "sem palavra-chave": 0}
+        cortes = {
+            "estágio": 0,
+            "termo proibido": 0,
+            "híbrido/presencial (card)": 0,
+            "sem palavra-chave": 0,
+        }
 
         for link, (titulo, texto_card) in coletadas.items():
-          # 🚫 Filtro anti-estágio
+          # Filtro anti-estágio
           if "estag" in titulo.lower():
             cortes["estágio"] += 1
             continue
 
-          # 🚫 Termos proibidos no título
+          # Termos proibidos no título
           titulo_norm = normalizar(titulo)
           if any(ruim in titulo_norm for ruim in EXCLUIR_NORMALIZADO):
             cortes["termo proibido"] += 1
             continue
 
-          # 🎯 Filtro opcional por título
+          # Tags do card (ex.: "Vaga híbrida", "Presencial")
+          card_norm = normalizar(texto_card)
+          if any(ruim in card_norm for ruim in EXCLUIR_CARD_NORMALIZADO):
+            cortes["híbrido/presencial (card)"] += 1
+            continue
+
+          # Filtro opcional por título
           if FILTRAR_POR_TITULO and not any(
               pad.search(titulo) for pad in padroes
           ):
@@ -288,10 +318,10 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
 
           aceitas += 1
 
-          # ⏱️ Tempo no ar (lido do card: "5 horas atrás")
+          # Tempo no ar (lido do card: "5 horas atrás")
           minutos, rotulo = extrair_tempo(texto_card)
 
-          # 🔄 Deduplicação pelo link
+          # Deduplicação pelo link
           if link not in vagas_unicas:
             vagas_unicas[link] = {
                 "titulo": titulo,
@@ -303,7 +333,7 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
             }
 
         print(
-            f"   📄 {len(coletadas)} vagas coletadas na lista,"
+            f"   {len(coletadas)} vagas coletadas na lista,"
             f" {aceitas} passaram nos filtros"
             f" (cortadas: {cortes})"
         )
@@ -311,12 +341,12 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
           page.screenshot(path=f"debug_{termo.replace(' ', '_')}.png")
 
       except Exception as e:
-        print(f"⚠️ Erro ao buscar pelo termo '{termo}': {e}")
+        print(f"Erro ao buscar pelo termo '{termo}': {e}")
 
-    # 📅 Vagas sem "X atrás" no card: abre a página da vaga e lê a data
+    # Vagas sem "X atrás" no card: abre a página da vaga e lê a data
     pendentes = [v for v in vagas_unicas.values() if v["minutos"] == SEM_TEMPO]
     if pendentes:
-      print(f"📅 Buscando data de {len(pendentes)} vaga(s) sem tempo no card...")
+      print(f"Buscando data de {len(pendentes)} vaga(s) sem tempo no card...")
       pagina_vaga = browser.new_page()
       for v in pendentes:
         try:
@@ -324,21 +354,30 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
               v["link"], timeout=45000, wait_until="domcontentloaded"
           )
           pagina_vaga.wait_for_timeout(2500)
-          minutos, rotulo = extrair_data_atualizacao(
-              pagina_vaga.inner_text("body")
-          )
+          texto_pagina = pagina_vaga.inner_text("body")
+          if tags_excluidas_na_pagina(texto_pagina):
+            v["descartar"] = True
+            continue
+          minutos, rotulo = extrair_data_atualizacao(texto_pagina)
           if minutos is not None:
             v["minutos"], v["publicada"] = minutos, rotulo
         except Exception as e:
-          print(f"   ⚠️ Não consegui ler a data de {v['link']}: {e}")
+          print(f"   Não consegui ler a data de {v['link']}: {e}")
       pagina_vaga.close()
+
+      descartadas = [l for l, v in vagas_unicas.items() if v.get("descartar")]
+      if descartadas:
+        print(f"   {len(descartadas)} vaga(s) descartada(s) por ser híbrida/presencial")
+        vagas_unicas = {
+            l: v for l, v in vagas_unicas.items() if not v.get("descartar")
+        }
 
     browser.close()
 
   # Mais recentes primeiro (as sem data ficam no fim)
   lista_final = sorted(vagas_unicas.values(), key=lambda v: v["minutos"])
   print(
-      f"✅ Total consolidado de vagas reais e únicas encontradas para você:"
+      f"Total consolidado de vagas reais e únicas encontradas para você:"
       f" {len(lista_final)}"
   )
   return lista_final
@@ -349,11 +388,11 @@ def enviar_email_vagas(
 ):
   """Monta o e-mail em HTML estilizado e envia para você."""
   if not vagas_encontradas:
-    print(f"ℹ️ Nenhuma vaga nova encontrada hoje para {destinatario_nome}.")
+    print(f"Nenhuma vaga nova encontrada hoje para {destinatario_nome}.")
     return
 
   if not (EMAIL_REMETENTE and SENHA_APP and destinatario_email):
-    print("❌ Credenciais de e-mail ausentes no arquivo de configuração.")
+    print("Credenciais de e-mail ausentes no arquivo de configuração.")
     return
 
   html_conteudo = f"""
@@ -374,7 +413,7 @@ def enviar_email_vagas(
         </style>
       </head>
       <body>
-        <h2>🎯 Radar de Vagas Remotas (Remotar)</h2>
+        <h2>Radar de Vagas Remotas (Remotar)</h2>
         <p>{mensagem_boas_vindas}</p>
         <hr style="border: 0; border-top: 1px solid #ccc; margin-bottom: 20px;">
     """
@@ -383,7 +422,7 @@ def enviar_email_vagas(
     html_conteudo += f"""
         <div class="vaga">
           <div class="titulo">{vaga['titulo']}</div>
-          <div class="empresa">🏢 {vaga['empresa']} &nbsp;|&nbsp; 📍 {vaga['local']} &nbsp;|&nbsp; ⏱️ {vaga['publicada']}</div>
+          <div class="empresa">{vaga['empresa']} &nbsp;|&nbsp; {vaga['local']} &nbsp;|&nbsp; {vaga['publicada']}</div>
           <div class="link"><a href="{vaga['link']}" target="_blank">Acessar Vaga / Candidatar-se</a></div>
         </div>
         """
@@ -397,7 +436,7 @@ def enviar_email_vagas(
 
   msg = MIMEMultipart("alternative")
   msg["Subject"] = (
-      f"🚀 {len(vagas_encontradas)} Nova(s) Vaga(s) Encontrada(s) pelo Bot"
+      f"{len(vagas_encontradas)} Nova(s) Vaga(s) Encontrada(s) pelo Bot"
   )
   msg["From"] = EMAIL_REMETENTE
   msg["To"] = destinatario_email
@@ -410,9 +449,9 @@ def enviar_email_vagas(
     server.login(EMAIL_REMETENTE, SENHA_APP)
     server.sendmail(EMAIL_REMETENTE, destinatario_email, msg.as_string())
     server.quit()
-    print(f"✅ E-mail enviado com sucesso para {destinatario_email}!")
+    print(f"E-mail enviado com sucesso para {destinatario_email}!")
   except Exception as e:
-    print(f"❌ Erro ao enviar o e-mail: {e}")
+    print(f"Erro ao enviar o e-mail: {e}")
 
 
 if __name__ == "__main__":
