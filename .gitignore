@@ -1,0 +1,12 @@
+# Credenciais e configuração local
+config_vagas.txt
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Prints gerados pelo job finder
+debug_*.png

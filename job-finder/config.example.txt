@@ -1,0 +1,4 @@
+# Copie para ~\Desktop\aux portfolio\job finder\config_vagas.txt
+EMAIL_REMETENTE=seu_email@gmail.com
+SENHA_APP=sua_senha_de_app
+MEU_EMAIL=email_que_recebe_as_vagas@exemplo.com

@@ -174,7 +174,7 @@ PERFIL_SERGIO = {
     "nome": "Sérgio",
     "email": MEU_EMAIL,
     "mensagem_boas_vindas": (
-        "Fala, Sérgio! Encontrei estas oportunidades alinhadas ao seu perfil:"
+        "Fala ai doidão. Dá uma olhada nessas vagas:"
     ),
     "palavras_chave": [
         "dados",
@@ -293,7 +293,7 @@ def buscar_e_consolidar_vagas_sergio(palavras_chave):
 
         for link, (titulo, texto_card) in coletadas.items():
           # Filtro anti-estágio
-          if "estag" in titulo.lower():
+          if "estag" in normalizar(titulo):
             cortes["estágio"] += 1
             continue
 
@@ -413,7 +413,7 @@ def enviar_email_vagas(
         </style>
       </head>
       <body>
-        <h2>Radar de Vagas Remotas (Remotar)</h2>
+        <h2>Radar de Vagas</h2>
         <p>{mensagem_boas_vindas}</p>
         <hr style="border: 0; border-top: 1px solid #ccc; margin-bottom: 20px;">
     """
