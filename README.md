@@ -1,5 +1,7 @@
 # portfolio-ds
 
+*Leia em: [English](README.en.md)*
+
 Portfólio de projetos, novos e antigos, que aplicam técnicas de Data Science e automação para resolver problemas.
 
 ## Projetos

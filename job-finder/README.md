@@ -1,5 +1,7 @@
 # Job Finder
 
+*Leia em: [English](README.en.md)*
+
 Bot que procura vagas remotas relacionadas a análise de dados e envia as mais recentes por e-mail, todos os dias, em um horário agendado.
 
 A busca é feita no [Remotar](https://remotar.com.br/), porque outras plataformas não permitem esse tipo de automação e a conta pode ser banida.
