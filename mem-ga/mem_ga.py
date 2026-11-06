@@ -12,7 +12,7 @@ import secrets
 import sys
 from dataclasses import dataclass
 from itertools import combinations
-from math import comb, prod
+from math import comb, isfinite, prod
 from pathlib import Path
 
 import numpy as np
@@ -45,16 +45,13 @@ class Dataset:
     minutes: np.ndarray | None = None
 
 
-def normalize(values, direction, cuts):
-    """Aplica os cortes e leva cada critério para a escala de 0 a 1.
+def normalize(values, direction):
+    """Leva cada critério para a escala contínua de 0 a 1.
 
-    Com corte, o valor vira 1 quando é maior ou igual ao corte e 0 caso contrário.
-    Sem corte (NaN), o critério segue contínuo. Depois, 1 sempre é o melhor
-    desempenho: em critérios de custo (direction 0), a escala é invertida.
+    1 sempre é o melhor desempenho: em critérios de custo (direction 0), a escala é
+    invertida.
     """
-    values = np.asarray(values, float)
-    cuts = np.asarray(cuts, float)
-    prepared = np.where(np.isnan(cuts), values, (values >= cuts).astype(float))
+    prepared = np.asarray(values, float)
 
     high, low = prepared.max(axis=0), prepared.min(axis=0)
     is_benefit = np.asarray(direction) >= 1
@@ -89,7 +86,7 @@ def _require_columns(found, required, filename):
 
 def _read_criteria(folder):
     columns, rows = _read_csv(folder / "criteria.csv")
-    _require_columns(columns, ["criterion", "direction", "weight", "cut"], "criteria.csv")
+    _require_columns(columns, ["criterion", "direction", "weight"], "criteria.csv")
     if not rows:
         raise DataError("criteria.csv não tem nenhum critério")
 
@@ -102,13 +99,7 @@ def _read_criteria(folder):
         raise DataError("Em criteria.csv, direction deve ser 1 (benefício) ou 0 (custo)")
 
     weights = np.array([_number(r["weight"], f"weight de {r['criterion']}") for r in rows])
-    cuts = np.array(
-        [
-            np.nan if not (r["cut"] or "").strip() else _number(r["cut"], f"cut de {r['criterion']}")
-            for r in rows
-        ]
-    )
-    return names, direction, weights, cuts
+    return names, direction, weights
 
 
 def _read_players(folder, criteria, min_minutes):
@@ -170,7 +161,7 @@ def position_weights(values, positions, direction):
 def rank_goalkeepers(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
     """Ordena os goleiros pelos critérios atingidos. O arquivo é opcional.
 
-    Como nos jogadores de linha, atingir um critério é ficar entre os 20% melhores. O
+    Atingir um critério é ficar entre os 20% melhores goleiros naquele critério. O
     desempate é o aproveitamento de defesas.
     """
     path = Path(folder) / "goalkeepers.csv"
@@ -211,14 +202,14 @@ def rank_goalkeepers(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
 
 def load_dataset(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
     folder = Path(folder)
-    criteria, direction, weights, cuts = _read_criteria(folder)
+    criteria, direction, weights = _read_criteria(folder)
     players, positions, values, clubs, minutes = _read_players(folder, criteria, min_minutes)
     goalkeepers = rank_goalkeepers(folder, min_minutes)
     return Dataset(
         players=players,
         positions=positions,
         criteria=criteria,
-        payment=normalize(values, direction, cuts),
+        payment=normalize(values, direction),
         weights=weights,
         complementarity=complementarity_matrix(values, positions),
         goalkeeper=goalkeepers[0] if goalkeepers else None,
@@ -229,64 +220,55 @@ def load_dataset(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
 
 
 # ======================================================================================
-# NOTA DO TIME (regra do tau por grupo, do `memc.m`)
+# NOTA DO TIME (regra do tau por pares de critérios)
 #
-# Para cada combinação de critérios, o time recebe um valor: o desempenho médio dos
-# jogadores naqueles critérios, multiplicado pelo peso e pela complementaridade da
-# combinação. A nota é a fração de combinações em que o valor alcança o tau. Um time com
-# buracos falha em toda combinação que inclui o buraco, então um jogador vale mais ou
-# menos conforme o que os outros já cobrem.
+# Cada par de critérios dá ao time um valor: o menor desempenho médio dos dois critérios,
+# multiplicado pelo peso médio e pela complementaridade do par. A nota é a fração de pares
+# em que o valor alcança o tau. Um critério forte não cobre um fraco, então um jogador vale
+# mais ou menos conforme o que os outros já cobrem.
 # ======================================================================================
 
-DEFAULT_TAU = 0.54
-MAX_COMBINATIONS = 500_000
+DEFAULT_TAU = 0.24
 
 
 @dataclass(frozen=True)
 class TeamScorer:
     payment: np.ndarray
-    combo_matrix: np.ndarray  # critérios x combinações
+    first: np.ndarray  # primeiro critério de cada par
+    second: np.ndarray  # segundo critério de cada par
+    factor: np.ndarray  # peso médio x complementaridade de cada par
     tau: float
 
     def combo_values(self, team):
-        """Valor do time em cada combinação de critérios (a linha de `MBline`)."""
-        return self.payment[list(team)].mean(axis=0) @ self.combo_matrix
+        """Valor do time em cada par de critérios."""
+        means = self.payment[list(team)].mean(axis=0)
+        return np.minimum(means[self.first], means[self.second]) * self.factor
 
     def rate(self, team):
-        """Devolve a nota e, para desempate, o valor médio do time.
+        """Devolve a nota e, para desempate, o quanto o time chega perto do tau.
 
-        A maioria dos times sorteados fica com nota zero. O desempate dá ao algoritmo
-        genético uma direção até ele chegar aos times que alcançam o tau.
+        Muitos times têm a mesma nota. O desempate dá ao algoritmo genético uma direção
+        entre eles, pelos pares de critérios que ainda não passam.
         """
         values = self.combo_values(team)
-        return float((values >= self.tau).mean()), float(values.mean())
+        return float((values >= self.tau).mean()), float(np.minimum(values, self.tau).mean())
 
 
-def build_scorer(dataset, team_size, tau=DEFAULT_TAU):
+def build_scorer(dataset, tau=DEFAULT_TAU):
+    if not (isfinite(tau) and tau > 0):
+        raise ValueError(f"O tau precisa ser um número finito maior que 0, e veio {tau}.")
     n_criteria = len(dataset.criteria)
-    if not 2 <= team_size <= n_criteria:
-        raise ValueError(
-            f"O tamanho do time ({team_size}) precisa estar entre 2 e o número "
-            f"de critérios ({n_criteria}), porque ele define as combinações de critérios."
-        )
-    if comb(n_criteria, team_size) > MAX_COMBINATIONS:
-        raise ValueError(
-            f"{comb(n_criteria, team_size)} combinações de critérios é mais do que o "
-            f"limite de {MAX_COMBINATIONS}."
-        )
+    if n_criteria < 2:
+        raise ValueError("A nota precisa de pelo menos 2 critérios.")
 
-    combos = np.array(list(combinations(range(n_criteria), team_size)))
-    pairs = list(combinations(range(team_size), 2))
-    complementarity = dataset.complementarity
-    pair_mean = sum(complementarity[combos[:, a], combos[:, b]] for a, b in pairs) / len(pairs)
-    combo_factor = dataset.weights[combos].mean(axis=1) * pair_mean
-
-    combo_matrix = np.zeros((n_criteria, len(combos)))
-    combo_matrix[combos.T, np.arange(len(combos))] = combo_factor / team_size
+    pairs = np.array(list(combinations(range(n_criteria), 2)))
+    first, second = pairs[:, 0], pairs[:, 1]
+    weights = dataset.weights
+    factor = (weights[first] + weights[second]) / 2 * dataset.complementarity[first, second]
     payment = dataset.payment
     if dataset.player_weights is not None:
         payment = payment * dataset.player_weights
-    return TeamScorer(payment, combo_matrix, tau)
+    return TeamScorer(payment, first, second, factor, tau)
 
 
 # ======================================================================================
@@ -369,16 +351,20 @@ PROGRESS_STEP = 100
 
 @dataclass(frozen=True)
 class GAConfig:
-    iterations: int = 10000
+    iterations: int = 15000
     population: int = 60
     stagnation: int = 14  # iterações sem melhora até a mutação (`mut` no MATLAB)
     mutation_attempts: int = 7  # tentativas em cada mutação (`tmut` no MATLAB)
+    kick_size: int = 3  # jogadores trocados de uma vez na mutação forte
+    climb_every: int = 5  # mutações entre uma mutação forte e a seguinte
 
     def __post_init__(self):
         if self.population < 2:
             raise ValueError("A população precisa ter pelo menos 2 times.")
         if min(self.iterations, self.stagnation, self.mutation_attempts) < 1:
             raise ValueError("Iterações, estagnação e mutações precisam ser pelo menos 1.")
+        if min(self.kick_size, self.climb_every) < 1:
+            raise ValueError("A mutação forte precisa de valores de pelo menos 1.")
 
 
 @dataclass(frozen=True)
@@ -386,6 +372,13 @@ class GAResult:
     team: tuple[int, ...]
     score: float
     history: list[float]
+
+
+def check_team_size(team_size, n_players):
+    if team_size < 1:
+        raise ValueError(f"O time precisa ter pelo menos 1 jogador, e veio {team_size}.")
+    if team_size > n_players:
+        raise ValueError(f"O time pede {team_size} jogadores, mas os dados têm só {n_players}.")
 
 
 class _Search:
@@ -396,11 +389,13 @@ class _Search:
         self.config = config
         self.rng = rng
         if quotas is None:
+            check_team_size(team_size, self.n_players)
             self.labels = np.full(self.n_players, "*")
             self.quotas = {"*": team_size}
         else:
             self.labels = np.asarray(positions)
             self.quotas = {position: quota for position, quota in quotas.items() if quota > 0}
+        self.pools = {p: np.flatnonzero(self.labels == p).tolist() for p in self.quotas}
 
     def _pick(self, candidates):
         """Sorteia, entre os candidatos, os jogadores de cada posição."""
@@ -473,11 +468,51 @@ class _Search:
             self._replace_worst(population, seen, rated)
         return best
 
+    def _kick(self, team):
+        """Troca `kick_size` jogadores de uma vez, cada um por outro do mesmo rótulo."""
+        team = list(team)
+        spare = {p: sorted(set(pool) - set(team)) for p, pool in self.pools.items()}
+        slots = [slot for slot, player in enumerate(team) if spare[self.labels[player]]]
+        size = min(self.config.kick_size, len(slots))
+        for slot in self.rng.choice(slots, size=size, replace=False).tolist():
+            pool = spare[self.labels[team[slot]]]
+            # Uma posição com poucos sobrando pode esgotar antes de `kick_size` trocas.
+            if pool:
+                team[slot] = pool.pop(int(self.rng.integers(len(pool))))
+        return tuple(sorted(team))
+
+    def _climb(self, team):
+        """Troca um jogador por vez, dentro do mesmo rótulo, enquanto a nota subir."""
+        best = self._rated(team)
+        team = list(team)
+        improved = True
+        while improved:
+            improved = False
+            for slot, player in enumerate(team):
+                others = team[:slot] + team[slot + 1:]
+                for newcomer in self.pools[self.labels[player]]:
+                    if newcomer in team:
+                        continue
+                    rated = self._rated(tuple(sorted(others + [newcomer])))
+                    if rated[0] > best[0]:
+                        best, team[slot], improved = rated, newcomer, True
+        return best
+
+    def _strong_mutation(self, best, population, seen):
+        rated = self._climb(self._kick(best[1]))
+        if rated[0] < best[0]:
+            return best
+        # Cópias do mesmo time na população travam o cruzamento em `_new_child`.
+        if rated not in population:
+            self._replace_worst(population, seen, rated)
+        return rated
+
     def run(self):
         population = self._first_population()
         seen = {team for _, team in population}
         best = population[-1]
         stagnant = 0
+        mutations = 0
         history = []
 
         total = self.config.iterations
@@ -493,6 +528,9 @@ class _Search:
                 if stagnant == self.config.stagnation:
                     best = self._mutate(best, population, seen)
                     stagnant = 0
+                    mutations += 1
+                    if mutations % self.config.climb_every == 0:
+                        best = self._strong_mutation(best, population, seen)
             history.append(best[0][0])
             if self.on_progress and (iteration % PROGRESS_STEP == 0 or iteration == total):
                 self.on_progress(iteration, total, best[0][0])
@@ -519,6 +557,16 @@ MAX_PER_PITCH_ROW = 4
 PROGRESS_BAR_WIDTH = 30
 
 
+def tau_argument(text):
+    try:
+        tau = float(text)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{text!r} não é um número") from None
+    if not (isfinite(tau) and tau > 0):
+        raise argparse.ArgumentTypeError("o tau precisa ser um número finito maior que 0")
+    return tau
+
+
 def build_parser():
     defaults = GAConfig()
     parser = argparse.ArgumentParser(
@@ -534,7 +582,7 @@ def build_parser():
         help="mínimo de minutos jogados para entrar na análise",
     )
     parser.add_argument("--team-size", type=int, default=10, help="jogadores de linha no time")
-    parser.add_argument("--tau", type=float, default=DEFAULT_TAU, help="tau de corte do grupo")
+    parser.add_argument("--tau", type=tau_argument, default=DEFAULT_TAU, help="tau de corte do grupo")
     parser.add_argument("--seed", type=int, help="semente, para repetir um resultado")
     parser.add_argument("--iterations", type=int, default=defaults.iterations)
     parser.add_argument("--population", type=int, default=defaults.population)
@@ -614,7 +662,7 @@ def print_team(dataset, team):
 
     order = sorted(team, key=lambda player: -strengths[player])
     width = max(len(dataset.players[player]) for player in order)
-    print(f"  {'Jogador':<{width}}  {'Pos':<4}  Critérios atingidos")
+    print(f"  {'Jogador':<{width}}  {'Pos':<4}  Desempenho somado")
     for player in order:
         print(
             f"  {dataset.players[player]:<{width}}  {dataset.positions[player]:<4}"
@@ -631,7 +679,8 @@ def print_team(dataset, team):
 
 def run(args):
     dataset = load_dataset(args.data, args.min_minutes)
-    scorer = build_scorer(dataset, args.team_size, args.tau)
+    scorer = build_scorer(dataset, args.tau)
+    check_team_size(args.team_size, len(dataset.players))
 
     if args.formation is None:
         quotas = ask_formation(dataset.positions, args.team_size)
@@ -647,7 +696,7 @@ def run(args):
     print()
 
     print(f"\nNota do time: {result.score:.4f} (tau {args.tau}, semente {seed})")
-    print("O time alcança o tau nessa fração das combinações de critérios.\n")
+    print("O time alcança o tau nessa fração dos pares de critérios.\n")
     print_team(dataset, result.team)
 
 

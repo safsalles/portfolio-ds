@@ -10,4 +10,4 @@ A portfolio of new and older projects that apply Data Science and automation tec
 | --- | --- | --- |
 | [Job Finder](job-finder/README.en.md) | Searches for remote jobs every day, filters them by profile, and emails the most recent ones | Python, Playwright, SMTP |
 | [MEM-GA](mem-ga/README.en.md) | Builds a football team for a chosen formation, using 2017 Brazilian Championship data, based on my master's dissertation | Python, NumPy, genetic algorithm |
-| [GA-MEM](mem-ga/README.en.md#ga-mem) | Suggests the signings that most improve a club's complementarity, using the same data as MEM-GA | Python, NumPy, genetic algorithm |
+| [GA-MEM](mem-ga/README.en.md#ga-mem) | Suggests the signings that most improve a club's complementarity, using the same data as MEM-GA | Python, NumPy |

@@ -1,32 +1,22 @@
-from itertools import combinations
-
 import numpy as np
 import pytest
 
 from ga_mem import (
-    SigningSearch,
     candidates_for,
     load_clubs,
     main,
     parse_club,
+    parse_options,
     parse_position,
-    parse_signings,
     starters,
     suggest,
 )
-from mem_ga import DEFAULT_DATA_DIR, GAConfig, TeamScorer, build_scorer
-
-FAST = ["--seed", "1", "--iterations", "100", "--population", "10"]
+from mem_ga import DEFAULT_DATA_DIR
 
 
 @pytest.fixture(scope="module")
 def clubs(dataset):
     return load_clubs(DEFAULT_DATA_DIR, dataset)
-
-
-@pytest.fixture(scope="module")
-def low_tau_scorer(dataset):
-    return build_scorer(dataset, 10, 0.36)
 
 
 def test_clubs_are_listed_in_alphabetical_order(clubs):
@@ -52,13 +42,20 @@ def test_unknown_club(clubs, text):
         parse_club(text, clubs)
 
 
-def test_starters_are_the_ten_with_more_minutes(dataset):
-    team = starters(dataset, "SAN")
-    others = np.flatnonzero(dataset.clubs == "SAN")
-    bench = [player for player in others if player not in team]
-    assert len(team) == 10
-    assert set(dataset.clubs[team]) == {"SAN"}
-    assert dataset.minutes[team].min() >= dataset.minutes[bench].max()
+def test_starters_have_every_position_and_then_the_most_minutes(dataset):
+    for club in np.unique(dataset.clubs):
+        team = starters(dataset, club)
+        squad = np.flatnonzero(dataset.clubs == club)
+        assert len(team) == 10
+        assert set(dataset.clubs[team]) == {club}
+        assert set(dataset.positions[team]) == set(dataset.positions[squad])
+
+
+def test_vasco_has_an_attacker_even_without_one_among_the_most_used(dataset):
+    squad = np.flatnonzero(dataset.clubs == "VAS")
+    most_used = squad[np.argsort(-dataset.minutes[squad], kind="stable")][:10]
+    assert "ATA" not in dataset.positions[most_used]
+    assert "ATA" in dataset.positions[starters(dataset, "VAS")]
 
 
 def test_candidates_come_from_other_clubs(dataset):
@@ -67,32 +64,50 @@ def test_candidates_come_from_other_clubs(dataset):
     assert set(dataset.positions[candidates]) == {"ZAG"}
 
 
-def test_signing_replaces_a_starter_of_the_same_position(dataset, low_tau_scorer):
+def test_signing_replaces_a_starter_of_the_same_position(dataset, scorer):
     team = starters(dataset, "SAN")
-    options = suggest(low_tau_scorer, dataset, team, candidates_for(dataset, "SAN"))
-    for option in options[:20]:
-        (leaving, arrival), = option.swaps
-        assert leaving in team
-        if dataset.positions[arrival] in dataset.positions[team]:
-            assert dataset.positions[leaving] == dataset.positions[arrival]
+    for option in suggest(scorer, dataset, team, candidates_for(dataset, "SAN")):
+        assert option.leaving in team
+        assert dataset.positions[option.leaving] == dataset.positions[option.arrival]
 
 
-def test_any_starter_can_leave_when_the_position_is_missing():
+def test_candidates_need_a_starter_in_their_position():
     class Data:
-        positions = np.array(["A", "A", "B"])
+        clubs = np.array(["X", "X", "Y", "Y"])
+        positions = np.array(["A", "A", "A", "B"])
+        minutes = np.array([900, 900, 900, 900])
 
-    scorer = TeamScorer(np.array([[1.0], [5.0], [9.0]]), np.ones((1, 1)), 0.0)
-    signing = SigningSearch(scorer, Data, [0, 1]).evaluate((2,))
-    assert signing.swaps == ((0, 2),)
+    assert candidates_for(Data, "X") == [2]
 
 
-def test_one_signing_finds_the_best_of_all_candidates(dataset, low_tau_scorer):
+def test_attackers_only_replace_attackers(dataset, scorer):
+    team = starters(dataset, "VAS")
+    options = suggest(scorer, dataset, team, candidates_for(dataset, "VAS", "ATA"))
+    assert {str(dataset.positions[option.leaving]) for option in options} == {"ATA"}
+
+
+def test_each_option_changes_one_player_and_keeps_the_others(dataset, scorer):
+    team = starters(dataset, "VAS")
+    for option in suggest(scorer, dataset, team, candidates_for(dataset, "VAS"))[:20]:
+        assert set(option.team) == (set(team) - {option.leaving}) | {option.arrival}
+
+
+def test_asking_for_five_attackers_lists_five_options_for_one_slot(capsys):
+    main(["--club", "VAS", "--position", "ATA", "--options", "5"])
+    output = capsys.readouterr().out
+    assert output.count("  Sai ") == 1
+    listed = output.split("Melhores opções:")[1].strip().splitlines()
+    assert len(listed) == 5
+    assert all("no lugar de Andrés Ríos" in line for line in listed)
+
+
+def test_one_signing_finds_the_best_of_all_candidates(dataset, scorer):
     team = starters(dataset, "VAS")
     candidates = candidates_for(dataset, "VAS", "MEI")
-    best = suggest(low_tau_scorer, dataset, team, candidates)[0]
+    best = suggest(scorer, dataset, team, candidates)[0]
 
     expected = max(
-        low_tau_scorer.rate([arrival if p == leaving else p for p in team])
+        scorer.rate([arrival if p == leaving else p for p in team])
         for arrival in candidates
         for leaving in team
         if dataset.positions[leaving] == "MEI"
@@ -100,43 +115,11 @@ def test_one_signing_finds_the_best_of_all_candidates(dataset, low_tau_scorer):
     assert best.rating == expected
 
 
-def test_results_are_sorted_from_best_to_worst(dataset, low_tau_scorer):
-    options = suggest(low_tau_scorer, dataset, starters(dataset, "COR"), candidates_for(dataset, "COR"))
+def test_results_are_sorted_from_best_to_worst(dataset, scorer):
+    options = suggest(scorer, dataset, starters(dataset, "COR"), candidates_for(dataset, "COR"))
     ratings = [option.rating for option in options]
     assert ratings == sorted(ratings, reverse=True)
     assert len(ratings) == len(candidates_for(dataset, "COR"))
-
-
-def test_package_respects_the_rules(dataset, low_tau_scorer):
-    team = starters(dataset, "GRE")
-    candidates = candidates_for(dataset, "GRE", "ZAG")
-    config = GAConfig(iterations=300, population=20)
-    best = suggest(low_tau_scorer, dataset, team, candidates, 2, config, seed=1)[0]
-
-    assert len(best.swaps) == 2
-    assert len(set(best.team)) == 10
-    assert {arrival for _, arrival in best.swaps} <= set(candidates)
-    assert len({leaving for leaving, _ in best.swaps}) == 2
-
-
-def test_same_seed_repeats_a_package(dataset, low_tau_scorer):
-    team = starters(dataset, "FLA")
-    candidates = candidates_for(dataset, "FLA")
-    config = GAConfig(iterations=200, population=20)
-    first = suggest(low_tau_scorer, dataset, team, candidates, 2, config, seed=5)[0]
-    second = suggest(low_tau_scorer, dataset, team, candidates, 2, config, seed=5)[0]
-    assert first == second
-
-
-def test_genetic_search_finds_the_best_pair_of_a_small_problem(dataset, low_tau_scorer):
-    team = starters(dataset, "COR")
-    candidates = candidates_for(dataset, "COR", "LE")[:12]
-    search = SigningSearch(low_tau_scorer, dataset, team)
-    expected = max(search.rate(pair) for pair in combinations(candidates, 2))
-
-    config = GAConfig(iterations=500, population=20)
-    best = suggest(low_tau_scorer, dataset, team, candidates, 2, config, seed=0)[0]
-    assert best.rating == expected
 
 
 @pytest.mark.parametrize("text", ["qualquer", "Qualquer", "any"])
@@ -153,20 +136,24 @@ def test_unknown_position():
         parse_position("GOL", ["ATA", "ZAG"])
 
 
-def test_blank_signings_means_one():
-    assert parse_signings("", 10) == 1
+def test_blank_options_means_five():
+    assert parse_options("", 40) == 5
+
+
+def test_blank_options_respects_a_short_list():
+    assert parse_options("", 3) == 3
 
 
 @pytest.mark.parametrize("text", ["0", "11", "dois"])
-def test_invalid_signings(text):
+def test_invalid_options(text):
     with pytest.raises(ValueError, match="1 a 10"):
-        parse_signings(text, 10)
+        parse_options(text, 10)
 
 
 def test_questions_flow_with_a_chosen_position(monkeypatch, capsys):
-    answers = iter(["Marte", "16", "3", "1", "gol", "zag", "1"])
+    answers = iter(["Marte", "16", "3", "1", "gol", "zag", "3"])
     monkeypatch.setattr("builtins.input", lambda prompt: next(answers))
-    main(FAST)
+    main([])
     output = capsys.readouterr().out
     assert "16. Santos (SAN)" in output
     assert "Não achei o clube" in output
@@ -179,7 +166,7 @@ def test_questions_flow_with_a_chosen_position(monkeypatch, capsys):
 def test_questions_flow_with_any_position(monkeypatch, capsys):
     answers = iter(["vasco", "2", ""])
     monkeypatch.setattr("builtins.input", lambda prompt: next(answers))
-    main(FAST)
+    main([])
     assert "Vasco: nota atual" in capsys.readouterr().out
 
 
@@ -188,18 +175,52 @@ def test_flags_skip_the_questions(monkeypatch, capsys):
         raise AssertionError("não deveria perguntar")
 
     monkeypatch.setattr("builtins.input", fail)
-    main([*FAST, "--club", "COR", "--position", "qualquer", "--signings", "2"])
+    main(["--club", "COR", "--position", "qualquer", "--options", "2"])
     output = capsys.readouterr().out
     assert "Corinthians: nota atual" in output
-    assert "iteração 100/100" in output
-    assert output.count("  Sai ") == 2
+    assert len(output.split("Melhores opções:")[1].strip().splitlines()) == 2
 
 
 def test_pitch_shows_the_goalkeeper_of_the_club(capsys):
-    main([*FAST, "--club", "SAN", "--position", "ATA", "--signings", "1"])
+    main(["--club", "SAN", "--position", "ATA", "--options", "1"])
     assert "Vanderlei (SAN)" in capsys.readouterr().out
 
 
 def test_invalid_club_flag_stops_with_a_message():
     with pytest.raises(SystemExit, match="Erro"):
-        main([*FAST, "--club", "Marte"])
+        main(["--club", "Marte"])
+
+
+def test_club_without_candidates_stops_with_a_message(capsys):
+    with pytest.raises(SystemExit) as stop:
+        main(["--club", "PON", "--position", "qualquer", "--options", "3", "--min-minutes", "3100"])
+    assert str(stop.value).startswith("Erro:")
+    assert "candidato" in str(stop.value)
+    assert "1 a 0" not in capsys.readouterr().out
+
+
+def test_club_without_candidates_does_not_ask_for_the_amount(monkeypatch):
+    monkeypatch.setattr("builtins.input", lambda prompt: pytest.fail("não deveria perguntar"))
+    with pytest.raises(SystemExit, match="candidato"):
+        main(["--club", "PON", "--position", "qualquer", "--min-minutes", "3100"])
+
+
+def test_short_squad_shows_how_many_players_were_used(capsys):
+    main(["--club", "CHA", "--position", "qualquer", "--options", "1", "--min-minutes", "1400"])
+    output = capsys.readouterr().out
+    assert "Aviso" in output
+    assert "9 jogadores" in output
+    assert "Chapecoense: nota atual" in output
+
+
+def test_full_squad_has_no_warning(capsys):
+    main(["--club", "COR", "--position", "qualquer", "--options", "1"])
+    assert "Aviso" not in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("tau", ["0", "-1", "nan", "inf"])
+def test_invalid_tau_is_rejected_on_the_command_line(tau, capsys):
+    with pytest.raises(SystemExit) as stop:
+        main(["--club", "COR", "--tau", tau])
+    assert stop.value.code == 2
+    assert "tau" in capsys.readouterr().err

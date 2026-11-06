@@ -10,7 +10,7 @@ def dataset():
 
 @pytest.fixture(scope="session")
 def scorer(dataset):
-    return build_scorer(dataset, 10)
+    return build_scorer(dataset)
 
 
 @pytest.fixture(scope="session")

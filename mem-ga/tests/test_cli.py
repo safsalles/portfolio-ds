@@ -8,7 +8,7 @@ FAST = ["--seed", "1", "--iterations", "50", "--population", "10"]
 
 def write_small_dataset(folder):
     (folder / "criteria.csv").write_text(
-        "criterion,direction,weight,cut\nspeed,1,1,\nerrors,0,2,\nrating,1,1,5\n",
+        "criterion,direction,weight\nspeed,1,1\nerrors,0,2\nrating,1,1\n",
         encoding="utf-8",
     )
     (folder / "players.csv").write_text(
@@ -43,8 +43,8 @@ def test_formation_flag_skips_the_question(monkeypatch, capsys):
 
 
 def test_tau_flag_is_used(capsys):
-    main([*FAST, "--formation", "4-4-2", "--tau", "0.1"])
-    assert "Nota do time: 1.0000 (tau 0.1" in capsys.readouterr().out
+    main([*FAST, "--formation", "4-4-2", "--tau", "0.05"])
+    assert "Nota do time: 1.0000 (tau 0.05" in capsys.readouterr().out
 
 
 def test_invalid_flag_stops_with_a_message():
@@ -63,7 +63,7 @@ def test_runs_with_another_dataset(tmp_path, capsys):
 def test_output_explains_the_number_next_to_each_player(capsys):
     main([*FAST, "--formation", "4-4-2"])
     output = capsys.readouterr().out
-    assert "Critérios atingidos" in output
+    assert "Desempenho somado" in output
     assert " de 18" in output
 
 

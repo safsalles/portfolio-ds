@@ -12,7 +12,7 @@ from mem_ga import (
 
 def write_dataset(folder, goalkeepers=None):
     (folder / "criteria.csv").write_text(
-        "criterion,direction,weight,cut\ngoals,1,1,\nfouls,0,1,\n", encoding="utf-8"
+        "criterion,direction,weight\ngoals,1,1\nfouls,0,1\n", encoding="utf-8"
     )
     (folder / "players.csv").write_text(
         "player,team,position,minutes,goals,fouls\n"
@@ -29,10 +29,9 @@ def test_real_data_shape(dataset):
     assert set(dataset.positions) == {"ATA", "LD", "LE", "MEI", "VOL", "ZAG"}
 
 
-def test_about_a_fifth_of_the_players_reach_each_cut(dataset):
-    # Critérios de custo são invertidos, então neles a maioria fica com 1.
-    share = dataset.payment.mean(axis=0)
-    assert np.minimum(share, 1 - share) == pytest.approx(0.2, abs=0.03)
+def test_normalize_keeps_values_between_zero_and_one(dataset):
+    assert dataset.payment.min() == 0 and dataset.payment.max() == 1
+    assert len(np.unique(dataset.payment)) > 2
 
 
 def test_every_name_shows_the_club_code(dataset):
@@ -45,6 +44,17 @@ def test_stats_are_compared_per_90_minutes(tmp_path):
     data = load_dataset(tmp_path, min_minutes=0)
     # Ana faz 1 gol por 90 minutos, Bia 0,5 e Caio 45.
     assert data.payment[:, 0] == pytest.approx([0.5 / 44.5, 0, 1])
+
+
+def test_old_criteria_file_with_cut_still_works(tmp_path):
+    # criteria.csv com a coluna cut preenchida carrega normalmente, e a coluna é ignorada.
+    write_dataset(tmp_path)
+    without_cut = load_dataset(tmp_path, min_minutes=0)
+    (tmp_path / "criteria.csv").write_text(
+        "criterion,direction,weight,cut\ngoals,1,1,5\nfouls,0,1,\n", encoding="utf-8"
+    )
+    with_cut = load_dataset(tmp_path, min_minutes=0)
+    assert with_cut.payment == pytest.approx(without_cut.payment)
 
 
 def test_players_below_the_minimum_minutes_stay_out(tmp_path):
@@ -130,23 +140,13 @@ def test_real_weights_make_football_sense(dataset):
     assert top("ATA") == "GolsA"
 
 
-def test_cut_marks_values_at_or_above_it():
-    result = normalize([[1], [2], [3]], [1], [2])
-    assert result.ravel().tolist() == [0, 1, 1]
-
-
 def test_cost_criterion_is_inverted():
-    result = normalize([[1], [2], [3]], [0], [2])
-    assert result.ravel().tolist() == [1, 0, 0]
-
-
-def test_blank_cut_keeps_the_criterion_continuous():
-    result = normalize([[0], [5], [10]], [1], [np.nan])
-    assert result.ravel().tolist() == [0, 0.5, 1]
+    result = normalize(np.array([[0.0], [5.0], [10.0]]), [0])
+    assert result.ravel().tolist() == [1.0, 0.5, 0.0]
 
 
 def test_constant_criterion_does_not_divide_by_zero():
-    result = normalize([[4], [4]], [1], [np.nan])
+    result = normalize([[4], [4]], [1])
     assert np.isfinite(result).all()
 
 
