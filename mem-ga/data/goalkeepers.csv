@@ -1,27 +1,27 @@
-player,team,minutes,saves,goals_conceded
-Aranha,PON,3330,123,51
-Caique,VIT,810,30,16
-Cássio,COR,3150,105,29
-Diego Alves,FLA,1710,51,22
-Diego Cavalieri,FLU,1440,52,24
-Douglas Friedrich,AVA,2520,114,34
-Fábio,CRU,2880,85,31
-Felipe,ACG,1620,65,27
-Fernando Miguel,VIT,2610,99,42
-Fernando Prass,PAL,2970,93,41
-Gatito Fernández,BOT,2790,88,36
-Jandrei,CHA,3420,96,49
-Jean,BAH,3420,128,48
-Júlio César,FLU,1980,68,29
-Magrão,SPO,3126,97,54
-Marcelo Grohe,GRE,2055,51,14
-Marcos,ACG,990,44,13
-Martín Silva,VAS,3150,91,44
-Mauricio Kozlinski,AVA,901,27,14
-Paulo Victor,GRE,900,34,11
-Renan Ribeiro,SAO,1800,60,28
-Sidão,SAO,1621,55,21
-Vanderlei,SAN,3330,135,32
-Victor,CAM,3240,97,47
-Weverton,CAP,3060,98,40
-Wilson,CTB,3420,126,51
+player,team,minutes,saves,goals_conceded,long_passes_accurate,long_passes_inaccurate,clearances
+Aranha,PON,3330,123,51,187,384,58
+Caique,VIT,810,30,16,45,123,18
+Cássio,COR,3150,105,29,266,288,20
+Diego Alves,FLA,1710,51,22,89,136,14
+Diego Cavalieri,FLU,1440,52,24,109,136,17
+Douglas Friedrich,AVA,2520,114,34,186,294,38
+Fábio,CRU,2880,85,31,160,283,39
+Felipe,ACG,1620,65,27,143,222,17
+Fernando Miguel,VIT,2610,99,42,243,376,27
+Fernando Prass,PAL,2970,93,41,201,262,48
+Gatito Fernández,BOT,2790,88,36,174,364,23
+Jandrei,CHA,3420,96,49,361,490,56
+Jean,BAH,3420,128,48,250,369,50
+Júlio César,FLU,1980,68,29,151,242,33
+Magrão,SPO,3126,97,54,213,300,28
+Marcelo Grohe,GRE,2055,51,14,107,208,22
+Marcos,ACG,990,44,13,89,91,16
+Martín Silva,VAS,3150,91,44,198,360,40
+Mauricio Kozlinski,AVA,901,27,14,57,79,5
+Paulo Victor,GRE,900,34,11,61,77,15
+Renan Ribeiro,SAO,1800,60,28,123,128,24
+Sidão,SAO,1621,55,21,132,140,22
+Vanderlei,SAN,3330,135,32,183,267,47
+Victor,CAM,3240,97,47,224,324,63
+Weverton,CAP,3060,98,40,228,308,39
+Wilson,CTB,3420,126,51,227,393,66

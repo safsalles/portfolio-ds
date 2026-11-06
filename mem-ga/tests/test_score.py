@@ -57,7 +57,7 @@ def test_a_player_is_worth_what_the_team_is_missing():
 
 def test_a_higher_tau_is_harder_to_reach(dataset):
     team = np.argsort(-dataset.payment.sum(axis=1), kind="stable")[:10]
-    scores = [build_scorer(dataset, 10, tau).rate(team)[0] for tau in (0.2, 0.36, 0.5)]
+    scores = [build_scorer(dataset, 10, tau).rate(team)[0] for tau in (0.3, 0.54, 0.7)]
     assert scores[0] > scores[1] > scores[2]
 
 

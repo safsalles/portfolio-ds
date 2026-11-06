@@ -16,10 +16,6 @@ def write_small_dataset(folder):
         "Ana,X,A,900,9,1,7\nBia,X,A,900,5,3,4\nCaio,Y,B,900,7,2,6\nDani,Y,B,900,3,4,2\n",
         encoding="utf-8",
     )
-    (folder / "matrix_c.csv").write_text(
-        "criterion,speed,errors,rating\nspeed,,0.5,0.7\nerrors,,,0.2\nrating,,,\n",
-        encoding="utf-8",
-    )
 
 
 def test_asks_for_the_formation_until_it_is_valid(monkeypatch, capsys):
@@ -91,8 +87,8 @@ def test_pitch_goes_from_attack_to_defense(dataset, find):
 def test_goalkeeper_appears_on_the_pitch_and_in_the_list(capsys):
     main([*FAST, "--formation", "4-4-2"])
     output = capsys.readouterr().out
-    assert "Goleiro: Vanderlei (SAN)" in output
-    assert output.count("Vanderlei (SAN)") == 2
+    assert "Goleiro: Cássio (COR)" in output
+    assert output.count("Cássio (COR)") == 2
 
 
 def test_pitch_lines_have_the_same_width_and_show_everyone(dataset):

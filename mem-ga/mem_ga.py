@@ -24,6 +24,7 @@ import numpy as np
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parent / "data"
 DEFAULT_MIN_MINUTES = 850
+GOALKEEPER_CRITERIA = ("save_rate", "long_pass_rate", "clearances_per_90")
 
 
 class DataError(ValueError):
@@ -38,8 +39,8 @@ class Dataset:
     payment: np.ndarray  # jogadores x critérios, normalizado entre 0 e 1
     weights: np.ndarray
     complementarity: np.ndarray  # critérios x critérios
-    goalkeeper: str | None = None
-    goalkeeper_save_rate: float | None = None
+    goalkeeper: dict | None = None
+    player_weights: np.ndarray | None = None  # jogadores x critérios
 
 
 def normalize(values, direction, cuts):
@@ -127,59 +128,95 @@ def _read_players(folder, criteria, min_minutes):
     )
 
 
-def _read_complementarity(folder, criteria):
-    columns, rows = _read_csv(folder / "matrix_c.csv")
-    _require_columns(columns, ["criterion", *criteria], "matrix_c.csv")
-    by_name = {row["criterion"].strip(): row for row in rows}
-    _require_columns(by_name, criteria, "matrix_c.csv (linhas)")
+def complementarity_matrix(values, positions):
+    """Complementação entre critérios: 1 menos a correlação, em módulo.
 
-    matrix = np.full((len(criteria), len(criteria)), np.nan)
-    for i, row_name in enumerate(criteria):
-        for j, column_name in enumerate(criteria):
-            cell = (by_name[row_name][column_name] or "").strip()
-            if cell:
-                matrix[i, j] = _number(cell, f"matrix_c.csv ({row_name}, {column_name})")
-
-    if np.isnan(matrix[np.triu_indices(len(criteria), k=1)]).any():
-        raise DataError("matrix_c.csv precisa ter todos os valores acima da diagonal")
-    return matrix
+    É a medida de conflito do método CRITIC (Diakoulaki et al., 1995). A correlação é
+    calculada dentro de cada posição. Sem isso, ela só mostraria que zagueiros e
+    atacantes fazem coisas diferentes.
+    """
+    centered = values.copy()
+    for position in np.unique(positions):
+        group = positions == position
+        centered[group] -= centered[group].mean(axis=0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        correlation = np.corrcoef(centered, rowvar=False)
+    return 1 - np.abs(np.nan_to_num(correlation))
 
 
-def _read_goalkeeper(folder, min_minutes):
-    """Escolhe o goleiro com o maior aproveitamento de defesas. O arquivo é opcional."""
-    if not (folder / "goalkeepers.csv").is_file():
-        return None, None
+def position_weights(values, positions, direction):
+    """Peso de cada critério para cada jogador, conforme a posição dele.
 
-    columns, rows = _read_csv(folder / "goalkeepers.csv")
-    required = ["player", "team", "minutes", "saves", "goals_conceded"]
+    Todo critério parte de 1 e ganha o quanto a posição faz aquilo acima das outras, em
+    desvios-padrão. Os indicadores são os mesmos, e só a prioridade muda com a posição.
+    """
+    weights = np.ones(values.shape)
+    spread = values.std(axis=0)
+    spread[spread == 0] = 1
+    for position in np.unique(positions):
+        group = positions == position
+        if group.all():
+            continue
+        lead = (values[group].mean(axis=0) - values[~group].mean(axis=0)) / spread
+        raw = 1 + np.clip(np.where(np.asarray(direction) >= 1, lead, 0), 0, None)
+        weights[group] = raw / raw.mean()
+    return weights
+
+
+def rank_goalkeepers(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
+    """Ordena os goleiros pelos critérios atingidos. O arquivo é opcional.
+
+    Como nos jogadores de linha, atingir um critério é ficar entre os 20% melhores. O
+    desempate é o aproveitamento de defesas.
+    """
+    path = Path(folder) / "goalkeepers.csv"
+    if not path.is_file():
+        return []
+
+    columns, rows = _read_csv(path)
+    required = [
+        "player", "team", "minutes", "saves", "goals_conceded",
+        "long_passes_accurate", "long_passes_inaccurate", "clearances",
+    ]
     _require_columns(columns, required, "goalkeepers.csv")
-    candidates = []
+
+    keepers = []
     for row in rows:
-        saves = _number(row["saves"], f"saves de {row['player']}")
-        conceded = _number(row["goals_conceded"], f"goals_conceded de {row['player']}")
-        if _number(row["minutes"], row["player"]) >= min_minutes and saves + conceded > 0:
-            name = f"{row['player'].strip()} ({row['team'].strip()})"
-            candidates.append((saves / (saves + conceded), name))
-    if not candidates:
-        return None, None
-    save_rate, name = max(candidates)
-    return name, save_rate
+        stats = {name: _number(row[name], f"{name} de {row['player']}") for name in required[2:]}
+        shots_on_target = stats["saves"] + stats["goals_conceded"]
+        long_passes = stats["long_passes_accurate"] + stats["long_passes_inaccurate"]
+        if stats["minutes"] < min_minutes or shots_on_target == 0:
+            continue
+        keepers.append({
+            "name": f"{row['player'].strip()} ({row['team'].strip()})",
+            "save_rate": stats["saves"] / shots_on_target,
+            "long_pass_rate": stats["long_passes_accurate"] / long_passes if long_passes else 0.0,
+            "clearances_per_90": stats["clearances"] / stats["minutes"] * 90,
+            "hits": 0,
+        })
+
+    if keepers:
+        for criterion in GOALKEEPER_CRITERIA:
+            cut = np.quantile([keeper[criterion] for keeper in keepers], 0.8)
+            for keeper in keepers:
+                keeper["hits"] += keeper[criterion] >= cut
+    return sorted(keepers, key=lambda keeper: (-keeper["hits"], -keeper["save_rate"]))
 
 
 def load_dataset(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
     folder = Path(folder)
     criteria, direction, weights, cuts = _read_criteria(folder)
     players, positions, values = _read_players(folder, criteria, min_minutes)
-    goalkeeper, save_rate = _read_goalkeeper(folder, min_minutes)
+    goalkeepers = rank_goalkeepers(folder, min_minutes)
     return Dataset(
         players=players,
         positions=positions,
         criteria=criteria,
         payment=normalize(values, direction, cuts),
         weights=weights,
-        complementarity=_read_complementarity(folder, criteria),
-        goalkeeper=goalkeeper,
-        goalkeeper_save_rate=save_rate,
+        complementarity=complementarity_matrix(values, positions),
+        goalkeeper=goalkeepers[0] if goalkeepers else None,
+        player_weights=position_weights(values, positions, direction),
     )
 
 
@@ -193,7 +230,7 @@ def load_dataset(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
 # menos conforme o que os outros já cobrem.
 # ======================================================================================
 
-DEFAULT_TAU = 0.36
+DEFAULT_TAU = 0.54
 MAX_COMBINATIONS = 500_000
 
 
@@ -238,7 +275,10 @@ def build_scorer(dataset, team_size, tau=DEFAULT_TAU):
 
     combo_matrix = np.zeros((n_criteria, len(combos)))
     combo_matrix[combos.T, np.arange(len(combos))] = combo_factor / team_size
-    return TeamScorer(dataset.payment, combo_matrix, tau)
+    payment = dataset.payment
+    if dataset.player_weights is not None:
+        payment = payment * dataset.player_weights
+    return TeamScorer(payment, combo_matrix, tau)
 
 
 # ======================================================================================
@@ -252,7 +292,12 @@ PRESETS = {
     "4-4-2": {"ZAG": 2, "LE": 1, "LD": 1, "VOL": 2, "MEI": 2, "ATA": 2},
     "4-3-3": {"ZAG": 2, "LE": 1, "LD": 1, "VOL": 1, "MEI": 2, "ATA": 3},
     "4-2-3-1": {"ZAG": 2, "LE": 1, "LD": 1, "VOL": 2, "MEI": 3, "ATA": 1},
-    "3-5-2": {"ZAG": 3, "LE": 1, "LD": 1, "VOL": 2, "MEI": 1, "ATA": 2},
+    "4-1-4-1": {"ZAG": 2, "LE": 1, "LD": 1, "VOL": 1, "MEI": 4, "ATA": 1},
+    "3-5-2": {"ZAG": 3, "VOL": 2, "MEI": 3, "ATA": 2},
+    "3-4-3": {"ZAG": 3, "VOL": 2, "MEI": 2, "ATA": 3},
+    "3-6-1": {"ZAG": 3, "VOL": 3, "MEI": 3, "ATA": 1},
+    "5-3-2": {"ZAG": 3, "LE": 1, "LD": 1, "VOL": 2, "MEI": 1, "ATA": 2},
+    "5-4-1": {"ZAG": 3, "LE": 1, "LD": 1, "VOL": 2, "MEI": 2, "ATA": 1},
 }
 
 
@@ -282,6 +327,8 @@ def parse_formation(text, positions, team_size=10):
     if text.lower() in FREE_WORDS:
         return None
 
+    if text.isdigit():
+        text = "-".join(text)  # aceita 442 no lugar de 4-4-2
     quotas = dict(PRESETS[text]) if text in PRESETS else _parse_custom(text)
 
     names, counts = np.unique(positions, return_counts=True)
@@ -537,7 +584,7 @@ def pitch_lines(dataset, strengths, team):
         for start in range(0, len(players), MAX_PER_PITCH_ROW):
             rows.append([dataset.players[p] for p in players[start:start + MAX_PER_PITCH_ROW]])
     if dataset.goalkeeper:
-        rows.append([dataset.goalkeeper])
+        rows.append([dataset.goalkeeper["name"]])
 
     width = max(sum(len(name) + 2 for name in row) + 2 for row in rows)
     goal_line = "+" + "[     ]".center(width, "-") + "+"
@@ -566,7 +613,12 @@ def print_team(dataset, team):
             f"  {strengths[player]:.4g} de {len(dataset.criteria)}"
         )
     if dataset.goalkeeper:
-        print(f"\n  Goleiro: {dataset.goalkeeper}, {dataset.goalkeeper_save_rate:.1%} de defesas")
+        keeper = dataset.goalkeeper
+        print(
+            f"\n  Goleiro: {keeper['name']}, {keeper['hits']} de {len(GOALKEEPER_CRITERIA)} critérios"
+            f" ({keeper['save_rate']:.1%} de defesas, {keeper['long_pass_rate']:.1%} de passes"
+            f" longos, {keeper['clearances_per_90']:.2f} bolas afastadas por 90 minutos)"
+        )
 
 
 def run(args):

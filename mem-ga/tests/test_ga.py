@@ -94,7 +94,7 @@ def test_complementary_team_beats_the_ten_strongest_players(dataset, scorer):
 
 @pytest.mark.parametrize(
     "quotas, expected",
-    [(None, 0.8997), (PRESETS["4-4-2"], 0.8619)],
+    [(None, 0.9039), (PRESETS["4-4-2"], 0.7942)],
     ids=["livre", "4-4-2"],
 )
 @pytest.mark.parametrize("seed", range(2))
