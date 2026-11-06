@@ -8,7 +8,7 @@ O projeto nasceu na minha dissertação de mestrado e usa dados do Campeonato Br
 
 ![Times por formação](images/times.png)
 
-A [análise completa](analise.ipynb) mostra os times de cada formação e por que o time mais complementar não é o dos 10 jogadores mais fortes.
+O projeto também tem o [GA-MEM](#ga-mem), que sugere contratações para um clube. A [análise completa](analise.ipynb) mostra os times de cada formação e por que o time mais complementar não é o dos 10 jogadores mais fortes.
 
 ## O método
 
@@ -155,6 +155,15 @@ player,team,minutes,saves,goals_conceded,long_passes_accurate,long_passes_inaccu
 Aranha,PON,3330,123,51,187,384,58
 ```
 
+### `clubs.csv`
+
+Arquivo opcional, usado pelo GA-MEM para mostrar o nome dos clubes. Sem ele, a lista mostra só as siglas.
+
+```csv
+code,name
+SAN,Santos
+```
+
 ### Regras
 
 - A formação precisa somar o tamanho do time, definido por `--team-size`, que por padrão é 10.
@@ -180,6 +189,42 @@ Melhor nota com os dados de 2017, usando o tau de 0,54. Em 30 execuções de cad
 | 5-4-1 | 0,5727 |
 
 A repetição indica um resultado estável, mas não prova que seja o máximo. Para comparar, os 10 jogadores que atingem mais critérios individualmente têm nota 0,6982, abaixo do time livre.
+
+## GA-MEM
+
+O GA-MEM é uma variação que funciona ao contrário: em vez de montar um time do zero, parte de um clube e sugere as contratações que mais melhoram a complementação dele.
+
+```bash
+python ga_mem.py
+```
+
+O programa mostra a lista de clubes e faz três perguntas:
+
+1. **Clube:** aceita o número da lista, o nome ou a sigla.
+2. **Opção:** escolher a posição da contratação ou deixar o método sugerir de qualquer posição.
+3. **Quantidade:** quantas contratações fazer.
+
+O resultado mostra a nota antes e depois, quem sai, quem entra, o time em campo e as 5 melhores opções. Para pular as perguntas, use `--club`, `--position` e `--signings`.
+
+**Como o método decide:**
+
+- O time atual são os 10 jogadores de linha com mais minutos no clube.
+- Os candidatos são os jogadores de outros clubes com pelo menos 850 minutos.
+- Cada contratado entra no lugar do titular da mesma posição cuja saída mais melhora a nota. Se o time não tiver titular nessa posição, pode sair qualquer um.
+- Com uma contratação, o método testa todos os candidatos, então o resultado é exato. Com duas ou mais, o algoritmo genético busca a melhor combinação.
+- O tau padrão é 0,36, menor que o do MEM-GA, porque times reais ficam longe do melhor time possível.
+- O goleiro mostrado é o que mais jogou no clube. Ele não entra na nota.
+
+Exemplos com uma contratação de qualquer posição:
+
+| Clube | Nota atual | Com a contratação | Sai | Entra |
+| --- | --- | --- | --- | --- |
+| Grêmio | 0,8377 | 0,9752 | Ramiro | Hernanes (SAO) |
+| Santos | 0,5567 | 0,9512 | Jonathan Copete | Luan (GRE) |
+| Corinthians | 0,2352 | 0,6190 | Ángel Romero | Luan (GRE) |
+| Vasco | 0,0169 | 0,2080 | Wellington | Luan (GRE) |
+
+Luan e Hernanes são a melhor opção para 17 dos 20 clubes, porque atingem muitos critérios. O método não considera preço nem disponibilidade, então vale olhar as outras opções da lista.
 
 ## Fontes
 

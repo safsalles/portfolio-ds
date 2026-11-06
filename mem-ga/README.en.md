@@ -8,7 +8,7 @@ The project began in my master's dissertation and uses data from the 2017 Brazil
 
 ![Teams by formation](images/times.png)
 
-The [full analysis](analise.ipynb), in Portuguese, shows the team for each formation and why the most complementary team is not the 10 strongest players.
+The project also includes [GA-MEM](#ga-mem), which suggests signings for a club. The [full analysis](analise.ipynb), in Portuguese, shows the team for each formation and why the most complementary team is not the 10 strongest players.
 
 ## The method
 
@@ -157,6 +157,15 @@ player,team,minutes,saves,goals_conceded,long_passes_accurate,long_passes_inaccu
 Aranha,PON,3330,123,51,187,384,58
 ```
 
+### `clubs.csv`
+
+Optional file, used by GA-MEM to show club names. Without it, the list shows only the codes.
+
+```csv
+code,name
+SAN,Santos
+```
+
 ### Rules
 
 - The formation must add up to the team size, set by `--team-size`, which defaults to 10.
@@ -182,6 +191,42 @@ Best score with the 2017 data, using a tau of 0.54. Across 30 runs per formation
 | 5-4-1 | 0.5727 |
 
 The repetition points to a stable result, but it does not prove this is the maximum. For comparison, the 10 players who reach the most criteria individually score 0.6982, below the free team.
+
+## GA-MEM
+
+GA-MEM is a variation that works the other way around: instead of building a team from scratch, it starts from a club and suggests the signings that most improve its complementarity.
+
+```bash
+python ga_mem.py
+```
+
+The program shows the list of clubs and asks three questions, in Portuguese:
+
+1. **Club:** it accepts the list number, the name, or the code.
+2. **Option:** choose the signing's position or let the method suggest any position.
+3. **Amount:** how many signings to make.
+
+The result shows the score before and after, who leaves, who arrives, the lineup, and the 5 best options. To skip the questions, use `--club`, `--position`, and `--signings`.
+
+**How the method decides:**
+
+- The current team is the club's 10 outfield players with the most minutes.
+- Candidates are players from other clubs with at least 850 minutes.
+- Each signing replaces the starter in the same position whose exit most improves the score. If the team has no starter in that position, anyone can leave.
+- With one signing, the method tests every candidate, so the result is exact. With two or more, the genetic algorithm searches for the best combination.
+- The default tau is 0.36, lower than in MEM-GA, because real teams are far from the best possible team.
+- The goalkeeper shown is the one who played most for the club. They do not count toward the score.
+
+Examples with one signing from any position:
+
+| Club | Current score | With the signing | Leaves | Arrives |
+| --- | --- | --- | --- | --- |
+| Grêmio | 0.8377 | 0.9752 | Ramiro | Hernanes (SAO) |
+| Santos | 0.5567 | 0.9512 | Jonathan Copete | Luan (GRE) |
+| Corinthians | 0.2352 | 0.6190 | Ángel Romero | Luan (GRE) |
+| Vasco | 0.0169 | 0.2080 | Wellington | Luan (GRE) |
+
+Luan and Hernanes are the best option for 17 of the 20 clubs because they reach many criteria. The method ignores price and availability, so it is worth checking the other options on the list.
 
 ## Sources
 

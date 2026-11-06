@@ -41,6 +41,8 @@ class Dataset:
     complementarity: np.ndarray  # critérios x critérios
     goalkeeper: dict | None = None
     player_weights: np.ndarray | None = None  # jogadores x critérios
+    clubs: np.ndarray | None = None  # sigla do clube de cada jogador
+    minutes: np.ndarray | None = None
 
 
 def normalize(values, direction, cuts):
@@ -125,6 +127,8 @@ def _read_players(folder, criteria, min_minutes):
         [f"{row['player'].strip()} ({row['team'].strip()})" for row in rows],
         np.array([row["position"].strip().upper() for row in rows]),
         values,
+        np.array([row["team"].strip() for row in rows]),
+        minutes,
     )
 
 
@@ -189,6 +193,8 @@ def rank_goalkeepers(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
             continue
         keepers.append({
             "name": f"{row['player'].strip()} ({row['team'].strip()})",
+            "team": row["team"].strip(),
+            "minutes": stats["minutes"],
             "save_rate": stats["saves"] / shots_on_target,
             "long_pass_rate": stats["long_passes_accurate"] / long_passes if long_passes else 0.0,
             "clearances_per_90": stats["clearances"] / stats["minutes"] * 90,
@@ -206,7 +212,7 @@ def rank_goalkeepers(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
 def load_dataset(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
     folder = Path(folder)
     criteria, direction, weights, cuts = _read_criteria(folder)
-    players, positions, values = _read_players(folder, criteria, min_minutes)
+    players, positions, values, clubs, minutes = _read_players(folder, criteria, min_minutes)
     goalkeepers = rank_goalkeepers(folder, min_minutes)
     return Dataset(
         players=players,
@@ -217,6 +223,8 @@ def load_dataset(folder=DEFAULT_DATA_DIR, min_minutes=DEFAULT_MIN_MINUTES):
         complementarity=complementarity_matrix(values, positions),
         goalkeeper=goalkeepers[0] if goalkeepers else None,
         player_weights=position_weights(values, positions, direction),
+        clubs=clubs,
+        minutes=minutes,
     )
 
 
