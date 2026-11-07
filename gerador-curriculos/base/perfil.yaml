@@ -1,0 +1,42 @@
+nome: Sérgio Salles
+nome_completo: Sérgio Augusto Faria Salles
+cidade:
+  pt: Campos dos Goytacazes, RJ
+  en: Campos dos Goytacazes, RJ, Brazil
+  es: Campos dos Goytacazes, RJ, Brasil
+disponibilidade:
+  pt: Aberto a trabalho remoto
+  en: Open to remote work
+  es: Disponible para trabajo remoto
+email: safsalles@hotmail.com
+linkedin: linkedin.com/in/safsalles
+github: github.com/safsalles
+lattes: lattes.cnpq.br/1931669740915241
+researchgate: researchgate.net/profile/Sergio-Augusto-Salles
+contexto:  # fonte: linkedin
+  anos_experiencia: 10
+  faturamento_grupo: {pt: "R$ 1 bilhão", en: "R$ 1 billion", es: "R$ 1.000 millones"}
+  skus_ativos: {pt: "20 mil", en: "20,000", es: "20 mil"}
+producao:
+  periodicos: 10
+  anais: 21
+  capitulos: 1
+  resumos: 2
+researchgate_metricas:
+  publicacoes: 33
+  citacoes: 46
+  leituras: 172840
+  data: 2026-11-06
+idiomas:
+  - id: portugues
+    pt: Português (nativo)
+    en: Portuguese (native)
+    es: Portugués (nativo)
+  - id: ingles
+    pt: Inglês (fluente)
+    en: English (full professional proficiency)
+    es: Inglés (fluido)
+  - id: espanhol
+    pt: Espanhol (intermediário)
+    en: Spanish (limited working proficiency)
+    es: Español (intermedio)

@@ -1,0 +1,41 @@
+id: dados
+titulo:
+  pt: "Analista de Dados | Business Intelligence | SQL, Power BI, Python e Excel"
+  en: "Data Analyst | Business Intelligence | SQL, Power BI, Python & Excel"
+  es: "Analista de Datos | Business Intelligence | SQL, Power BI, Python y Excel"
+resumo:
+  pt: "Analista de dados com mais de 10 anos em varejo atacadista e distribuição, especializado em Business Intelligence (BI), SQL (Oracle e Google BigQuery), Power BI (DAX e Power Query), Python (pandas, Selenium e smtplib) e Excel avançado. Atuei transformando dados em decisões para Pricing, Abastecimento, Comercial e Controladoria em um grupo com faturamento acima de R$ 1 bilhão e mais de 20 mil SKUs ativos. Resultados: {pricing-margem}, {abast-r-ruptura} e {pricing-tempo}. Mestre em Sistemas Aplicados à Engenharia e Gestão (Pesquisa Operacional), com MBA em Finanças e Controladoria, professor de Business Intelligence no ensino superior e certificado Google Data Analytics."
+  en: "Data Analyst with 10+ years in wholesale retail and distribution, specializing in Business Intelligence (BI), SQL (Oracle and Google BigQuery), Power BI (DAX and Power Query), Python (pandas, Selenium and smtplib) and advanced Excel. Turned data into decisions for Pricing, Supply, Commercial and Controllership in a group with over R$ 1 billion in revenue and 20,000+ active SKUs. Results: {pricing-margem}, {abast-r-ruptura} and {pricing-tempo}. Master's in Applied Systems in Engineering and Management (Operations Research), MBA in Finance and Controllership, university Business Intelligence instructor and Google Data Analytics certified."
+  es: "Analista de datos con más de 10 años en comercio mayorista y distribución, especializado en Business Intelligence (BI), SQL (Oracle y Google BigQuery), Power BI (DAX y Power Query), Python (pandas, Selenium y smtplib) y Excel avanzado. Transformé datos en decisiones para Pricing, Abastecimiento, Comercial y Control de Gestión en un grupo con facturación superior a R$ 1.000 millones y más de 20 mil SKU activos. Resultados: {pricing-margem}, {abast-r-ruptura} y {pricing-tempo}. Magíster en Sistemas Aplicados a la Ingeniería y Gestión (Investigación Operativa), MBA en Finanzas y Control de Gestión, profesor de Business Intelligence en educación superior y certificado Google Data Analytics."
+secoes: [resumo, competencias, experiencia, projetos, formacao, cursos, idiomas, publicacoes]
+competencias: [dados-bi, analise, negocio]
+fatos:
+  - pricing-etl
+  - pricing-pesquisa
+  - pricing-custos
+  - pricing-alertas
+  - pricing-canais
+  - pricing-semiauto
+  - pricing-equipe
+  - pricing-margem
+  - pricing-competitividade
+  - pricing-tempo
+  - abast-ruptura-dash
+  - abast-desbalanceamento
+  - abast-equipe
+  - abast-r-ruptura
+  - abast-r-alertas
+  - abast-r-tempo
+  - coord-modelagem
+  - coord-relatorios
+  - coord-verbas
+  - coord-auditoria
+  - coord-conselho
+  - coord-equipe
+  - contr-excel
+  - contr-powerbi
+  - ucam-disciplinas
+  - olyver-reestruturacao
+projetos: [curriculos, portfolio-ds, job-finder, mem-ga]
+cursos: [google-data-analytics, dsa-python, datatech-python, dsa-powerbi]
+publicacoes: []

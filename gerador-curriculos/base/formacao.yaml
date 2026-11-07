@@ -1,0 +1,110 @@
+formacao:
+  - id: mestrado
+    titulo:
+      pt: Mestrado em Sistemas Aplicados à Engenharia e Gestão (Pesquisa Operacional)
+      en: Master's in Applied Systems in Engineering and Management (Operations Research)
+      es: Maestría en Sistemas Aplicados a la Ingeniería y Gestión (Investigación Operativa)
+    instituicao: Instituto Federal Fluminense (IFF)
+    inicio: 2017
+    fim: 2018
+  - id: mba
+    titulo:
+      pt: MBA em Finanças e Controladoria
+      en: MBA in Finance and Controllership
+      es: MBA en Finanzas y Control de Gestión
+    instituicao: Universidade Candido Mendes
+    inicio: 2016
+    fim: 2017
+  - id: especializacao
+    titulo:
+      pt: Pós-graduação em Gestão, Design e Marketing
+      en: Postgraduate Degree in Management, Design and Marketing
+      es: Posgrado en Gestión, Diseño y Marketing
+    instituicao: Instituto Federal Fluminense (IFF)
+    inicio: 2016
+    fim: 2017
+  - id: graduacao
+    titulo:
+      pt: Bacharelado em Engenharia de Produção
+      en: Bachelor's in Production Engineering
+      es: Grado en Ingeniería de Producción
+    instituicao: Universidade Candido Mendes
+    inicio: 2009
+    fim: 2015
+
+cursos:
+  - id: google-data-analytics
+    nome: {pt: Google Data Analytics, en: Google Data Analytics, es: Google Data Analytics}
+    instituicao: Google
+    ano: 2026
+    credencial: QCC9P8912CKA
+  - id: dsa-python
+    nome:
+      pt: Fundamentos de Linguagem Python para Análise de Dados e Data Science
+      en: Python Fundamentals for Data Analysis and Data Science
+      es: Fundamentos de Python para Análisis de Datos y Data Science
+    instituicao: Data Science Academy
+    ano: 2024
+    horas: 72
+  - id: datatech-python
+    nome:
+      pt: Python, Ciência de Dados e Automação
+      en: Python, Data Science and Automation
+      es: Python, Ciencia de Datos y Automatización
+    instituicao: DataTech
+    ano: 2023
+    horas: 100
+  - id: fi-big-data
+    nome:
+      pt: Big Data, Analytics e Mercado
+      en: Big Data, Analytics and Market
+      es: Big Data, Analytics y Mercado
+    instituicao: Futebol Interativo
+    ano: 2022
+    horas: 120
+  - id: dsa-powerbi
+    nome:
+      pt: Microsoft Power BI para Data Science
+      en: Microsoft Power BI for Data Science
+      es: Microsoft Power BI para Data Science
+    instituicao: Data Science Academy
+    ano: 2022
+    horas: 70
+  - id: live-precificacao
+    nome:
+      pt: Capacitação em Precificação
+      en: Pricing Training
+      es: Capacitación en Fijación de Precios
+    instituicao: Live University
+    ano: 2021
+    horas: 40
+  - id: imazon-projetos
+    nome: {pt: Gestão de Projetos, en: Project Management, es: Gestión de Proyectos}
+    instituicao: IMAZON
+    ano: 2017
+    horas: 40
+  - id: imazon-publica
+    nome: {pt: Administração Pública, en: Public Administration, es: Administración Pública}
+    instituicao: IMAZON
+    ano: 2017
+    horas: 40
+  - id: fgv-escopo
+    nome: {pt: Gerenciamento do Escopo de Projetos, en: Project Scope Management, es: Gestión del Alcance de Proyectos}
+    instituicao: FGV
+    ano: 2015
+    horas: 5
+  - id: fgv-qualidade
+    nome: {pt: Qualidade em Serviços, en: Quality in Services, es: Calidad en Servicios}
+    instituicao: FGV
+    ano: 2015
+    horas: 15
+  - id: microlins-excel
+    nome: {pt: Excel, en: Excel, es: Excel}
+    instituicao: Microlins
+    ano: 2015
+    horas: 40
+  - id: censa-project
+    nome: {pt: MS Project, en: MS Project, es: MS Project}
+    instituicao: ISE Censa
+    ano: 2014
+    horas: 36

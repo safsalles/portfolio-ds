@@ -1,0 +1,45 @@
+id: engenharia
+titulo:
+  pt: "Engenheiro de Produção | Melhoria de Processos e Qualidade | Indicadores e Liderança de Equipes"
+  en: "Production Engineer | Process Improvement and Quality | KPIs and Team Leadership"
+  es: "Ingeniero de Producción | Mejora de Procesos y Calidad | Indicadores y Liderazgo de Equipos"
+resumo:
+  pt: "Engenheiro de Produção com mais de 10 anos em varejo atacadista e distribuição, com atuação em melhoria de processos, indicadores e liderança de equipes em um grupo com faturamento acima de R$ 1 bilhão e mais de 20 mil SKUs ativos. Experiência em gestão desde 2020, com equipes de até 9 pessoas. Resultados: {olyver-r-tempo}, {pricing-tempo} e {abast-r-ruptura}. Em consultoria, mapeei e reestruturei processos em 3 clientes do varejo e distribuição. Professor de Ferramentas da Qualidade, Administração da Produção e Simulação Computacional no ensino superior, orientei 12 monografias e sou autor de pesquisas sobre BPMN, controle estatístico de processo, layout e qualidade em serviços. Ferramentas: Power BI, SQL e Python. Mestre em Sistemas Aplicados à Engenharia e Gestão (Pesquisa Operacional), com MBA em Finanças e Controladoria."
+  en: "Production Engineer with 10+ years in wholesale retail and distribution, working on process improvement, KPIs and team leadership in a group with over R$ 1 billion in revenue and 20,000+ active SKUs. Management experience since 2020, leading teams of up to 9. Results: {olyver-r-tempo}, {pricing-tempo} and {abast-r-ruptura}. In consulting, mapped and restructured processes for 3 retail and distribution clients. University instructor of Quality Tools, Production Management and Computer Simulation, supervised 12 theses and authored research on BPMN, statistical process control, facility layout and service quality. Tools: Power BI, SQL and Python. Master's in Applied Systems in Engineering and Management (Operations Research) and MBA in Finance and Controllership."
+  es: "Ingeniero de Producción con más de 10 años en comercio mayorista y distribución, con actuación en mejora de procesos, indicadores y liderazgo de equipos en un grupo con facturación superior a R$ 1.000 millones y más de 20 mil SKU activos. Experiencia en gestión desde 2020, con equipos de hasta 9 personas. Resultados: {olyver-r-tempo}, {pricing-tempo} y {abast-r-ruptura}. En consultoría, mapeé y reestructuré procesos en 3 clientes de comercio y distribución. Profesor de Herramientas de Calidad, Administración de la Producción y Simulación Computacional en educación superior, dirigí 12 trabajos de fin de carrera y soy autor de investigaciones sobre BPMN, control estadístico de procesos, layout y calidad en servicios. Herramientas: Power BI, SQL y Python. Magíster en Sistemas Aplicados a la Ingeniería y Gestión (Investigación Operativa) y MBA en Finanzas y Control de Gestión."
+secoes: [resumo, experiencia, competencias, formacao, publicacoes, cursos, idiomas]
+competencias: [processos-qualidade, lideranca, supply, ferramentas-gestao]
+fatos:
+  - pricing-equipe
+  - pricing-semiauto
+  - pricing-pesquisa
+  - pricing-vencimento
+  - pricing-margem
+  - pricing-tempo
+  - pricing-politica
+  - abast-equipe
+  - abast-ruptura-dash
+  - abast-gatilhos
+  - abast-estoque-ideal
+  - abast-lojas
+  - abast-r-ruptura
+  - abast-r-estoque
+  - abast-r-produtividade
+  - abast-r-logistica
+  - abast-r-tempo
+  - coord-criacao
+  - coord-equipe
+  - coord-inteligencia
+  - coord-kpis
+  - contr-erp
+  - contr-r-trocas
+  - ucam-disciplinas
+  - ucam-monografias
+  - iff-pesquisa
+  - olyver-reestruturacao
+  - olyver-as-is-to-be
+  - olyver-r-tempo
+  - olyver-r-capital
+cursos: [google-data-analytics, datatech-python, imazon-projetos, fgv-qualidade]
+projetos: []
+publicacoes: [bpmn, picoles, layout, manometro, fast-food]

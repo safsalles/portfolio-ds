@@ -1,0 +1,614 @@
+# Fontes: linkedin = perfil e PDF de 2026-11-06; curriculo-2026 = fato só no currículo atual;
+# conversa = dito pelo Sérgio. tipo: atividade ou resultado.
+cargos:
+  - id: pricing
+    empresa: Barcelos
+    setor: {pt: Varejo Atacadista e Distribuição, en: Wholesale Retail and Distribution, es: Comercio Mayorista y Distribución}
+    titulo: {pt: Gerente de Pricing, en: Pricing Manager, es: Gerente de Pricing}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2024-01"
+    fim: "2026-10"
+  - id: abast
+    empresa: Barcelos
+    setor: {pt: Varejo Atacadista e Distribuição, en: Wholesale Retail and Distribution, es: Comercio Mayorista y Distribución}
+    titulo: {pt: Gerente de Abastecimento, en: Supply Manager, es: Gerente de Abastecimiento}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2024-04"
+    fim: "2026-04"
+    nota: {pt: em paralelo ao cargo de Gerente de Pricing, en: concurrent with Pricing Manager role, es: en paralelo al cargo de Gerente de Pricing}
+  - id: coord
+    empresa: Barcelos
+    setor: {pt: Varejo Atacadista e Distribuição, en: Wholesale Retail and Distribution, es: Comercio Mayorista y Distribución}
+    titulo: {pt: Coordenador de Pricing, en: Pricing Coordinator, es: Coordinador de Pricing}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2020-11"
+    fim: "2024-01"
+  - id: contr
+    empresa: Barcelos
+    setor: {pt: Varejo Atacadista e Distribuição, en: Wholesale Retail and Distribution, es: Comercio Mayorista y Distribución}
+    titulo: {pt: Analista de Controladoria, en: Controllership Analyst, es: Analista de Control de Gestión}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2018-10"
+    fim: "2020-11"
+  - id: ucam
+    empresa: Universidade Candido Mendes – Campos
+    titulo: {pt: Professor de Ensino Superior e Técnico, en: Higher Education and Technical Instructor, es: Profesor de Educación Superior y Técnica}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2019-03"
+    fim: null
+  - id: iff
+    empresa: IFF – Instituto Federal Fluminense
+    titulo: {pt: Pesquisador Bolsista de Mestrado, en: Master's Research and Teaching Fellow, es: Investigador Becario de Maestría}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2017-12"
+    fim: "2018-07"
+  - id: olyver
+    empresa: Olyver Consultoria Empresarial
+    titulo: {pt: Analista Administrativo e Consultor Empresarial, en: Business Analyst and Consultant, es: Analista Administrativo y Consultor Empresarial}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2015-07"
+    fim: "2016-12"
+  - id: prefeitura
+    empresa: Prefeitura Municipal de Campos dos Goytacazes
+    titulo: {pt: Estagiário, en: Intern, es: Pasante}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2013-09"
+    fim: "2015-07"
+  - id: ases
+    empresa: Plano de Saúde Ases
+    titulo: {pt: Estagiário, en: Intern, es: Pasante}
+    local: Campos dos Goytacazes, RJ
+    inicio: "2013-08"
+    fim: "2013-09"
+
+fatos:
+  # Gerente de Pricing
+  - id: pricing-equipe
+    cargo: pricing
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Liderei equipe de 9 pessoas (5 pesquisadores de preços, 3 analistas e 1 assistente), com desenvolvimento do time e gestão das rotinas diárias."
+      en: "Led a team of 9 (5 price researchers, 3 analysts and 1 assistant), developing people and managing daily routines."
+      es: "Lideré un equipo de 9 personas (5 encuestadores de precios, 3 analistas y 1 asistente), a cargo del desarrollo del equipo y de las rutinas diarias."
+  - id: pricing-etl
+    cargo: pricing
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Desenvolvi rotinas ETL em SQL (Oracle e Google BigQuery) e modelagem em DAX para os relatórios diários de Business Intelligence (BI) da alta gestão."
+      en: "Developed ETL routines in SQL (Oracle and Google BigQuery) and DAX data models for the daily Business Intelligence (BI) reports used by senior management."
+      es: "Desarrollé rutinas ETL en SQL (Oracle y Google BigQuery) y modelado en DAX para los informes diarios de Business Intelligence (BI) de la alta dirección."
+  - id: pricing-pesquisa
+    cargo: pricing
+    tipo: atividade
+    temas: [dados, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Automatizei com Python, SQL e Power BI a coleta, o tratamento e a visualização das pesquisas de preços da concorrência, incluindo dados externos (Infoprice)."
+      en: "Automated the collection, processing and visualization of competitor price surveys, including external data (Infoprice), using Python, SQL and Power BI."
+      es: "Automaticé con Python, SQL y Power BI la recolección, el tratamiento y la visualización de los relevamientos de precios de la competencia, incluidos datos externos (Infoprice)."
+  - id: pricing-custos
+    cargo: pricing
+    tipo: atividade
+    temas: [dados, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Criei processo em Python (pandas, SQLAlchemy e oracledb) para avaliar novas tabelas de custo de fornecedores, com parecer automático baseado em dados da concorrência."
+      en: "Built a Python process (pandas, SQLAlchemy and oracledb) to evaluate new supplier cost tables, generating an automatic recommendation based on competitor data."
+      es: "Creé un proceso en Python (pandas, SQLAlchemy y oracledb) para evaluar nuevas listas de costos de proveedores, con dictamen automático basado en datos de la competencia."
+  - id: pricing-alertas
+    cargo: pricing
+    tipo: atividade
+    temas: [dados, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Automatizei alertas diários por e-mail (smtplib) aos supervisores sobre itens com desvio crítico de margem, para renegociação com fornecedores."
+      en: "Automated daily email alerts (smtplib) to supervisors about items with critical margin deviations, supporting supplier renegotiation."
+      es: "Automaticé alertas diarias por correo electrónico (smtplib) a los supervisores sobre artículos con desvío crítico de margen, para renegociar con proveedores."
+  - id: pricing-canais
+    cargo: pricing
+    tipo: atividade
+    temas: [gestao, pricing, dados]
+    fonte: linkedin
+    texto:
+      pt: "Defini metas de margem com a área Comercial para 4 canais (Atacado, Atacarejo, Varejo e Varejo Premium) e os segmentos de Televendas, E-commerce e iFood."
+      en: "Set margin targets with the Commercial team for 4 channels (Wholesale, Cash-and-Carry, Retail and Premium Retail) and the Telesales, E-commerce and iFood segments."
+      es: "Definí metas de margen con el área Comercial para 4 canales (Mayorista, Cash & Carry, Minorista y Minorista Premium) y los segmentos de Televentas, E-commerce e iFood."
+  - id: pricing-estrategia
+    cargo: pricing
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Desenhei clusters de precificação, estratégias de competitividade e política de descontos progressivos para o Atacado por faixas de volume (pallets e lastros)."
+      en: "Designed pricing clusters, competitiveness strategies and a progressive volume-based discount policy for Wholesale (pallets and pallet layers)."
+      es: "Diseñé clústeres de precios, estrategias de competitividad y una política de descuentos progresivos para Mayorista por rangos de volumen (pallets y camadas)."
+  - id: pricing-semiauto
+    cargo: pricing
+    tipo: atividade
+    temas: [gestao, pricing, dados]
+    fonte: linkedin
+    texto:
+      pt: "Implementei precificação semiautomatizada de preços-base e promocionais em vários canais e parametrizei o ERP TOTVS Consinco (preços, metas de margem e regras de envio às lojas)."
+      en: "Implemented semi-automated base and promotional pricing across channels and configured the TOTVS Consinco ERP (prices, margin targets and rules for sending data to stores)."
+      es: "Implementé la fijación semiautomatizada de precios base y promocionales en varios canales y parametricé el ERP TOTVS Consinco (precios, metas de margen y reglas de envío a las tiendas)."
+  - id: pricing-margem
+    cargo: pricing
+    tipo: resultado
+    temas: [gestao, pricing, dados]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "+1,2 p.p. na margem bruta do grupo"
+      en: "+1.2 p.p. in group gross margin"
+      es: "+1,2 p.p. en el margen bruto del grupo"
+  - id: pricing-tempo
+    cargo: pricing
+    tipo: resultado
+    temas: [gestao, pricing, dados]
+    fonte: linkedin
+    texto:
+      pt: "redução de mais de 90% no tempo operacional de precificação"
+      en: "90%+ reduction in operational pricing time"
+      es: "reducción de más del 90% en el tiempo operativo de fijación de precios"
+  - id: pricing-politica
+    cargo: pricing
+    tipo: resultado
+    temas: [gestao, pricing]
+    fonte: linkedin
+    texto:
+      pt: "política comercial e margens padronizadas entre os canais"
+      en: "standardized commercial policy and margins across channels"
+      es: "política comercial y márgenes estandarizados entre canales"
+
+  - id: pricing-25-lojas
+    cargo: pricing
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "Gerenciei a margem de 25 lojas de diferentes formatos de venda."
+      en: "Managed margins across 25 stores in different sales formats."
+      es: "Gestioné el margen de 25 tiendas de distintos formatos de venta."
+  - id: pricing-vencimento
+    cargo: pricing
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "Desenvolvi e implementei projeto para controle de produtos próximos ao vencimento."
+      en: "Developed and implemented a project to control products close to expiration."
+      es: "Desarrollé e implementé un proyecto para controlar productos próximos a vencer."
+  - id: pricing-competitividade
+    cargo: pricing
+    tipo: resultado
+    temas: [gestao, pricing, dados]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "+4,1% de competitividade (valor da cesta)"
+      en: "+4.1% in competitiveness (basket value)"
+      es: "+4,1% de competitividad (valor de la canasta)"
+
+  # Gerente de Abastecimento
+  - id: abast-equipe
+    cargo: abast
+    tipo: atividade
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "Liderei equipe de 5 pessoas, organizada por categoria de produto."
+      en: "Led a team of 5, organized by product category."
+      es: "Lideré un equipo de 5 personas, organizado por categoría de producto."
+  - id: abast-ruptura-dash
+    cargo: abast
+    tipo: atividade
+    temas: [dados, supply]
+    fonte: linkedin
+    texto:
+      pt: "Criei o dashboard de Ruptura de Venda e a matriz de indicadores por fornecedor, vendas, compras e logística; unifiquei painéis operacionais, eliminando redundâncias."
+      en: "Created the Sales Stockout dashboard and a KPI matrix by supplier, sales, purchasing and logistics; consolidated operational dashboards, eliminating redundancies."
+      es: "Creé el dashboard de Quiebres de Stock y la matriz de indicadores por proveedor, ventas, compras y logística; unifiqué paneles operativos y eliminé redundancias."
+  - id: abast-desbalanceamento
+    cargo: abast
+    tipo: atividade
+    temas: [dados, supply]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "Criei dashboard de desbalanceamento entre lojas, viabilizando a transferência de excedentes equivalentes a 1% do mix (~15.000 SKUs)."
+      en: "Built a store imbalance dashboard that enabled the transfer of surplus stock equal to 1% of the mix (~15,000 SKUs)."
+      es: "Creé un dashboard de desbalance entre tiendas que permitió transferir excedentes equivalentes al 1% del mix (~15.000 SKU)."
+  - id: abast-gatilhos
+    cargo: abast
+    tipo: atividade
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "Implementei gatilhos de reposição antecipada para picos de vendas e metodologia de priorização de lotes de compra (Curva ABC, ruptura e promoções), com SLA para cancelamento de pedidos pendentes."
+      en: "Implemented early replenishment triggers for sales peaks and a purchase-batch prioritization methodology (ABC analysis, stockouts and promotions), with an SLA for canceling pending orders."
+      es: "Implementé disparadores de reposición anticipada para picos de ventas y una metodología de priorización de lotes de compra (Curva ABC, quiebres y promociones), con SLA para cancelar pedidos pendientes."
+  - id: abast-estoque-ideal
+    cargo: abast
+    tipo: atividade
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "Criei o conceito de Estoque Ideal, alinhando a exposição no PDV às metas de giro."
+      en: "Created the Ideal Stock concept, aligning in-store display with inventory turnover targets."
+      es: "Creé el concepto de Stock Ideal, alineando la exhibición en el punto de venta con las metas de rotación."
+  - id: abast-lojas
+    cargo: abast
+    tipo: atividade
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "Planejei e executei o abastecimento para a abertura de 3 novas lojas, com estratégia por porte e Curva ABC."
+      en: "Planned and executed the supply strategy for the opening of 3 new stores, based on store size and ABC analysis."
+      es: "Planifiqué y ejecuté el abastecimiento para la apertura de 3 tiendas nuevas, con estrategia por tamaño y Curva ABC."
+  - id: abast-r-ruptura
+    cargo: abast
+    tipo: resultado
+    temas: [gestao, supply, dados]
+    fonte: linkedin
+    texto:
+      pt: "redução de 50% na ruptura de venda do grupo (queda de 15 p.p.)"
+      en: "50% reduction in group sales stockouts (15 p.p. drop)"
+      es: "reducción del 50% en los quiebres de stock del grupo (caída de 15 p.p.)"
+  - id: abast-r-lojas
+    cargo: abast
+    tipo: resultado
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "ruptura mantida em ~10% (dentro da meta) na inauguração de 3 lojas"
+      en: "stockouts held at ~10% (within target) during the opening of 3 stores"
+      es: "quiebres mantenidos en ~10% (dentro de la meta) en la apertura de 3 tiendas"
+  - id: abast-r-logistica
+    cargo: abast
+    tipo: resultado
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "ruptura logística de ~3% para ~1% com balanceamento entre CDs"
+      en: "logistics stockouts down from ~3% to ~1% by balancing distribution centers"
+      es: "quiebres logísticos de ~3% a ~1% con el balanceo entre centros de distribución"
+  - id: abast-r-alertas
+    cargo: abast
+    tipo: resultado
+    temas: [supply, dados]
+    fonte: linkedin
+    texto:
+      pt: "ruptura do departamento de ~0,5% para ~0,2% com alertas automáticos de itens retidos no CD"
+      en: "department stockouts down from ~0.5% to ~0.2% with automated alerts on items held at the distribution center"
+      es: "quiebres del departamento de ~0,5% a ~0,2% con alertas automáticas de artículos retenidos en el centro de distribución"
+  - id: abast-r-tempo
+    cargo: abast
+    tipo: resultado
+    temas: [gestao, supply, dados]
+    fonte: linkedin
+    texto:
+      pt: "redução de 33% no tempo operacional com automação de lotes, realocando 1 colaborador"
+      en: "33% reduction in operational time through batch automation, reallocating 1 team member"
+      es: "reducción del 33% en el tiempo operativo con la automatización de lotes, reasignando a 1 colaborador"
+
+  - id: abast-r-estoque
+    cargo: abast
+    tipo: resultado
+    temas: [gestao, supply]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "redução de 9,6% do estoque em loja"
+      en: "9.6% reduction in store inventory"
+      es: "reducción del 9,6% del stock en tienda"
+  - id: abast-r-produtividade
+    cargo: abast
+    tipo: resultado
+    temas: [gestao, supply]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "+16,7% de produtividade da equipe"
+      en: "+16.7% in team productivity"
+      es: "+16,7% de productividad del equipo"
+
+  # Coordenador de Pricing
+  - id: coord-equipe
+    cargo: coord
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Liderei equipe de 7 pessoas (5 pesquisadores de preços e 2 analistas de pricing)."
+      en: "Led a team of 7 (5 price researchers and 2 pricing analysts)."
+      es: "Lideré un equipo de 7 personas (5 encuestadores de precios y 2 analistas de pricing)."
+  - id: coord-conselho
+    cargo: coord
+    tipo: atividade
+    temas: [gestao, pricing, dados]
+    fonte: linkedin
+    texto:
+      pt: "Conduzi reuniões de gestão e apresentações executivas ao Conselho de Administração, alinhando metas financeiras, margens e estratégia de preços."
+      en: "Led management meetings and executive presentations to the Board of Directors, aligning financial targets, margins and pricing strategy."
+      es: "Conduje reuniones de gestión y presentaciones ejecutivas al Directorio, alineando metas financieras, márgenes y estrategia de precios."
+  - id: coord-modelagem
+    cargo: coord
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Modelei dados e defini regras de negócio no Power BI para consolidar KPIs de vendas, margem, preço e inteligência competitiva."
+      en: "Modeled data and defined business rules in Power BI to consolidate sales, margin, price and competitive intelligence KPIs."
+      es: "Modelé datos y definí reglas de negocio en Power BI para consolidar KPI de ventas, margen, precio e inteligencia competitiva."
+  - id: coord-relatorios
+    cargo: coord
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Automatizei com Python (Selenium), SQL e Power BI a extração, o tratamento e o envio dos relatórios diários comerciais, eliminando 1 hora diária de rotina manual."
+      en: "Automated the extraction, processing and delivery of daily commercial reports using Python (Selenium), SQL and Power BI, eliminating 1 hour of daily manual work."
+      es: "Automaticé con Python (Selenium), SQL y Power BI la extracción, el tratamiento y el envío de los informes comerciales diarios, eliminando 1 hora diaria de trabajo manual."
+  - id: coord-verbas
+    cargo: coord
+    tipo: atividade
+    temas: [dados, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Implementei modelo automatizado de gestão de verbas (SQL, Power Query, Google Sheets e Power BI), com visibilidade em tempo real da alocação e do vencimento dos incentivos."
+      en: "Implemented an automated trade funds management model (SQL, Power Query, Google Sheets and Power BI), with real-time visibility of incentive allocation and expiration."
+      es: "Implementé un modelo automatizado de gestión de fondos comerciales (SQL, Power Query, Google Sheets y Power BI), con visibilidad en tiempo real de la asignación y el vencimiento de los incentivos."
+  - id: coord-auditoria
+    cargo: coord
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Auditei dados por conciliações cruzadas com relatórios financeiros e contábeis, garantindo a integridade das decisões."
+      en: "Audited data through cross-reconciliation with financial and accounting reports, ensuring integrity for decision-making."
+      es: "Audité datos mediante conciliaciones cruzadas con informes financieros y contables, garantizando la integridad de las decisiones."
+  - id: coord-inteligencia
+    cargo: coord
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: linkedin
+    texto:
+      pt: "Estruturei o processo de inteligência de mercado e pesquisa de preços, monitorando elasticidade e concorrência por canal para definir a estratégia de pricing."
+      en: "Structured the market intelligence and price survey process, tracking elasticity and competitors by channel to define pricing strategy."
+      es: "Estructuré el proceso de inteligencia de mercado y relevamiento de precios, monitoreando la elasticidad y la competencia por canal para definir la estrategia de pricing."
+  - id: coord-kpis
+    cargo: coord
+    tipo: atividade
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "Padronizei os indicadores comerciais do grupo após a reestruturação organizacional."
+      en: "Standardized the group's commercial KPIs after an organizational restructuring."
+      es: "Estandaricé los indicadores comerciales del grupo tras la reestructuración organizacional."
+
+  - id: coord-criacao
+    cargo: coord
+    tipo: atividade
+    temas: [gestao, pricing]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "Criei e implementei a área de Pricing do grupo."
+      en: "Created and implemented the group's Pricing department."
+      es: "Creé e implementé el área de Pricing del grupo."
+
+  # Analista de Controladoria
+  - id: contr-excel
+    cargo: contr
+    tipo: atividade
+    temas: [dados]
+    fonte: curriculo-2026
+    texto:
+      pt: "Estruturei, antes da adoção do Power BI, um sistema de relatórios semiautomatizados em Excel, com arquivos gerados diariamente via SQL, tabelas dinâmicas e VBA."
+      en: "Built, before Power BI was adopted, a semi-automated Excel reporting system, with files generated daily via SQL, pivot tables and VBA."
+      es: "Estructuré, antes de la adopción de Power BI, un sistema de informes semiautomatizados en Excel, con archivos generados a diario vía SQL, tablas dinámicas y VBA."
+  - id: contr-powerbi
+    cargo: contr
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Participei da transição para o Power BI, migrando relatórios de Excel para dashboards (SQL, Power Query e DAX) e padronizando KPIs de Vendas, Compras e Supply Chain."
+      en: "Took part in the transition to Power BI, migrating Excel reports to dashboards (SQL, Power Query and DAX) and standardizing Sales, Purchasing and Supply Chain KPIs."
+      es: "Participé en la transición a Power BI, migrando informes de Excel a dashboards (SQL, Power Query y DAX) y estandarizando KPI de Ventas, Compras y Supply Chain."
+  - id: contr-orcamento
+    cargo: contr
+    tipo: atividade
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "Elaborei o orçamento de vendas de 2020 do grupo em Excel (VBA e tabelas dinâmicas), aberto até SKU, com indicadores macroeconômicos e simulação de ~15 filiais entre aberturas e fechamentos."
+      en: "Built the group's 2020 sales budget in Excel (VBA and pivot tables), down to SKU level, with macroeconomic indicators and simulation of ~15 branches across openings and closures."
+      es: "Elaboré el presupuesto de ventas 2020 del grupo en Excel (VBA y tablas dinámicas), desglosado a nivel de SKU, con indicadores macroeconómicos y simulación de ~15 sucursales entre aperturas y cierres."
+  - id: contr-canais
+    cargo: contr
+    tipo: atividade
+    temas: [gestao]
+    fonte: linkedin
+    texto:
+      pt: "Participei do lançamento de 4 novos canais (Atacarejo, Varejo Premium, E-commerce e Televendas), com simulações de viabilidade e impacto."
+      en: "Took part in launching 4 new channels (Cash-and-Carry, Premium Retail, E-commerce and Telesales), with feasibility and impact simulations."
+      es: "Participé en el lanzamiento de 4 canales nuevos (Cash & Carry, Minorista Premium, E-commerce y Televentas), con simulaciones de viabilidad e impacto."
+  - id: contr-release
+    cargo: contr
+    tipo: atividade
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "Elaborei e apresentei o relatório mensal de vendas ao Conselho de Administração e aos sócios, com resultados, margens e desvios orçamentários."
+      en: "Built and presented the monthly sales report to the Board of Directors and partners, covering results, margins and budget variances."
+      es: "Elaboré y presenté el informe mensual de ventas al Directorio y a los socios, con resultados, márgenes y desvíos presupuestarios."
+  - id: contr-otb
+    cargo: contr
+    tipo: atividade
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "Gerenciei orçamentos de compras (Open to Buy) e auditei contratos de verbas comerciais (Sell-in/Sell-out) por regime de caixa e competência."
+      en: "Managed purchase budgets (Open to Buy) and audited trade fund contracts (sell-in/sell-out) on cash and accrual bases."
+      es: "Gestioné presupuestos de compras (Open to Buy) y audité contratos de fondos comerciales (Sell-in/Sell-out) por base de caja y devengado."
+  - id: contr-erp
+    cargo: contr
+    tipo: atividade
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "Atuei como Key User na migração do ERP TOTVS Gemco para o TOTVS Consinco (módulos Gerencial, Compras e Pricing)."
+      en: "Served as Key User in the migration from TOTVS Gemco to TOTVS Consinco ERP (Management, Purchasing and Pricing modules)."
+      es: "Actué como Key User en la migración del ERP TOTVS Gemco a TOTVS Consinco (módulos Gerencial, Compras y Pricing)."
+  - id: contr-r-trocas
+    cargo: contr
+    tipo: resultado
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "redução de mais de 80% (R$ 120 mil) no estoque imobilizado em trocas"
+      en: "80%+ reduction (R$ 120K) in inventory tied up in product exchanges"
+      es: "reducción de más del 80% (R$ 120 mil) en el stock inmovilizado por cambios de productos"
+  - id: contr-r-ruptura
+    cargo: contr
+    tipo: resultado
+    temas: [gestao, supply]
+    fonte: linkedin
+    texto:
+      pt: "ruptura de 50% para 20% na inauguração de 2 lojas"
+      en: "stockouts cut from 50% to 20% during the opening of 2 stores"
+      es: "quiebres de 50% a 20% en la apertura de 2 tiendas"
+  - id: contr-r-curva-c
+    cargo: contr
+    tipo: resultado
+    temas: [supply]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "reorganização da distribuição da Curva C (~5% do estoque), melhorando giro e Dias de Venda Médio (DVM)"
+      en: "reorganized distribution of C-class inventory (~5% of stock), improving turnover and Average Days of Sales (DVM)"
+      es: "reorganización de la distribución de la Curva C (~5% del stock), mejorando la rotación y los Días de Venta Promedio (DVM)"
+
+  # Universidade Candido Mendes
+  - id: ucam-docencia
+    cargo: ucam
+    tipo: atividade
+    temas: [dados, gestao]
+    fonte: linkedin
+    texto:
+      pt: "Docência presencial e EAD em Engenharia (Civil, Mecânica e de Produção), Administração e Contabilidade."
+      en: "In-person and online teaching in Engineering (Civil, Mechanical and Production), Business Administration and Accounting."
+      es: "Docencia presencial y a distancia en Ingeniería (Civil, Mecánica y de Producción), Administración y Contabilidad."
+  - id: ucam-disciplinas
+    cargo: ucam
+    tipo: atividade
+    temas: [dados, gestao]
+    fonte: linkedin
+    texto:
+      pt: "Disciplinas atuais: Business Intelligence (Power BI, Python e SQL), Administração de Materiais, Gestão de Projetos, Métodos Decisórios, Simulação Computacional, Administração da Produção e Ferramentas da Qualidade."
+      en: "Current courses: Business Intelligence (Power BI, Python and SQL), Materials Management, Project Management, Decision-Making Methods, Computer Simulation, Production Management and Quality Tools."
+      es: "Materias actuales: Business Intelligence (Power BI, Python y SQL), Administración de Materiales, Gestión de Proyectos, Métodos de Decisión, Simulación Computacional, Administración de la Producción y Herramientas de Calidad."
+
+  - id: ucam-monografias
+    cargo: ucam
+    tipo: atividade
+    temas: [gestao, dados]
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "Orientei 12 monografias sobre resolução de problemas empresariais com Matemática Aplicada, Gestão de Processos e Qualidade."
+      en: "Advised 12 undergraduate theses on solving business problems with Applied Mathematics, Process Management and Quality."
+      es: "Dirigí 12 trabajos de fin de carrera sobre resolución de problemas empresariales con Matemática Aplicada, Gestión de Procesos y Calidad."
+
+  # IFF
+  - id: iff-pesquisa
+    cargo: iff
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Ensino e pesquisa em graduação e mestrado; palestrante e revisor em congressos regionais, nacionais e internacionais."
+      en: "Taught and conducted research at undergraduate and master's levels; speaker and reviewer at regional, national and international conferences."
+      es: "Docencia e investigación en grado y maestría; expositor y revisor en congresos regionales, nacionales e internacionales."
+
+  # Olyver
+  - id: olyver-reestruturacao
+    cargo: olyver
+    tipo: atividade
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "Reestruturação organizacional em 3 clientes do varejo e distribuição: mapeamento de processos, rotinas de compras, KPIs, orçamentos e acompanhamento de DRE."
+      en: "Organizational restructuring for 3 retail and distribution clients: process mapping, purchasing routines, KPIs, budgets and income statement tracking."
+      es: "Reestructuración organizacional en 3 clientes de comercio y distribución: mapeo de procesos, rutinas de compras, KPI, presupuestos y seguimiento del estado de resultados."
+  - id: olyver-as-is-to-be
+    cargo: olyver
+    tipo: atividade
+    temas: [gestao]
+    fonte: conversa 2026-11-07
+    texto:
+      pt: "Mapeei processos no estado atual (AS IS) no Bizagi, propus melhorias com ferramentas da qualidade e desenhei o estado futuro (TO BE), validado com os stakeholders."
+      en: "Mapped current-state (AS IS) processes in Bizagi, proposed improvements using quality tools and designed the future state (TO BE), validated with stakeholders."
+      es: "Mapeé los procesos en su estado actual (AS IS) en Bizagi, propuse mejoras con herramientas de calidad y diseñé el estado futuro (TO BE), validado con las partes interesadas."
+  - id: olyver-treinamento
+    cargo: olyver
+    tipo: atividade
+    temas: [gestao]
+    fonte: linkedin
+    texto:
+      pt: "Ministrei treinamentos administrativos, gerenciais e de vendas para equipes multidisciplinares."
+      en: "Delivered administrative, management and sales training to cross-functional teams."
+      es: "Dicté capacitaciones administrativas, gerenciales y de ventas para equipos multidisciplinarios."
+  - id: olyver-erp
+    cargo: olyver
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Apoiei migrações de ERP, com limpeza e cruzamento de bases de dados; unifiquei o cadastro de produtos de 3 lojas por código de barras."
+      en: "Supported ERP migrations, with data cleansing and cross-checking; unified the product catalog of 3 stores using barcodes."
+      es: "Apoyé migraciones de ERP, con limpieza y cruce de bases de datos; unifiqué el catálogo de productos de 3 tiendas por código de barras."
+  - id: olyver-prospeccao
+    cargo: olyver
+    tipo: atividade
+    temas: []
+    fonte: linkedin
+    texto:
+      pt: "Prospecção ativa de clientes e negociações de vendas, com fluxo de acompanhamento estruturado em Excel."
+      en: "Active client prospecting and sales negotiations, with a follow-up workflow structured in Excel."
+      es: "Prospección activa de clientes y negociaciones de ventas, con un flujo de seguimiento estructurado en Excel."
+  - id: olyver-r-tempo
+    cargo: olyver
+    tipo: resultado
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "redução de mais de 50% no tempo de tramitação de mercadorias (estoque ao PDV) com redesenho de layout"
+      en: "50%+ reduction in goods handling time (stock to point of sale) through layout redesign"
+      es: "reducción de más del 50% en el tiempo de traslado de mercadería (depósito al punto de venta) con el rediseño del layout"
+  - id: olyver-r-capital
+    cargo: olyver
+    tipo: resultado
+    temas: [gestao, dados]
+    fonte: linkedin
+    texto:
+      pt: "otimização do capital de giro com Curva ABC para compras"
+      en: "working capital optimization using ABC analysis for purchasing"
+      es: "optimización del capital de trabajo con Curva ABC para compras"
+
+  # Estágios
+  - id: prefeitura-automacao
+    cargo: prefeitura
+    tipo: atividade
+    temas: [dados]
+    fonte: linkedin
+    texto:
+      pt: "Relatórios administrativos e automação da inserção de certidões com macros e fórmulas em Excel e Word."
+      en: "Produced administrative reports and automated certificate data entry with Excel and Word macros and formulas."
+      es: "Informes administrativos y automatización de la carga de certificados con macros y fórmulas en Excel y Word."
+  - id: ases-atendimento
+    cargo: ases
+    tipo: atividade
+    temas: []
+    fonte: linkedin
+    texto:
+      pt: "Atendimento a clientes e rotinas administrativas do setor de cadastro."
+      en: "Customer service and administrative routines in the registration department."
+      es: "Atención al cliente y rutinas administrativas del sector de registro."

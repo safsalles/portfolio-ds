@@ -1,0 +1,49 @@
+competencias:
+  - id: dados-bi
+    grupo: {pt: Dados e BI, en: Data & BI, es: Datos y BI}
+    itens:
+      pt: "Business Intelligence (BI), SQL (Oracle, Google BigQuery), Power BI, DAX, Power Query, ETL, Python (pandas, Selenium, Playwright, automação), Excel avançado (tabelas dinâmicas, VBA, simulação de cenários), Google Sheets, Tableau, R, Matlab, modelagem de dados, dashboards, KPIs"
+      en: "Business Intelligence (BI), SQL (Oracle, Google BigQuery), Power BI, DAX, Power Query, ETL, Python (pandas, Selenium, Playwright, automation), advanced Excel (pivot tables, VBA, scenario simulation), Google Sheets, Tableau, R, Matlab, data modeling, dashboards, KPIs"
+      es: "Business Intelligence (BI), SQL (Oracle, Google BigQuery), Power BI, DAX, Power Query, ETL, Python (pandas, Selenium, Playwright, automatización), Excel avanzado (tablas dinámicas, VBA, simulación de escenarios), Google Sheets, Tableau, R, Matlab, modelado de datos, dashboards, KPI"
+  - id: analise
+    grupo: {pt: Análise de Dados, en: Data Analysis, es: Análisis de Datos}
+    itens:
+      pt: "análise exploratória, análise de desvios, segmentação (Curva ABC, clusters), simulação de cenários, conciliação e auditoria de dados, Pesquisa Operacional, storytelling com dados"
+      en: "exploratory data analysis, variance analysis, segmentation (ABC analysis, clustering), scenario simulation, data reconciliation and auditing, Operations Research, data storytelling"
+      es: "análisis exploratorio, análisis de desvíos, segmentación (Curva ABC, clústeres), simulación de escenarios, conciliación y auditoría de datos, Investigación Operativa, storytelling con datos"
+  - id: negocio
+    grupo: {pt: Negócio, en: Business, es: Negocio}
+    itens:
+      pt: "Pricing, gestão de margem, inteligência de mercado, Supply Chain, abastecimento, gestão de estoque, ruptura, Open to Buy, TOTVS Consinco, TOTVS Gemco"
+      en: "Pricing, margin management, market intelligence, Supply Chain, replenishment, inventory management, stockouts, Open to Buy, TOTVS Consinco, TOTVS Gemco"
+      es: "Pricing, gestión de margen, inteligencia de mercado, Supply Chain, abastecimiento, gestión de stock, quiebres de stock, Open to Buy, TOTVS Consinco, TOTVS Gemco"
+  - id: lideranca
+    grupo: {pt: Gestão e Liderança, en: Management & Leadership, es: Gestión y Liderazgo}
+    itens:
+      pt: "liderança de equipes, desenvolvimento de pessoas, gestão de projetos, apresentações executivas ao Conselho, definição de metas e KPIs, orçamento, gestão de processos, migração de ERP"
+      en: "team leadership, people development, project management, executive presentations to the Board, goal and KPI setting, budgeting, process management, ERP migration"
+      es: "liderazgo de equipos, desarrollo de personas, gestión de proyectos, presentaciones ejecutivas al Directorio, definición de metas y KPI, presupuesto, gestión de procesos, migración de ERP"
+  - id: pricing-comercial
+    grupo: {pt: Pricing e Comercial, en: Pricing & Commercial, es: Pricing y Comercial}
+    itens:
+      pt: "precificação, gestão de margem, clusters de precificação, política de descontos, pesquisa de preços, inteligência de mercado, gestão de verbas comerciais (Sell-in/Sell-out)"
+      en: "pricing, margin management, pricing clusters, discount policy, price surveys, market intelligence, trade funds management (sell-in/sell-out)"
+      es: "fijación de precios, gestión de margen, clústeres de precios, política de descuentos, relevamiento de precios, inteligencia de mercado, gestión de fondos comerciales (Sell-in/Sell-out)"
+  - id: supply
+    grupo: {pt: Supply Chain, en: Supply Chain, es: Supply Chain}
+    itens:
+      pt: "abastecimento, gestão de estoque, ruptura, Open to Buy, redistribuição entre CDs, abertura de lojas"
+      en: "replenishment, inventory management, stockouts, Open to Buy, redistribution between distribution centers, store openings"
+      es: "abastecimiento, gestión de stock, quiebres de stock, Open to Buy, redistribución entre centros de distribución, apertura de tiendas"
+  - id: ferramentas-gestao
+    grupo: {pt: Dados e Sistemas, en: Data & Systems, es: Datos y Sistemas}
+    itens:
+      pt: "Power BI, SQL, Python, Excel avançado, Business Intelligence (BI), dashboards, TOTVS Consinco, TOTVS Gemco"
+      en: "Power BI, SQL, Python, advanced Excel, Business Intelligence (BI), dashboards, TOTVS Consinco, TOTVS Gemco"
+      es: "Power BI, SQL, Python, Excel avanzado, Business Intelligence (BI), dashboards, TOTVS Consinco, TOTVS Gemco"
+  - id: processos-qualidade
+    grupo: {pt: Processos e Qualidade, en: Process & Quality, es: Procesos y Calidad}
+    itens:
+      pt: "mapeamento e melhoria de processos (AS IS e TO BE), BPMN (Bizagi), ferramentas da qualidade, controle estatístico de processo, engenharia de métodos, arranjo físico (layout), administração da produção, qualidade em serviços (SERVQUAL), Análise Envoltória de Dados (DEA), simulação computacional, Pesquisa Operacional"
+      en: "process mapping and improvement (AS IS and TO BE), BPMN (Bizagi), quality tools, statistical process control, methods engineering, facility layout, production management, service quality (SERVQUAL), Data Envelopment Analysis (DEA), computer simulation, Operations Research"
+      es: "mapeo y mejora de procesos (AS IS y TO BE), BPMN (Bizagi), herramientas de calidad, control estadístico de procesos, ingeniería de métodos, distribución en planta (layout), administración de la producción, calidad en servicios (SERVQUAL), Análisis Envolvente de Datos (DEA), simulación computacional, Investigación Operativa"

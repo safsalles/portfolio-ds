@@ -1,0 +1,56 @@
+id: varejo
+titulo:
+  pt: "Gestão em Pricing, Abastecimento e Supply Chain | Varejo e Distribuição | Liderança de Equipes"
+  en: "Pricing and Supply Chain Management | Retail and Distribution | Team Leadership"
+  es: "Gestión en Pricing, Abastecimiento y Supply Chain | Comercio Mayorista y Distribución | Liderazgo de Equipos"
+resumo:
+  pt: "Profissional com mais de 10 anos em varejo atacadista e distribuição e experiência em gestão desde 2020, como Coordenador de Pricing e depois Gerente de Pricing e Gerente de Abastecimento, as duas gerências em paralelo por 2 anos, em um grupo com faturamento acima de R$ 1 bilhão e mais de 20 mil SKUs ativos. Liderei equipes de até 9 pessoas, com metas de margem, abertura de lojas e apresentações ao Conselho de Administração. Resultados: {pricing-margem}, {abast-r-ruptura} e {pricing-tempo}. Decisões apoiadas em dados, com Power BI, SQL e Python. Engenheiro de Produção, Mestre em Sistemas Aplicados à Engenharia e Gestão (Pesquisa Operacional), com MBA em Finanças e Controladoria."
+  en: "Professional with 10+ years in wholesale retail and distribution and management experience since 2020, as Pricing Coordinator and then Pricing Manager and Supply Manager, holding both manager roles concurrently for 2 years, in a group with over R$ 1 billion in revenue and 20,000+ active SKUs. Led teams of up to 9, working on margin targets, store openings and presentations to the Board of Directors. Results: {pricing-margem}, {abast-r-ruptura} and {pricing-tempo}. Data-driven decisions with Power BI, SQL and Python. Production Engineer, Master's in Applied Systems in Engineering and Management (Operations Research) and MBA in Finance and Controllership."
+  es: "Profesional con más de 10 años en comercio mayorista y distribución y experiencia en gestión desde 2020, como Coordinador de Pricing y luego Gerente de Pricing y Gerente de Abastecimiento, ambas gerencias en paralelo durante 2 años, en un grupo con facturación superior a R$ 1.000 millones y más de 20 mil SKU activos. Lideré equipos de hasta 9 personas, con metas de margen, apertura de tiendas y presentaciones al Directorio. Resultados: {pricing-margem}, {abast-r-ruptura} y {pricing-tempo}. Decisiones basadas en datos, con Power BI, SQL y Python. Ingeniero de Producción, Magíster en Sistemas Aplicados a la Ingeniería y Gestión (Investigación Operativa) y MBA en Finanzas y Control de Gestión."
+secoes: [resumo, experiencia, competencias, formacao, cursos, idiomas]
+competencias: [lideranca, pricing-comercial, supply, ferramentas-gestao]
+fatos:
+  - pricing-equipe
+  - pricing-25-lojas
+  - pricing-canais
+  - pricing-estrategia
+  - pricing-semiauto
+  - pricing-vencimento
+  - pricing-margem
+  - pricing-competitividade
+  - pricing-tempo
+  - pricing-politica
+  - abast-equipe
+  - abast-ruptura-dash
+  - abast-desbalanceamento
+  - abast-lojas
+  - abast-gatilhos
+  - abast-estoque-ideal
+  - abast-r-ruptura
+  - abast-r-estoque
+  - abast-r-produtividade
+  - abast-r-lojas
+  - abast-r-logistica
+  - abast-r-tempo
+  - coord-criacao
+  - coord-equipe
+  - coord-conselho
+  - coord-inteligencia
+  - coord-kpis
+  - contr-orcamento
+  - contr-canais
+  - contr-release
+  - contr-otb
+  - contr-erp
+  - contr-r-trocas
+  - contr-r-ruptura
+  - contr-r-curva-c
+  - ucam-docencia
+  - ucam-disciplinas
+  - olyver-reestruturacao
+  - olyver-treinamento
+  - olyver-r-tempo
+  - olyver-r-capital
+cursos: [google-data-analytics, datatech-python, live-precificacao, imazon-projetos, fgv-escopo]
+projetos: []
+publicacoes: []

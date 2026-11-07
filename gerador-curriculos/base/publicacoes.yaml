@@ -1,0 +1,33 @@
+# Lista do ResearchGate (2026-11-06), sem repetições, mais a dissertação.
+# Títulos ficam no idioma original. Totais oficiais em perfil.yaml (producao).
+publicacoes:
+  - {id: mem-ga-artigo, ano: 2022, tipo: periodico, veiculo: Pesquisa Operacional, titulo: "Multiple Choice Method with Genetic Algorithm for the Formation of Soccer Teams"}
+  - {id: fast-food, ano: 2022, tipo: periodico, veiculo: International Journal of Services and Operations Management, titulo: "Quality Assessment of Brazilian Fast-Food Business Services"}
+  - {id: dea-lojas, ano: 2021, tipo: congresso, veiculo: XXIV Encontro Nacional de Modelagem Computacional, titulo: "Avaliação de eficiência entre lojas por meio da análise envoltória de dados (DEA): um estudo em uma rede de varejo alimentício do sudeste brasileiro"}
+  - {id: revisao-futebol, ano: 2019, tipo: periodico, veiculo: Pesquisa Operacional, titulo: "Operations Research Contributions for Football Teams Formation: A Systematic Review"}
+  - {id: premier-league, ano: 2019, tipo: congresso, veiculo: Encontro Nacional de Modelagem Computacional, titulo: "Modelagem multicritério para composição de time ótimo de futebol da Premier League"}
+  - {id: camara-federal, ano: 2019, tipo: congresso, veiculo: Encontro Nacional de Modelagem Computacional, titulo: "Agremiação política por afinidade ideológica: modelagem decisória das sessões deliberativas da Câmara Federal"}
+  - {id: startups-mcda, ano: 2019, tipo: congresso, veiculo: "", titulo: "Análise de artigos que utilizaram métodos de Auxílio Multicritério a Decisão em Startups"}
+  - {id: picoles, ano: 2019, tipo: periodico, veiculo: Revista Fatec Zona Sul, titulo: "Controle Estatístico do Processo e Engenharia de Métodos: Uma aplicação conjunta na produção de picolés"}
+  - {id: dissertacao, ano: 2018, tipo: dissertacao, veiculo: IFF, titulo: "MEM-GA: Método de Escolha Múltipla com Algoritmo Genético aplicado à formação de equipes de futebol"}
+  - {id: brasileirao-2017, ano: 2018, tipo: congresso, veiculo: L SBPO, titulo: "Formação de equipe baseado em desempenho e interação: aplicação ao Campeonato Brasileiro de 2017"}
+  - {id: servqual, ano: 2018, tipo: congresso, veiculo: XXXVIII ENEGEP, titulo: "Uso da Análise Multivariada de Dados e da ferramenta SERVQUAL na mensuração da qualidade em serviços em empresas de fast-food"}
+  - {id: bpmn, ano: 2018, tipo: periodico, veiculo: "", titulo: "BPMN e ferramentas da qualidade para melhoria de processos: um estudo de caso"}
+  - {id: ambev, ano: 2018, tipo: periodico, veiculo: e-Revista LOGO, titulo: "Personas e posicionamento de marca: um estudo de caso do portfólio de cervejas AMBEV"}
+  - {id: manutencao, ano: 2018, tipo: congresso, veiculo: "", titulo: "Proposta de um plano de manutenção em uma indústria de embalagens plásticas flexíveis"}
+  - {id: layout, ano: 2018, tipo: congresso, veiculo: "", titulo: "Otimização do layout no setor de corte e solda em uma empresa de embalagens plásticas"}
+  - {id: pos-graduacao, ano: 2018, tipo: congresso, veiculo: EMEPRO 2018, titulo: "Identificação dos principais atributos de classificação para programas de pós-graduação através da mineração de dados: uma análise dos mestrados profissionais e interdisciplinares"}
+  - {id: capes, ano: 2018, tipo: periodico, veiculo: Revista Meta Avaliação, titulo: "Mineração de dados das fichas da Avaliação Quadrienal da Capes dos Programas da área Interdisciplinar: Engenharia, Tecnologia e Gestão"}
+  - {id: erp-capitulo, ano: 2018, tipo: capitulo, veiculo: "", titulo: "Análise da elicitação de requisitos e planejamento da implantação de um ERP: estudo de caso em uma indústria metal mecânica"}
+  - {id: manometro, ano: 2018, tipo: periodico, veiculo: Independent Journal of Management & Production, titulo: "Influencing Factors Analysis to Determine Standard Time of Operators in a Gauge Calibration Process"}
+  - {id: iso-14001, ano: 2018, tipo: congresso, veiculo: "", titulo: "Diagnóstico do setor de construção civil na aquisição da ISO 14001: estudo de caso em Campos dos Goytacazes/RJ"}
+  - {id: dea-jogadores-periodico, ano: 2018, tipo: periodico, veiculo: Pesquisa Operacional para o Desenvolvimento, titulo: "Análise da eficiência de jogadores dos principais campeonatos europeus de futebol através do DEA"}
+  - {id: dea-jogadores, ano: 2017, tipo: congresso, veiculo: ENFEPRO, titulo: "DEA aplicado a jogadores dos principais campeonatos europeus de futebol: estudo de caso da temporada 2015/2016"}
+  - {id: dea-clubes, ano: 2017, tipo: congresso, veiculo: ENFEPRO, titulo: "Mensuração da eficiência de clubes de futebol através do DEA: estudo de caso com o Campeonato Brasileiro de 2016"}
+  - {id: questionario-construcao, ano: 2017, tipo: congresso, veiculo: "", titulo: "Análise da satisfação e confiabilidade de itens de questionário: estudo de caso em uma empresa de materiais de construção"}
+  - {id: lealdade, ano: 2017, tipo: congresso, veiculo: "", titulo: "Análise da satisfação e lealdade de clientes: estudo de caso em um comércio varejista"}
+  - {id: canvas, ano: 2017, tipo: congresso, veiculo: "", titulo: "O Business Model Canvas como ferramenta de suporte para o Planejamento Agregado da Produção"}
+  - {id: midias-ead, ano: 2017, tipo: congresso, veiculo: "", titulo: "Análise de mídias sociais para prospecção de usuários em uma plataforma de reforço acadêmico EAD"}
+  - {id: duvidas-startup, ano: 2017, tipo: congresso, veiculo: "", titulo: "Análise de dúvidas relacionadas a conteúdo: um estudo de caso em uma startup de educação"}
+  - {id: supermercado, ano: 2015, tipo: congresso, veiculo: "", titulo: "Avaliação de um supermercado sob a percepção dos clientes: determinação da validade de itens do questionário"}
+  - {id: talk-cast, tipo: entrevista, veiculo: Talk Cast, titulo: "Conversas com Pedro Mancini sobre dados e inovação e sobre IA no futebol", nota: "Só na base, por decisão do Sérgio"}

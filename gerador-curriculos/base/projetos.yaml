@@ -1,0 +1,33 @@
+projetos:
+  - id: job-finder
+    nome: Job Finder
+    link: github.com/safsalles/portfolio-ds
+    fonte: linkedin
+    texto:
+      pt: "Bot em Python com Playwright que busca vagas, filtra por título e modalidade e envia os resultados organizados por e-mail."
+      en: "Python bot built with Playwright that searches job postings, filters them by title and work model, and emails the organized results."
+      es: "Bot en Python con Playwright que busca ofertas de empleo, las filtra por título y modalidad y envía los resultados organizados por correo electrónico."
+  - id: mem-ga
+    nome: MEM-GA
+    link: github.com/safsalles/portfolio-ds
+    fonte: conversa 2026-11-06
+    texto:
+      pt: "Versão em Python do método multicritério com algoritmo genético da minha dissertação, aplicado à formação de times de futebol com dados do Brasileirão 2017."
+      en: "Python version of the multicriteria method with a genetic algorithm from my master's thesis, applied to soccer team formation using 2017 Brazilian league data."
+      es: "Versión en Python del método multicriterio con algoritmo genético de mi tesis de maestría, aplicado a la formación de equipos de fútbol con datos del Brasileirão 2017."
+  - id: curriculos
+    nome: {pt: Sistema de Currículos, en: Résumé System, es: Sistema de Currículums}
+    link: ""
+    fonte: conversa 2026-11-07
+    texto:
+      pt: "Sistema em Python que gera currículos em PDF em 3 idiomas e em versões por área a partir de uma base única de carreira em YAML, com validação dos dados, checagem automática de números e páginas, histórico de versões e testes automatizados (pytest). Desenvolvido com IA (Claude Code), da especificação aos testes."
+      en: "Python system that generates PDF résumés in 3 languages and role-specific versions from a single YAML career database, with data validation, automatic number and page checks, version history and automated tests (pytest). Built with AI (Claude Code), from specification to tests."
+      es: "Sistema en Python que genera currículums en PDF en 3 idiomas y en versiones por área a partir de una base única de carrera en YAML, con validación de datos, verificación automática de cifras y páginas, historial de versiones y pruebas automatizadas (pytest). Desarrollado con IA (Claude Code), de la especificación a las pruebas."
+  - id: portfolio-ds
+    nome: {pt: Portfólio no GitHub, en: GitHub Portfolio, es: Portafolio en GitHub}
+    link: github.com/safsalles/portfolio-ds
+    fonte: conversa 2026-11-07
+    texto:
+      pt: "Repositório público de projetos de Data Science e automação, organizado por projeto, com README em português e inglês, dependências e, nos projetos de análise, testes automatizados (pytest) e notebook. Os projetos mais recentes são especificados antes do código e desenvolvidos com IA (Claude Code)."
+      en: "Public repository of Data Science and automation projects, organized by project, with READMEs in Portuguese and English, dependencies and, in the analysis projects, automated tests (pytest) and a notebook. The most recent projects are specified before coding and built with AI (Claude Code)."
+      es: "Repositorio público de proyectos de Data Science y automatización, organizado por proyecto, con README en portugués e inglés, dependencias y, en los proyectos de análisis, pruebas automatizadas (pytest) y notebook. Los proyectos más recientes se especifican antes del código y se desarrollan con IA (Claude Code)."

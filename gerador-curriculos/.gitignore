@@ -1,0 +1,7 @@
+# Contato que fica só na máquina do dono
+base/perfil.local.yaml
+
+# Gerados ou de terceiros
+historico/
+saida/vagas/
+versoes/vagas/
