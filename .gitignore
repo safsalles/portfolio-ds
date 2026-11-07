@@ -10,3 +10,7 @@ venv/
 
 # Prints gerados pelo job finder
 debug_*.png
+
+# Ambiente Python local
+.venv/
+*.egg-info/
