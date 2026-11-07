@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from mem_ga import main, pitch_lines
+from mem_ga import PRESETS, load_dataset, main, pitch_lines, strongest_team
 
 FAST = ["--seed", "1", "--iterations", "50", "--population", "10"]
 
@@ -97,3 +97,28 @@ def test_pitch_lines_have_the_same_width_and_show_everyone(dataset):
     lines = pitch_lines(dataset, strengths, team)
     assert len({len(line) for line in lines}) == 1
     assert all(dataset.players[player] in "\n".join(lines) for player in team)
+
+
+def test_radar_flag_saves_a_png(tmp_path, capsys):
+    target = tmp_path / "radar.png"
+    main([*FAST, "--formation", "4-4-2", "--radar", str(target)])
+    assert target.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+    assert "Gráfico de radar salvo" in capsys.readouterr().out
+
+
+def test_strongest_team_respects_the_formation():
+    dataset = load_dataset()
+    team = strongest_team(dataset, PRESETS["4-4-2"], 10)
+    strengths = dataset.payment.sum(axis=1)
+    assert len(team) == 10
+    for position, quota in PRESETS["4-4-2"].items():
+        chosen = [player for player in team if dataset.positions[player] == position]
+        others = np.flatnonzero(dataset.positions == position)
+        assert len(chosen) == quota
+        assert min(strengths[chosen]) >= np.sort(strengths[others])[-quota]
+
+
+def test_strongest_team_without_formation_takes_the_top_overall():
+    dataset = load_dataset()
+    strengths = dataset.payment.sum(axis=1)
+    assert strongest_team(dataset, None, 10) == np.argsort(-strengths, kind="stable")[:10].tolist()

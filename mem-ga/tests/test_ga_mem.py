@@ -186,6 +186,23 @@ def test_pitch_shows_the_goalkeeper_of_the_club(capsys):
     assert "Vanderlei (SAN)" in capsys.readouterr().out
 
 
+def test_each_option_shows_its_gain(capsys):
+    main(["--club", "VAS", "--position", "ata", "--options", "2"])
+    output = capsys.readouterr().out
+    assert "Com a melhor opção: nota 0.5229 (+0.0784)" in output
+    assert "1. Túlio de Melo (CHA) no lugar de Andrés Ríos (VAS): nota 0.5229 (+0.0784)" in output
+
+
+def test_says_so_when_no_option_improves_the_team(capsys):
+    main(["--club", "VAS", "--position", "LD", "--options", "2"])
+    output = capsys.readouterr().out
+    assert "Nenhuma opção melhora o time" in output
+    assert "Com a melhor opção" not in output
+    assert "Opções que menos pioram" in output
+    assert "nota 0.4379 (-0.0065)" in output
+    assert "Gilberto (VAS)" in output.split("Opções que menos pioram")[0]
+
+
 def test_invalid_club_flag_stops_with_a_message():
     with pytest.raises(SystemExit, match="Erro"):
         main(["--club", "Marte"])
@@ -224,3 +241,10 @@ def test_invalid_tau_is_rejected_on_the_command_line(tau, capsys):
         main(["--club", "COR", "--tau", tau])
     assert stop.value.code == 2
     assert "tau" in capsys.readouterr().err
+
+
+def test_radar_flag_saves_a_png_of_the_best_option(tmp_path, capsys):
+    target = tmp_path / "radar.png"
+    main(["--club", "VAS", "--position", "ata", "--options", "1", "--radar", str(target)])
+    assert target.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+    assert "Gráfico de radar da 1.ª opção salvo" in capsys.readouterr().out

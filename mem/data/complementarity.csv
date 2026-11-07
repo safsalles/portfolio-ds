@@ -1,0 +1,7 @@
+criterion,Planejamento,Logística,Qualidade,Custos,Pessoas,Faltas
+Planejamento,,0.3,0.7,0.8,0.9,0.6
+Logística,0.3,,0.6,0.7,0.8,0.5
+Qualidade,0.7,0.6,,0.4,0.8,0.6
+Custos,0.8,0.7,0.4,,0.9,0.7
+Pessoas,0.9,0.8,0.8,0.9,,0.4
+Faltas,0.6,0.5,0.6,0.7,0.4,

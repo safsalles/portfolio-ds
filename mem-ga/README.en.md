@@ -8,7 +8,7 @@ The project began in my master's dissertation and uses data from the 2017 Brazil
 
 ![Teams by formation](images/times.png)
 
-The project also includes [GA-MEM](#ga-mem), which suggests signings for a club. The [full analysis](analise.ipynb), in Portuguese, shows the team for each formation and why the most complementary team is not the 10 strongest players.
+The [mem](../mem/README.en.md) folder holds the pure method, without a genetic algorithm, with a small fictional example. The project also includes [GA-MEM](#ga-mem), which suggests signings for a club. The [full analysis](analise.ipynb), in Portuguese, shows the team for each formation and why the most complementary team is not the 10 strongest players.
 
 ## The method
 
@@ -215,6 +215,12 @@ The best known score is the highest found in these runs, in another 30 from a di
 
 For comparison, the 10 players with the highest summed performance on the 18 criteria score 0.6863, below the free team.
 
+The radar chart shows this difference in the 4-4-2. The orange line is the team of the players with the highest summed performance in each position, scoring 0.8039, and the blue area is the MEM-GA team, scoring 0.9608. The stronger team has higher averages in tackles, passes, and assists, but stays low in goals from outside the box (0.12) and aerial duels (0.27). MEM-GA gives up part of those peaks to raise exactly those weak spots, to 0.30 and 0.36. Since the score looks at the weaker criterion of each pair, that is worth more than high numbers where the team is already good. The chart labels are in Portuguese, like the program's output.
+
+![Radar chart of the MEM-GA team in the 4-4-2](images/radar_mem_ga.png)
+
+To draw the chart for any formation, use `--radar` with the file name, for example `python mem_ga.py --formation 4-4-2 --seed 1 --radar radar.png`.
+
 ### Tau sensitivity
 
 The table shows what changes between 0.22 and 0.26. Changes are the players who differ from the team at 0.24, and the club columns use the score of the starters of the 20 clubs.
@@ -243,14 +249,14 @@ The program shows the list of clubs and asks three questions, in Portuguese:
 2. **Option:** choose the signing's position or let the method suggest any position.
 3. **Amount:** how many options to show. Pressing Enter shows 5.
 
-The result shows the score before and after the best option, the lineup with it, and the list of options. Each option is a single signing, not a package. To skip the questions, use `--club`, `--position`, and `--options`.
+The result shows the score before and after the best option, the lineup with it, and the list of options, with the gain of each one. Each option is a single signing, not a package. If no option improves the team, the program says so, keeps the current team on the pitch, and lists the ones that hurt it least. Across the 20 clubs and 6 positions, this only happens with Vasco's right back. To skip the questions, use `--club`, `--position`, and `--options`.
 
 **How the method decides:**
 
 - The current team is the club's 10 outfield players with the most minutes, with at least one in each position. If the club has fewer than 10 outfield players with the minimum minutes, the program warns how many players the score used, and it is not comparable with the score of a 10-player team.
 - Candidates are players from other clubs with at least 850 minutes.
 - Swaps are always position by position: a forward only replaces a forward. Among the starters in that position, the one whose exit most improves the score leaves.
-- The method tests every candidate, so the list is exact.
+- The method tests every candidate, so the list is exact. With one signing at a time there are few cases, and the genetic algorithm is not needed here.
 - The default tau is 0.24, the same as in MEM-GA.
 - The goalkeeper shown is the one who played most for the club. They do not count toward the score.
 
@@ -262,6 +268,12 @@ Examples of the best option from any position:
 | Santos | 0.6078 | 0.7582 | Ricardo Oliveira | Dudu (PAL) |
 | Corinthians | 0.5163 | 0.6667 | Rodriguinho | Agustín Allione (BAH) |
 | Vasco | 0.4444 | 0.5229 | Andrés Ríos | Túlio de Melo (CHA) |
+
+The radar chart shows Vasco's signing. On the right, Túlio de Melo is much stronger than Andrés Ríos in goals inside the box and shots on target, and also in aerial duels, but falls behind in fouls suffered and dribbles. On the left, the team's average barely changes, because he is one player out of 10, but the gain falls on criteria where the team was weak, and that is enough to raise the score from 0.4444 to 0.5229.
+
+![Radar chart of Vasco signing Túlio de Melo](images/radar_ga_mem.png)
+
+To draw the chart for the best option, use `--radar` with the file name, for example `python ga_mem.py --club VAS --position ata --options 3 --radar radar.png`.
 
 The best option changes from club to club, because a player's value depends on what the team already has. Across the 20 clubs, 14 different names appear, and the most repeated is Agustín Allione, at 3 clubs. The method ignores price and availability, so it is worth checking the other options on the list.
 

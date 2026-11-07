@@ -20,7 +20,10 @@ from mem_ga import (
     DEFAULT_DATA_DIR,
     DEFAULT_MIN_MINUTES,
     DEFAULT_TAU,
+    RADAR_COLORS,
+    RADAR_MUTED,
     build_scorer,
+    plot_radar,
     tau_argument,
     load_dataset,
     pitch_lines,
@@ -133,6 +136,7 @@ def build_parser():
     parser.add_argument("--data", default=DEFAULT_DATA_DIR, help="pasta com os arquivos CSV")
     parser.add_argument("--min-minutes", type=int, default=DEFAULT_MIN_MINUTES)
     parser.add_argument("--tau", type=tau_argument, default=DEFAULT_TAU, help="tau de corte do grupo")
+    parser.add_argument("--radar", type=Path, help="salva o gráfico de radar neste arquivo (.png)")
     return parser
 
 
@@ -192,6 +196,23 @@ def describe(dataset, signing):
     return f"{dataset.players[signing.arrival]} no lugar de {dataset.players[signing.leaving]}"
 
 
+def signing_radar(dataset, scorer, team, signing, path):
+    """Mostra o time antes e depois da opção, e quem sai contra quem entra."""
+    payment = scorer.payment
+    before, after = (f"{scorer.rate(t)[0]:.4f}".replace(".", ",") for t in (team, signing.team))
+    leaving, arrival = dataset.players[signing.leaving], dataset.players[signing.arrival]
+    plot_radar(dataset.criteria, [
+        (f"Time: nota {before} antes, {after} depois", [
+            ("Antes", payment[list(team)].mean(axis=0), RADAR_MUTED, "dash"),
+            ("Depois", payment[list(signing.team)].mean(axis=0), RADAR_COLORS[0], "fill"),
+        ]),
+        (f"Sai {leaving}, entra {arrival}", [
+            (f"Sai {leaving}", payment[signing.leaving], RADAR_COLORS[1], "line"),
+            (f"Entra {arrival}", payment[signing.arrival], RADAR_COLORS[2], "fill"),
+        ]),
+    ], path)
+
+
 def run(args):
     dataset = load_dataset(args.data, args.min_minutes)
     clubs = load_clubs(args.data, dataset)
@@ -221,8 +242,10 @@ def run(args):
     scorer = build_scorer(dataset, args.tau)
     options = suggest(scorer, dataset, team, candidates)
 
-    current = scorer.rate(team)[0]
+    rating = scorer.rate(team)
+    current = rating[0]
     best = options[0]
+    improves = best.rating > rating
     if len(team) < STARTERS:
         print(
             f"\nAviso: {clubs[club]} tem só {len(team)} jogadores de linha com "
@@ -230,16 +253,24 @@ def run(args):
             f"jogadores, e não é comparável com a de times de {STARTERS}."
         )
     print(f"\n{clubs[club]}: nota atual {current:.4f} (tau {args.tau})")
-    print(f"Com a melhor opção: nota {best.rating[0]:.4f} ({best.rating[0] - current:+.4f})\n")
-    print(f"  Sai {dataset.players[best.leaving]}, entra {dataset.players[best.arrival]}\n")
+    if improves:
+        print(f"Com a melhor opção: nota {best.rating[0]:.4f} ({best.rating[0] - current:+.4f})\n")
+        print(f"  Sai {dataset.players[best.leaving]}, entra {dataset.players[best.arrival]}\n")
+    else:
+        print("Nenhuma opção melhora o time, então ele fica como está.\n")
 
     keepers = [k for k in rank_goalkeepers(args.data, args.min_minutes) if k["team"] == club]
     keeper = max(keepers, key=lambda k: k["minutes"]) if keepers else None
-    print_lineup(dataset, keeper, best.team)
+    print_lineup(dataset, keeper, best.team if improves else team)
 
-    print("\nMelhores opções:")
+    print("\nMelhores opções:" if improves else "\nOpções que menos pioram:")
     for number, option in enumerate(options[:amount], start=1):
-        print(f"  {number}. {describe(dataset, option)}: nota {option.rating[0]:.4f}")
+        gain = option.rating[0] - current
+        print(f"  {number}. {describe(dataset, option)}: nota {option.rating[0]:.4f} ({gain:+.4f})")
+
+    if args.radar:
+        signing_radar(dataset, scorer, team, best, args.radar)
+        print(f"\nGráfico de radar da 1.ª opção salvo em {args.radar}")
 
 
 def main(argv=None):

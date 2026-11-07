@@ -548,6 +548,105 @@ def run_ga(scorer, positions, quotas, team_size, config=None, seed=None, on_prog
 
 
 # ======================================================================================
+# GRÁFICO DE RADAR
+# ======================================================================================
+
+CRITERIA_NAMES = {
+    "Tackles": "Desarmes", "Interception": "Interceptações", "Fouled": "Faltas sofridas",
+    "Fouls": "Poucas faltas", "Yellow": "Poucos amarelos", "Red": "Poucos vermelhos",
+    "Clearences": "Bolas afastadas", "ShotsW": "Chutes certos", "GolsA": "Gols na área",
+    "GolsFA": "Gols fora da área", "DribblesSuccessful": "Dribles certos",
+    "PossLost": "Poucas perdas", "AerialWon": "Disputas aéreas", "AccLB": "Passes longos",
+    "AccSP": "Passes curtos", "KPLong": "Passes-chave longos", "KPShort": "Passes-chave curtos",
+    "AssistsTotal": "Assistências",
+}
+RADAR_COLORS = ("#2a78d6", "#eb6834", "#1baf7a")
+RADAR_INK = "#0b0b0b"
+RADAR_MUTED = "#898781"
+RADAR_GRID = "#e1e0d9"
+RADAR_SURFACE = "#fcfcfb"
+RADAR_NOTE = "Desempenho por critério, normalizado e ajustado pela posição de cada jogador, como na nota."
+
+
+def plot_radar(criteria, panels, path, note=RADAR_NOTE):
+    """Desenha um radar por painel.
+
+    `panels` é uma lista de (título, perfis), e cada perfil é (rótulo, valores, cor, estilo).
+    O estilo "fill" preenche a área, "dash" desenha a linha tracejada e "line" a linha cheia.
+    """
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    angles = np.linspace(0, 2 * np.pi, len(criteria), endpoint=False)
+    closed = np.append(angles, angles[0])
+
+    figure, axes = plt.subplots(
+        1, len(panels), figsize=(6.4 * len(panels), 7.2), subplot_kw={"polar": True},
+        facecolor=RADAR_SURFACE,
+    )
+    for axis, (title, profiles) in zip(np.atleast_1d(axes), panels):
+        axis.set_facecolor(RADAR_SURFACE)
+        axis.set_theta_offset(np.pi / 2)
+        axis.set_theta_direction(-1)
+        for name, values, color, style in profiles:
+            ring = np.append(values, values[0])
+            if style == "fill":
+                axis.fill(closed, ring, color=color, alpha=0.18, linewidth=0)
+            axis.plot(
+                closed, ring, color=color, linewidth=2, label=name, clip_on=False,
+                linestyle=(0, (4, 3)) if style == "dash" else "-",
+            )
+        # Com o ajuste por posição, um jogador pode passar de 1, então a escala vem dos dados.
+        top = np.ceil(max(float(np.max(values)) for _, values, _, _ in profiles) * 2) / 2
+        ticks = np.arange(0.5, top, 0.5)
+        axis.set_ylim(0, top)
+        axis.set_yticks(ticks)
+        axis.set_yticklabels([f"{tick:g}".replace(".", ",") for tick in ticks], color=RADAR_MUTED, fontsize=8)
+        axis.set_rlabel_position(180 / len(criteria))
+        axis.set_xticks(angles)
+        axis.set_xticklabels([CRITERIA_NAMES.get(name, name) for name in criteria], color=RADAR_INK, fontsize=8)
+        axis.tick_params(axis="x", pad=6)
+        axis.grid(color=RADAR_GRID, linewidth=0.8)
+        axis.spines["polar"].set_color(RADAR_GRID)
+        axis.set_title(title, color=RADAR_INK, fontsize=11, pad=34)
+        axis.legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3, frameon=False, fontsize=9)
+    figure.text(0.5, 0.02, note, ha="center", color=RADAR_MUTED, fontsize=9)
+    figure.subplots_adjust(left=0.07, right=0.93, top=0.82, bottom=0.17, wspace=0.55)
+    figure.savefig(path, dpi=130, facecolor=figure.get_facecolor())
+    plt.close(figure)
+
+
+def strongest_team(dataset, quotas, team_size):
+    """Os jogadores de maior desempenho somado, respeitando a formação quando ela existe."""
+    strengths = dataset.payment.sum(axis=1)
+    order = [int(player) for player in np.argsort(-strengths, kind="stable")]
+    if quotas is None:
+        return order[:team_size]
+    team = []
+    for position, quota in quotas.items():
+        team += [player for player in order if dataset.positions[player] == position][:quota]
+    return team
+
+
+def team_radar(dataset, scorer, team, quotas, path):
+    """Compara o time do MEM-GA com os mais fortes individualmente na mesma formação."""
+    strongest = strongest_team(dataset, quotas, len(team))
+    team = list(team)
+
+    def score(players):
+        return f"{scorer.rate(players)[0]:.4f}".replace(".", ",")
+
+    plot_radar(dataset.criteria, [(
+        f"Média do time por critério\nnota {score(team)} no MEM-GA e {score(strongest)} nos mais fortes",
+        [("Média da liga", scorer.payment.mean(axis=0), RADAR_MUTED, "dash"),
+         ("Maior desempenho somado", scorer.payment[strongest].mean(axis=0), RADAR_COLORS[1], "line"),
+         ("MEM-GA", scorer.payment[team].mean(axis=0), RADAR_COLORS[0], "fill")],
+    )], path)
+
+
+# ======================================================================================
 # LINHA DE COMANDO
 # ======================================================================================
 
@@ -584,6 +683,7 @@ def build_parser():
     parser.add_argument("--team-size", type=int, default=10, help="jogadores de linha no time")
     parser.add_argument("--tau", type=tau_argument, default=DEFAULT_TAU, help="tau de corte do grupo")
     parser.add_argument("--seed", type=int, help="semente, para repetir um resultado")
+    parser.add_argument("--radar", type=Path, help="salva o gráfico de radar neste arquivo (.png)")
     parser.add_argument("--iterations", type=int, default=defaults.iterations)
     parser.add_argument("--population", type=int, default=defaults.population)
     parser.add_argument(
@@ -698,6 +798,10 @@ def run(args):
     print(f"\nNota do time: {result.score:.4f} (tau {args.tau}, semente {seed})")
     print("O time alcança o tau nessa fração dos pares de critérios.\n")
     print_team(dataset, result.team)
+
+    if args.radar:
+        team_radar(dataset, scorer, list(result.team), quotas, args.radar)
+        print(f"\nGráfico de radar salvo em {args.radar}")
 
 
 def main(argv=None):

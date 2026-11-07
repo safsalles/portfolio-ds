@@ -8,7 +8,7 @@ O projeto nasceu na minha dissertação de mestrado e usa dados do Campeonato Br
 
 ![Times por formação](images/times.png)
 
-O projeto também tem o [GA-MEM](#ga-mem), que sugere contratações para um clube. A [análise completa](analise.ipynb) mostra os times de cada formação e por que o time mais complementar não é o dos 10 jogadores mais fortes.
+A pasta [mem](../mem/) traz o método puro, sem algoritmo genético, com um exemplo pequeno e fictício. O projeto também tem o [GA-MEM](#ga-mem), que sugere contratações para um clube. A [análise completa](analise.ipynb) mostra os times de cada formação e por que o time mais complementar não é o dos 10 jogadores mais fortes.
 
 ## O método
 
@@ -213,6 +213,12 @@ A melhor nota conhecida é a maior encontrada nessas execuções, em outras 30 e
 
 Para comparar, os 10 jogadores com maior desempenho somado nos 18 critérios têm nota 0,6863, abaixo do time livre.
 
+O radar mostra essa diferença no 4-4-2. A linha laranja é o time dos jogadores de maior desempenho somado em cada posição, com nota 0,8039, e a área azul é o time do MEM-GA, com 0,9608. O time mais forte tem médias maiores em desarmes, passes e assistências, mas fica baixo em gols fora da área (0,12) e disputas aéreas (0,27). O MEM-GA abre mão de parte desses picos para levantar justamente esses pontos fracos, para 0,30 e 0,36. Como a nota olha o critério mais fraco de cada par, isso vale mais do que ter números altos onde o time já é bom.
+
+![Radar do time do MEM-GA no 4-4-2](images/radar_mem_ga.png)
+
+Para gerar o gráfico de qualquer formação, use `--radar` com o nome do arquivo, por exemplo `python mem_ga.py --formation 4-4-2 --seed 1 --radar radar.png`.
+
 ### Sensibilidade do tau
 
 A tabela mostra o que muda entre 0,22 e 0,26. As mudanças são os jogadores diferentes do time de 0,24, e as colunas de clubes usam a nota dos titulares dos 20 clubes.
@@ -241,14 +247,14 @@ O programa mostra a lista de clubes e faz três perguntas:
 2. **Opção:** escolher a posição da contratação ou deixar o método sugerir de qualquer posição.
 3. **Quantidade:** quantas opções mostrar. O Enter mostra 5.
 
-O resultado mostra a nota antes e depois da melhor opção, o time em campo com ela e a lista de opções. Cada opção é uma contratação só, e não um pacote. Para pular as perguntas, use `--club`, `--position` e `--options`.
+O resultado mostra a nota antes e depois da melhor opção, o time em campo com ela e a lista de opções, com o ganho de cada uma. Cada opção é uma contratação só, e não um pacote. Se nenhuma opção melhora o time, o programa avisa, mantém o time atual em campo e lista as que menos pioram. Nos 20 clubes e 6 posições, isso só acontece com o lateral direito do Vasco. Para pular as perguntas, use `--club`, `--position` e `--options`.
 
 **Como o método decide:**
 
 - O time atual são os 10 jogadores de linha com mais minutos no clube, com pelo menos um em cada posição. Se o clube tiver menos de 10 jogadores de linha com os minutos mínimos, o programa avisa com quantos a nota foi calculada, e ela não é comparável com a de times de 10.
 - Os candidatos são os jogadores de outros clubes com pelo menos 850 minutos.
 - A troca é sempre posição por posição: um atacante só entra no lugar de um atacante. Entre os titulares da posição, sai aquele cuja saída mais melhora a nota.
-- O método testa todos os candidatos, então a lista é exata.
+- O método testa todos os candidatos, então a lista é exata. Com uma contratação por vez são poucos casos, e o algoritmo genético não é necessário aqui.
 - O tau padrão é 0,24, o mesmo do MEM-GA.
 - O goleiro mostrado é o que mais jogou no clube. Ele não entra na nota.
 
@@ -260,6 +266,12 @@ Exemplos da melhor opção de qualquer posição:
 | Santos | 0,6078 | 0,7582 | Ricardo Oliveira | Dudu (PAL) |
 | Corinthians | 0,5163 | 0,6667 | Rodriguinho | Agustín Allione (BAH) |
 | Vasco | 0,4444 | 0,5229 | Andrés Ríos | Túlio de Melo (CHA) |
+
+O radar mostra a contratação do Vasco. À direita, Túlio de Melo é bem mais forte que Andrés Ríos em gols na área e chutes certos, e também em disputas aéreas, mas perde em faltas sofridas e dribles. À esquerda, a média do time quase não muda, porque é um jogador entre 10, mas a melhora cai em critérios que o time tinha fracos, e isso basta para a nota subir de 0,4444 para 0,5229.
+
+![Radar da contratação de Túlio de Melo pelo Vasco](images/radar_ga_mem.png)
+
+Para gerar o gráfico da melhor opção, use `--radar` com o nome do arquivo, por exemplo `python ga_mem.py --club VAS --position ata --options 3 --radar radar.png`.
 
 A melhor opção muda de clube para clube, porque o valor de um jogador depende do que o time já tem. Nos 20 clubes, aparecem 14 nomes diferentes, e o que mais se repete é Agustín Allione, em 3 clubes. O método não considera preço nem disponibilidade, então vale olhar as outras opções da lista.
 

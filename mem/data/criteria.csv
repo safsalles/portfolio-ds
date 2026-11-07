@@ -1,0 +1,7 @@
+criterion,direction,weight
+Planejamento,1,0.9
+Logística,1,0.7
+Qualidade,1,0.8
+Custos,1,0.6
+Pessoas,1,1.0
+Faltas,0,0.5
