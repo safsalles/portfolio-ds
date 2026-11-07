@@ -112,6 +112,8 @@ While it runs, a bar shows the current iteration and the best score. At the end,
 
 Each run takes about 10 to 25 seconds for formations and about 40 seconds for the free team, on an idle machine. With other heavy processes running, it takes longer and can go past 60 seconds. To skip the question and repeat a result, use `--formation` and `--seed`. To change the group threshold, use `--tau`, and to change the minimum minutes, use `--min-minutes`. The other options are listed by `python mem_ga.py --help`.
 
+At the end, the team's radar chart opens in a separate window, and the program ends when you close it. To save the chart to a file, use `--radar`, as in `python mem_ga.py --formation 4-4-2 --seed 1 --radar radar.png`. To skip the window, use `--no-plot`.
+
 Raising `--iterations` to 20,000 or more can make a run much slower in some formations. The 4-1-4-1 reached 105 seconds with 20,000 iterations and 357 seconds with 30,000, in 10 parallel processes.
 
 To run the tests:
@@ -213,13 +215,28 @@ In total, the search reached the best known score in 294 of 300 runs on seeds 0 
 
 The best known score is the highest found in these runs, in another 30 from a different search configuration, and in 200 swap-by-swap climbs from random teams. Those climbs, without the genetic algorithm, reached the same score in 8 of the 10 formations and fell short in the 4-3-3 and the 5-4-1. The global optimum was not proven, so a team with a higher score may exist.
 
-For comparison, the 10 players with the highest summed performance on the 18 criteria score 0.6863, below the free team.
+### Traditional choice and group formation
 
-The radar chart shows this difference in the 4-4-2. The orange line is the team of the players with the highest summed performance in each position, scoring 0.8039, and the blue area is the MEM-GA team, scoring 0.9608. The stronger team has higher averages in tackles, passes, and assists, but stays low in goals from outside the box (0.12) and aerial duels (0.27). MEM-GA gives up part of those peaks to raise exactly those weak spots, to 0.30 and 0.36. Since the score looks at the weaker criterion of each pair, that is worth more than high numbers where the team is already good. The chart labels are in Portuguese, like the program's output.
+To show what group formation changes, the MEM-GA team is compared with the traditional choice: rating each player alone and keeping the best ones. In that choice, each player gets a summed performance:
+
+1. **Normalize each criterion.** Each of the 18 criteria goes from 0 to 1 across the 317 outfield players: the league's best on that criterion gets 1 and the worst gets 0. For criteria where less is better, such as fouls, cards, and lost balls, the scale flips, so 1 is still the best.
+2. **Add up the 18 grades.** The sum has no weights and no position adjustment, and goes from 0 to 18. Hernanes, for example, sums 8.96.
+3. **Fill the slots.** Each slot in the formation takes the players with the highest sum in that position. In the 4-4-2, that means the 2 best center-backs, the best full-back on each side, the 2 best defensive midfielders, the 2 best midfielders, and the 2 best forwards. In the free team, it is the 10 highest sums, regardless of position.
+
+No step looks at what the other players already cover. Group formation does the opposite: a player's value depends on the rest of the team.
+
+| Formation | Traditional choice | MEM-GA |
+| --- | --- | --- |
+| Free | 0.6863 | 0.9739 |
+| 4-4-2 | 0.8039 | 0.9608 |
+
+The radar chart shows this difference in the 4-4-2. Each axis is a criterion, and each line is the average of the team's 10 players, using the values the score uses, already adjusted by position. The orange line is the traditional choice, the blue area is MEM-GA, and the dashed line is the league average. The chart labels are in Portuguese, like the program's output.
 
 ![Radar chart of the MEM-GA team in the 4-4-2](images/radar_mem_ga.png)
 
-To draw the chart for any formation, use `--radar` with the file name, for example `python mem_ga.py --formation 4-4-2 --seed 1 --radar radar.png`.
+The traditional choice has higher averages in tackles, passes, and assists, but stays low in goals from outside the box (0.12) and aerial duels (0.27). That happens because a high sum can hide a weak spot. Luan (GRE) sums 7.63 and gets a forward slot, but barely wins anything in the air (0.03). MEM-GA puts Túlio de Melo (CHA) in his place, with a lower sum of 6.71 and 0.92 in aerial duels. In the same way, it swaps Gustavo Scarpa (FLU), with 0.09 in goals from outside the box, for Rómulo Otero (CAM), with 1.22. The two teams share only 3 players.
+
+As a result, MEM-GA gives up part of the peaks and raises the weak spots to 0.30 in goals from outside the box and 0.36 in aerial duels. Since the score looks at the weaker criterion of each pair, that is worth more than high numbers where the team is already good.
 
 ### Tau sensitivity
 
@@ -273,7 +290,7 @@ The radar chart shows Vasco's signing. On the right, Túlio de Melo is much stro
 
 ![Radar chart of Vasco signing Túlio de Melo](images/radar_ga_mem.png)
 
-To draw the chart for the best option, use `--radar` with the file name, for example `python ga_mem.py --club VAS --position ata --options 3 --radar radar.png`.
+At the end, the radar chart of the best option opens in a separate window. To save it, use `--radar` with the file name, as in `python ga_mem.py --club VAS --position ata --options 3 --radar radar.png`, and to skip the window, use `--no-plot`.
 
 The best option changes from club to club, because a player's value depends on what the team already has. Across the 20 clubs, 14 different names appear, and the most repeated is Agustín Allione, at 3 clubs. The method ignores price and availability, so it is worth checking the other options on the list.
 

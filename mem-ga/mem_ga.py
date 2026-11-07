@@ -568,15 +568,22 @@ RADAR_SURFACE = "#fcfcfb"
 RADAR_NOTE = "Desempenho por critério, normalizado e ajustado pela posição de cada jogador, como na nota."
 
 
-def plot_radar(criteria, panels, path, note=RADAR_NOTE):
+def interactive():
+    """Só abre a janela do gráfico quando alguém está usando o programa no terminal."""
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+def plot_radar(criteria, panels, path=None, show=False, note=RADAR_NOTE):
     """Desenha um radar por painel.
 
     `panels` é uma lista de (título, perfis), e cada perfil é (rótulo, valores, cor, estilo).
     O estilo "fill" preenche a área, "dash" desenha a linha tracejada e "line" a linha cheia.
+    Salva o gráfico em `path`, se houver, e abre uma janela com ele se `show` for verdadeiro.
     """
     import matplotlib
 
-    matplotlib.use("Agg")
+    if not show:
+        matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     angles = np.linspace(0, 2 * np.pi, len(criteria), endpoint=False)
@@ -614,8 +621,22 @@ def plot_radar(criteria, panels, path, note=RADAR_NOTE):
         axis.legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=3, frameon=False, fontsize=9)
     figure.text(0.5, 0.02, note, ha="center", color=RADAR_MUTED, fontsize=9)
     figure.subplots_adjust(left=0.07, right=0.93, top=0.82, bottom=0.17, wspace=0.55)
-    figure.savefig(path, dpi=130, facecolor=figure.get_facecolor())
+    if path:
+        figure.savefig(path, dpi=130, facecolor=figure.get_facecolor())
+    if show:
+        plt.show()
     plt.close(figure)
+
+
+def finish_with_radar(args, draw):
+    """Salva o gráfico se `--radar` foi pedido e abre a janela quando há alguém no terminal."""
+    show = interactive() and not args.no_plot
+    if args.radar:
+        print(f"\nGráfico de radar salvo em {args.radar}")
+    if show:
+        print("\nO gráfico de radar abriu em outra janela. Feche a janela para terminar.")
+    if args.radar or show:
+        draw(args.radar, show)
 
 
 def strongest_team(dataset, quotas, team_size):
@@ -630,7 +651,7 @@ def strongest_team(dataset, quotas, team_size):
     return team
 
 
-def team_radar(dataset, scorer, team, quotas, path):
+def team_radar(dataset, scorer, team, quotas, path=None, show=False):
     """Compara o time do MEM-GA com os mais fortes individualmente na mesma formação."""
     strongest = strongest_team(dataset, quotas, len(team))
     team = list(team)
@@ -639,11 +660,11 @@ def team_radar(dataset, scorer, team, quotas, path):
         return f"{scorer.rate(players)[0]:.4f}".replace(".", ",")
 
     plot_radar(dataset.criteria, [(
-        f"Média do time por critério\nnota {score(team)} no MEM-GA e {score(strongest)} nos mais fortes",
+        f"Média do time por critério\nnota {score(team)} no MEM-GA e {score(strongest)} na escolha tradicional",
         [("Média da liga", scorer.payment.mean(axis=0), RADAR_MUTED, "dash"),
-         ("Maior desempenho somado", scorer.payment[strongest].mean(axis=0), RADAR_COLORS[1], "line"),
+         ("Escolha tradicional", scorer.payment[strongest].mean(axis=0), RADAR_COLORS[1], "line"),
          ("MEM-GA", scorer.payment[team].mean(axis=0), RADAR_COLORS[0], "fill")],
-    )], path)
+    )], path, show)
 
 
 # ======================================================================================
@@ -684,6 +705,7 @@ def build_parser():
     parser.add_argument("--tau", type=tau_argument, default=DEFAULT_TAU, help="tau de corte do grupo")
     parser.add_argument("--seed", type=int, help="semente, para repetir um resultado")
     parser.add_argument("--radar", type=Path, help="salva o gráfico de radar neste arquivo (.png)")
+    parser.add_argument("--no-plot", action="store_true", help="não abre a janela do gráfico no final")
     parser.add_argument("--iterations", type=int, default=defaults.iterations)
     parser.add_argument("--population", type=int, default=defaults.population)
     parser.add_argument(
@@ -799,9 +821,9 @@ def run(args):
     print("O time alcança o tau nessa fração dos pares de critérios.\n")
     print_team(dataset, result.team)
 
-    if args.radar:
-        team_radar(dataset, scorer, list(result.team), quotas, args.radar)
-        print(f"\nGráfico de radar salvo em {args.radar}")
+    finish_with_radar(
+        args, lambda path, show: team_radar(dataset, scorer, list(result.team), quotas, path, show)
+    )
 
 
 def main(argv=None):

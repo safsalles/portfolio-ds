@@ -247,4 +247,26 @@ def test_radar_flag_saves_a_png_of_the_best_option(tmp_path, capsys):
     target = tmp_path / "radar.png"
     main(["--club", "VAS", "--position", "ata", "--options", "1", "--radar", str(target)])
     assert target.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
-    assert "Gráfico de radar da 1.ª opção salvo" in capsys.readouterr().out
+    assert "Gráfico de radar salvo" in capsys.readouterr().out
+
+
+def test_chart_window_opens_at_the_end_in_a_terminal(monkeypatch, capsys):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    shown = []
+    monkeypatch.setattr("mem_ga.interactive", lambda: True)
+    monkeypatch.setattr(plt, "show", lambda: shown.append(plt.gcf().axes[0].get_title()))
+    main(["--club", "VAS", "--position", "ata", "--options", "1"])
+    assert shown == ["Time: nota 0,4444 antes, 0,5229 depois"]
+    assert "Feche a janela" in capsys.readouterr().out
+
+
+def test_no_plot_keeps_the_window_closed(monkeypatch):
+    import matplotlib.pyplot as plt
+
+    monkeypatch.setattr("mem_ga.interactive", lambda: True)
+    monkeypatch.setattr(plt, "show", lambda: pytest.fail("não deveria abrir a janela"))
+    main(["--club", "VAS", "--position", "ata", "--options", "1", "--no-plot"])

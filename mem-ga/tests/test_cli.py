@@ -106,6 +106,27 @@ def test_radar_flag_saves_a_png(tmp_path, capsys):
     assert "Gráfico de radar salvo" in capsys.readouterr().out
 
 
+def test_chart_window_opens_at_the_end_in_a_terminal(monkeypatch, capsys):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    shown = []
+    monkeypatch.setattr("mem_ga.interactive", lambda: True)
+    monkeypatch.setattr(plt, "show", lambda: shown.append(len(plt.gcf().axes)))
+    main([*FAST, "--formation", "4-4-2"])
+    assert shown == [1]
+    assert "Feche a janela" in capsys.readouterr().out
+
+
+def test_window_stays_closed_outside_a_terminal(monkeypatch):
+    import matplotlib.pyplot as plt
+
+    monkeypatch.setattr(plt, "show", lambda: pytest.fail("não deveria abrir a janela"))
+    main([*FAST, "--formation", "4-4-2"])
+
+
 def test_strongest_team_respects_the_formation():
     dataset = load_dataset()
     team = strongest_team(dataset, PRESETS["4-4-2"], 10)

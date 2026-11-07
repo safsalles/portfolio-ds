@@ -165,6 +165,28 @@ def test_radar_flag_saves_a_png(tmp_path):
     assert target.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
 
 
+def test_chart_window_opens_at_the_end_in_a_terminal(monkeypatch, capsys):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    shown = []
+    monkeypatch.setattr("mem.interactive", lambda: True)
+    monkeypatch.setattr(plt, "show", lambda: shown.append(len(plt.gcf().axes)))
+    main([])
+    assert shown == [2]
+    assert "Feche a janela" in capsys.readouterr().out
+
+
+def test_no_plot_keeps_the_window_closed(monkeypatch):
+    import matplotlib.pyplot as plt
+
+    monkeypatch.setattr("mem.interactive", lambda: True)
+    monkeypatch.setattr(plt, "show", lambda: pytest.fail("não deveria abrir a janela"))
+    main(["--no-plot"])
+
+
 @pytest.mark.parametrize("argv", [["--choices", "9"], ["--top", "0"], ["--data", "nada"]])
 def test_bad_options_stop_with_a_message(argv):
     with pytest.raises(SystemExit) as stop:

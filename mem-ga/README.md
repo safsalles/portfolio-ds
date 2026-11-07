@@ -110,6 +110,8 @@ Durante a execução, uma barra mostra a iteração atual e a melhor nota. No fi
 
 Cada execução leva cerca de 10 a 25 segundos nas formações e cerca de 40 segundos no time livre, em máquina livre. Com outros processos pesados rodando, leva mais tempo e pode passar de 60 segundos. Para pular a pergunta e repetir um resultado, use `--formation` e `--seed`. Para mudar o corte do grupo, use `--tau`, e para mudar o mínimo de minutos, use `--min-minutes`. As demais opções aparecem em `python mem_ga.py --help`.
 
+No final, o gráfico de radar do time abre em outra janela, e o programa termina quando ela é fechada. Para salvar o gráfico em um arquivo, use `--radar`, como em `python mem_ga.py --formation 4-4-2 --seed 1 --radar radar.png`. Para não abrir a janela, use `--no-plot`.
+
 Subir `--iterations` para 20.000 ou mais pode deixar a execução bem mais lenta em algumas formações. O 4-1-4-1 chegou a 105 segundos com 20.000 iterações e a 357 segundos com 30.000, em 10 processos paralelos.
 
 Para rodar os testes:
@@ -211,13 +213,28 @@ No total, a busca chegou à melhor nota conhecida em 294 de 300 execuções nas 
 
 A melhor nota conhecida é a maior encontrada nessas execuções, em outras 30 execuções com uma configuração diferente da busca e em 200 subidas troca a troca a partir de times sorteados. Essas subidas, sem o algoritmo genético, chegaram à mesma nota em 8 das 10 formações e ficaram abaixo no 4-3-3 e no 5-4-1. O ótimo global não foi provado, então pode existir um time com nota maior.
 
-Para comparar, os 10 jogadores com maior desempenho somado nos 18 critérios têm nota 0,6863, abaixo do time livre.
+### Escolha tradicional e formação de grupo
 
-O radar mostra essa diferença no 4-4-2. A linha laranja é o time dos jogadores de maior desempenho somado em cada posição, com nota 0,8039, e a área azul é o time do MEM-GA, com 0,9608. O time mais forte tem médias maiores em desarmes, passes e assistências, mas fica baixo em gols fora da área (0,12) e disputas aéreas (0,27). O MEM-GA abre mão de parte desses picos para levantar justamente esses pontos fracos, para 0,30 e 0,36. Como a nota olha o critério mais fraco de cada par, isso vale mais do que ter números altos onde o time já é bom.
+Para mostrar o que a formação de grupo muda, o time do MEM-GA é comparado com a escolha tradicional: avaliar cada jogador sozinho e ficar com os melhores. Nessa escolha, cada jogador recebe um desempenho somado:
+
+1. **Normaliza cada critério.** Cada um dos 18 critérios vai de 0 a 1 entre os 317 jogadores de linha: o melhor da liga naquele critério fica com 1 e o pior com 0. Nos critérios em que menos é melhor, como faltas, cartões e perdas de bola, a escala se inverte, e 1 continua sendo o melhor.
+2. **Soma as 18 notas.** A soma não tem pesos nem ajuste por posição, e vai de 0 a 18. Hernanes, por exemplo, soma 8,96.
+3. **Preenche as vagas.** Em cada vaga da formação entram os jogadores de maior soma naquela posição. No 4-4-2, são os 2 melhores zagueiros, o melhor lateral de cada lado, os 2 melhores volantes, os 2 melhores meias e os 2 melhores atacantes. No time livre, são os 10 de maior soma, sem olhar a posição.
+
+Nenhum passo olha o que os outros jogadores já cobrem. A formação de grupo faz o contrário: o valor de um jogador depende do resto do time.
+
+| Formação | Escolha tradicional | MEM-GA |
+| --- | --- | --- |
+| Livre | 0,6863 | 0,9739 |
+| 4-4-2 | 0,8039 | 0,9608 |
+
+O radar mostra essa diferença no 4-4-2. Cada eixo é um critério, e cada linha é a média dos 10 jogadores do time, com os valores que a nota usa, já ajustados pela posição. A linha laranja é a escolha tradicional, a área azul é o MEM-GA e a linha tracejada é a média da liga.
 
 ![Radar do time do MEM-GA no 4-4-2](images/radar_mem_ga.png)
 
-Para gerar o gráfico de qualquer formação, use `--radar` com o nome do arquivo, por exemplo `python mem_ga.py --formation 4-4-2 --seed 1 --radar radar.png`.
+A escolha tradicional tem médias maiores em desarmes, passes e assistências, mas fica baixa em gols fora da área (0,12) e disputas aéreas (0,27). Isso acontece porque uma soma alta pode esconder um ponto fraco. Luan (GRE) tem soma 7,63 e entra no ataque, mas quase não ganha bola pelo alto (0,03). O MEM-GA põe no lugar dele Túlio de Melo (CHA), com soma menor, de 6,71, e 0,92 em disputas aéreas. Da mesma forma, troca Gustavo Scarpa (FLU), com 0,09 em gols fora da área, por Rómulo Otero (CAM), com 1,22. Os dois times têm só 3 jogadores em comum.
+
+Com isso, o MEM-GA abre mão de parte dos picos e sobe os pontos fracos para 0,30 em gols fora da área e 0,36 em disputas aéreas. Como a nota olha o critério mais fraco de cada par, isso vale mais do que números altos onde o time já é bom.
 
 ### Sensibilidade do tau
 
@@ -271,7 +288,7 @@ O radar mostra a contratação do Vasco. À direita, Túlio de Melo é bem mais 
 
 ![Radar da contratação de Túlio de Melo pelo Vasco](images/radar_ga_mem.png)
 
-Para gerar o gráfico da melhor opção, use `--radar` com o nome do arquivo, por exemplo `python ga_mem.py --club VAS --position ata --options 3 --radar radar.png`.
+No final, o radar da melhor opção abre em outra janela. Para salvá-lo, use `--radar` com o nome do arquivo, como em `python ga_mem.py --club VAS --position ata --options 3 --radar radar.png`, e para não abrir a janela, use `--no-plot`.
 
 A melhor opção muda de clube para clube, porque o valor de um jogador depende do que o time já tem. Nos 20 clubes, aparecem 14 nomes diferentes, e o que mais se repete é Agustín Allione, em 3 clubes. O método não considera preço nem disponibilidade, então vale olhar as outras opções da lista.
 

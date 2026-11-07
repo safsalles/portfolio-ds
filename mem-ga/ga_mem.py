@@ -23,6 +23,7 @@ from mem_ga import (
     RADAR_COLORS,
     RADAR_MUTED,
     build_scorer,
+    finish_with_radar,
     plot_radar,
     tau_argument,
     load_dataset,
@@ -137,6 +138,7 @@ def build_parser():
     parser.add_argument("--min-minutes", type=int, default=DEFAULT_MIN_MINUTES)
     parser.add_argument("--tau", type=tau_argument, default=DEFAULT_TAU, help="tau de corte do grupo")
     parser.add_argument("--radar", type=Path, help="salva o gráfico de radar neste arquivo (.png)")
+    parser.add_argument("--no-plot", action="store_true", help="não abre a janela do gráfico no final")
     return parser
 
 
@@ -196,7 +198,7 @@ def describe(dataset, signing):
     return f"{dataset.players[signing.arrival]} no lugar de {dataset.players[signing.leaving]}"
 
 
-def signing_radar(dataset, scorer, team, signing, path):
+def signing_radar(dataset, scorer, team, signing, path=None, show=False):
     """Mostra o time antes e depois da opção, e quem sai contra quem entra."""
     payment = scorer.payment
     before, after = (f"{scorer.rate(t)[0]:.4f}".replace(".", ",") for t in (team, signing.team))
@@ -210,7 +212,7 @@ def signing_radar(dataset, scorer, team, signing, path):
             (f"Sai {leaving}", payment[signing.leaving], RADAR_COLORS[1], "line"),
             (f"Entra {arrival}", payment[signing.arrival], RADAR_COLORS[2], "fill"),
         ]),
-    ], path)
+    ], path, show)
 
 
 def run(args):
@@ -268,9 +270,7 @@ def run(args):
         gain = option.rating[0] - current
         print(f"  {number}. {describe(dataset, option)}: nota {option.rating[0]:.4f} ({gain:+.4f})")
 
-    if args.radar:
-        signing_radar(dataset, scorer, team, best, args.radar)
-        print(f"\nGráfico de radar da 1.ª opção salvo em {args.radar}")
+    finish_with_radar(args, lambda path, show: signing_radar(dataset, scorer, team, best, path, show))
 
 
 def main(argv=None):

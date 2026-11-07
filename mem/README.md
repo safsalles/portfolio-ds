@@ -19,7 +19,7 @@ Para mudar a quantidade de escolhas, o tau ou o tamanho da lista, use `--choices
 python mem.py --choices 3 --tau 0.24 --top 5
 ```
 
-Para salvar o gráfico de radar, use `--radar` com o nome do arquivo.
+No final, o gráfico de radar abre em outra janela, e o programa termina quando ela é fechada. Para salvar o gráfico em um arquivo, use `--radar` com o nome do arquivo, e para não abrir a janela, use `--no-plot`.
 
 ```bash
 python mem.py --radar images/radar.png
@@ -48,6 +48,8 @@ Os candidatos A1 e A2 têm as melhores médias, mas são parecidos: fortes em pl
 | 1.º | A1 | | A1, A3 | 66,7% |
 | 2.º | A2 | | A2, A3 | 66,7% |
 | 3.º | A3 | | A1, A2 | 60,0% |
+
+A coluna da média ponderada é a escolha tradicional: cada candidato é avaliado sozinho, pela média das notas normalizadas com os pesos dos critérios, e ficam os primeiros da lista. O MEM faz a formação de grupo e avalia cada dupla junta, pelo que um cobre do outro.
 
 A escolha intuitiva seria A1 e A2, mas ela fica em 3.º lugar no MEM. As duas melhores duplas juntam um deles com o A3, que cobre o que falta.
 

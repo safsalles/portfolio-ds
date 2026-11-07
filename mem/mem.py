@@ -155,14 +155,21 @@ MUTED = "#898781"
 GRID = "#e1e0d9"
 
 
-def plot_radar(problem, panels, path):
+def interactive():
+    """Só abre a janela do gráfico quando alguém está usando o programa no terminal."""
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+def plot_radar(problem, panels, path=None, show=False):
     """Desenha um radar por conjunto: cada alternativa em linha e a média do conjunto preenchida.
 
     `panels` é uma lista de (título, nomes das alternativas). A média é o que o MEM avalia.
+    Salva o gráfico em `path`, se houver, e abre uma janela com ele se `show` for verdadeiro.
     """
     import matplotlib
 
-    matplotlib.use("Agg")
+    if not show:
+        matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
     normalized = normalize(problem)
@@ -202,7 +209,10 @@ def plot_radar(problem, panels, path):
         figure.text(0.5, 0.02, "* Menos é melhor, então o eixo está invertido: 1 é a melhor avaliação.",
                     ha="center", color=MUTED, fontsize=9)
     figure.subplots_adjust(left=0.06, right=0.94, top=0.80, bottom=0.16, wspace=0.45)
-    figure.savefig(path, dpi=150, facecolor=figure.get_facecolor())
+    if path:
+        figure.savefig(path, dpi=150, facecolor=figure.get_facecolor())
+    if show:
+        plt.show()
     plt.close(figure)
 
 
@@ -244,6 +254,7 @@ def build_parser():
     parser.add_argument("--top", type=int, default=DEFAULT_TOP, help="conjuntos mostrados")
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA_DIR, help="pasta dos dados")
     parser.add_argument("--radar", type=Path, help="salva o gráfico de radar neste arquivo (.png)")
+    parser.add_argument("--no-plot", action="store_true", help="não abre a janela do gráfico no final")
     return parser
 
 
@@ -280,9 +291,13 @@ def run(args):
             sets = "; ".join(label(choice.alternatives) for choice in first)
             print(f"  tau {tau:.2f}: {sets} ({first[0].share:.1%})")
 
+    show = interactive() and not args.no_plot
     if args.radar:
-        plot_radar(problem, comparison_panels(problem, args.choices, args.tau), args.radar)
         print(f"\nGráfico de radar salvo em {args.radar}")
+    if show:
+        print("\nO gráfico de radar abriu em outra janela. Feche a janela para terminar.")
+    if args.radar or show:
+        plot_radar(problem, comparison_panels(problem, args.choices, args.tau), args.radar, show)
 
 
 def main(argv=None):

@@ -19,7 +19,7 @@ To change the number of choices, tau, or the length of the list, use `--choices`
 python mem.py --choices 3 --tau 0.24 --top 5
 ```
 
-To save the radar chart, use `--radar` with the file name.
+At the end, the radar chart opens in a separate window, and the program ends when you close it. To save the chart to a file, use `--radar` with the file name, and to skip the window, use `--no-plot`.
 
 ```bash
 python mem.py --radar images/radar.png
@@ -48,6 +48,8 @@ Candidates A1 and A2 have the best averages, but they are alike: strong in plann
 | 1st | A1 | | A1, A3 | 66.7% |
 | 2nd | A2 | | A2, A3 | 66.7% |
 | 3rd | A3 | | A1, A2 | 60.0% |
+
+The weighted average column is the traditional choice: each candidate is rated alone, by the average of the normalized grades with the criteria weights, and the top of the list is kept. MEM does group formation and rates each pair together, by what each one covers for the other.
 
 The intuitive choice would be A1 and A2, but that pair ranks 3rd in MEM. The two best pairs join one of them with A3, who covers what is missing.
 
