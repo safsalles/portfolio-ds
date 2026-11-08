@@ -1,0 +1,7 @@
+"criterion","Planning","Logistics","Quality","Costs","People","Absences"
+"Planning",,0.3,0.7,0.8,0.9,0.6
+"Logistics",0.3,,0.6,0.7,0.8,0.5
+"Quality",0.7,0.6,,0.4,0.8,0.6
+"Costs",0.8,0.7,0.4,,0.9,0.7
+"People",0.9,0.8,0.8,0.9,,0.4
+"Absences",0.6,0.5,0.6,0.7,0.4,

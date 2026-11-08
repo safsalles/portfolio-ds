@@ -1,0 +1,8 @@
+^dev$
+^data-raw$
+^README\.md$
+^LICENSE\.md$
+^cran-comments\.md$
+^\.github$
+^.*\.Rproj$
+^\.Rproj\.user$

@@ -1,0 +1,26 @@
+Package: memga
+Type: Package
+Title: Multiple Choice Method for Selecting Sets of Alternatives
+Version: 0.1.0
+Authors@R:
+    person("Sérgio", "Salles", , "maintainer@example.com", role = c("aut", "cre"))
+Description: Selects a set of alternatives that complement each other, instead of
+    ranking the alternatives one by one. Implements the Multiple Choice Method
+    ('MEM') proposed in da Hora and Costa (2015)
+    <doi:10.1590/0103-6513.084812>, which scores a set by the share of
+    criteria combinations in which the set reaches a cutoff, and an adaptation
+    that scores criteria in pairs using the weaker criterion of each pair. The
+    best set is found either by exhaustive search, which ranks every
+    combination, or by a genetic algorithm for problems too large to enumerate,
+    with an optional number of vacancies per group. Includes radar charts to
+    compare sets and two simulated recruiting data sets.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.0.0)
+Imports: graphics, grDevices, stats, utils
+Suggests: testthat (>= 3.0.0)
+Config/testthat/edition: 3
+LazyData: true
+URL: https://github.com/safsalles/portfolio-ds/tree/main/mem-ga/r
+BugReports: https://github.com/safsalles/portfolio-ds/issues
+Config/roxygen2/version: 8.1.1
