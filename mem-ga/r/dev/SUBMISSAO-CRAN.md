@@ -55,13 +55,15 @@ memga implements the Multiple Choice Method (da Hora and Costa, 2015,
 doi:10.1590/0103-6513.084812) for selecting a set of alternatives that
 complement each other, with an exhaustive search and a genetic algorithm.
 
-R CMD check --as-cran gives 0 errors, 0 warnings and 0 notes locally
-(Windows, R 4.6.2) and on win-builder and R-hub (see cran-comments.md).
+R CMD check --as-cran gives 0 errors and 0 warnings on win-builder
+(R-release and R-devel). The only note is "New submission", plus "Costa" and
+"da" flagged as possible misspellings: they are parts of the names of the
+authors of the cited paper (see cran-comments.md).
 The package has no compiled code. Tests that take about a minute are skipped
 on CRAN, and the examples run in a fraction of a second.
 ```
 
-(Só deixe a frase "and on win-builder and R-hub" depois de ter rodado.)
+O texto fala só do win-builder porque o R-hub não foi rodado. Se você rodar o R-hub, acrescente-o aqui e no `cran-comments.md`.
 
 ### Se pedirem ajustes
 
@@ -81,7 +83,8 @@ Depois de aceito, o CRAN pede um intervalo de uns 1 a 2 meses entre atualizaçõ
 - [ ] Nome completo, e-mail real e licença conferidos no `DESCRIPTION`
 - [ ] Coautoria do orientador decidida (com o consentimento dele)
 - [ ] `R CMD check --as-cran` com Status OK
-- [ ] win-builder e R-hub rodados, resultados no `cran-comments.md`
+- [x] win-builder rodado em R-release e R-devel (1 NOTE: "New submission" e os nomes dos autores), resultados no `cran-comments.md`
+- [ ] R-hub (opcional, não rodado)
 - [ ] `NEWS.md` com a versão
 - [ ] Versão do `DESCRIPTION` é a que vai ser enviada (`0.1.0`)
 

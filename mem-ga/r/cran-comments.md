@@ -1,16 +1,21 @@
 ## Test environments
 
 * Local Windows 11, R 4.6.2: `R CMD check --as-cran --no-manual`
-* win-builder (release and devel): to be run before submission
+* win-builder, R-devel (2026-11-07 r90850 ucrt), Windows Server 2022
+* win-builder, R-release (4.6.2 ucrt), Windows Server 2022
 * R-hub: to be run before submission
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
 
-(Local run, with the remote part of the incoming checks disabled.)
+* The note is "New submission".
+* It also lists "Costa" and "da" as possibly misspelled words in DESCRIPTION.
+  They are parts of the names of the authors of the cited paper (da Hora and
+  Costa, 2015).
 
-This is a new submission.
+(The local run on Windows with R 4.6.2 had no notes, with the remote part of
+the incoming checks disabled.)
 
 ## Notes
 
