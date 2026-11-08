@@ -65,6 +65,17 @@ BUSCAS_LINKEDIN = [
     ("scout futebol", linkedin.BRASIL, False, linkedin.MES),
     ("football analyst", linkedin.AMERICA_LATINA, True, linkedin.MES),
     ("football data", linkedin.MUNDO, True, linkedin.MES),
+    # Funções operacionais em inglês (Brasil e América Latina; no mundo só
+    # as remotas "worldwide"/"anywhere" passam pelo filtro de local).
+    ("data entry", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("data operator", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("administrative assistant", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("administrative analyst", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("data entry", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    ("administrative assistant", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    ("administrative analyst", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    ("data entry remote", linkedin.MUNDO, True, linkedin.SEMANA),
+    ("administrative assistant remote", linkedin.MUNDO, True, linkedin.SEMANA),
     ("soccer analyst", linkedin.MUNDO, True, linkedin.MES),
 ]
 
@@ -82,7 +93,7 @@ TERMOS_VAGAS_COM = TERMOS_GERAIS + ["futebol", "analista de desempenho"]
 
 # Cada descrição do LinkedIn é um pedido a mais (com pausa); o limite evita
 # que o LinkedIn bloqueie e que a rodada demore demais.
-MAX_DESCRICOES_LINKEDIN = 45
+MAX_DESCRICOES_LINKEDIN = 70
 # O Vagas.com não diz na lista se a vaga é remota: abre a página das que
 # podem servir, até este limite por rodada.
 MAX_DESCRICOES_VAGAS_COM = 40

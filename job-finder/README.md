@@ -18,6 +18,11 @@ Bot que busca vagas em várias fontes, separa por categoria, prioriza futebol, a
 
    O Indeed ficou de fora: ele pede uma verificação anti-robô, que o bot não contorna.
 2. **Classifica** cada vaga pelo título em uma categoria: Analytics Futebol, Análise de Dados, Analista de BI, Analista/Assistente Administrativo ou Outras (Engenharia de Produção/Planejamento). Vagas fora delas, estágios e títulos com termos de exclusão são descartados.
+   O que o bot descarta pelo título ou pela descrição, nos dois e-mails:
+   - **Data science / machine learning** só em nível de abertura (analista de dados e de BI sênior continuam entrando) (júnior, jr, entry, associate ou "I"); sem nível no título, cai fora.
+   - **Engenharia de dados** (data engineer, analytics engineer...), inclusive nas vagas de futebol.
+   - **Vagas exclusivas para PcD ou minorias** (PcD, vaga afirmativa, exclusiva para mulheres, pessoas negras, LGBT, 50+...). "PcD são bem-vindas" não conta como exclusiva.
+   - **Vagas em inglês** só entram se aceitarem o Brasil: as que exigem residência ou permissão de trabalho em outros países saem. As funções operacionais em inglês (data entry, data operator, administrative assistant e administrative analyst) são buscadas no LinkedIn.
 3. **Filtra pelo local**:
    - Todas as vagas, inclusive as de futebol, precisam ser remotas.
    - Vagas de futebol: remotas que aceitem quem mora no Brasil, ou remotas com base no Brasil. O bot lê a descrição da vaga: se ela pede residência ou permissão de trabalho nos EUA, Reino Unido ou Europa, sai; se cita Brasil, LATAM ou "anywhere", entra; se não diz nada, entra com um aviso para conferir.

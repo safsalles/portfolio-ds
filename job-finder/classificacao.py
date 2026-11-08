@@ -24,7 +24,8 @@ ORDEM_CATEGORIAS = [FUTEBOL, DADOS, BI, ADMIN, OUTRAS]
 PADROES_CATEGORIA = [
     (BI, r"\bbi\b|business intelligence|power ?bi|inteligencia de negocio"),
     (ADMIN, r"administrativ|administrative|data entry|data clerk"
-            r"|assistente de escritorio|auxiliar de escritorio"),
+            r"|assistente de escritorio|auxiliar de escritorio|data operator"
+            r"|operador de dados"),
     (DADOS, r"\bdados\b|\bdata\b|analytics|cientista|scientist|estatistic"
             r"|insights?\b|analista de performance|performance analyst"),
     (OUTRAS, r"engenheir[oa]\(?a?\)? de (producao|planejamento)"
@@ -40,6 +41,51 @@ EXCLUIR_NO_TITULO = re.compile(
     r"recrutamento|selecao|fiscal|software|mobile|c\+\+|\bjava\b|devops|"
     r"product manager|gerente de produto|banco de dados|database"
 )
+
+# --- CIÊNCIA E ENGENHARIA DE DADOS, E VAGAS AFIRMATIVAS ---
+# O nível só importa para cientista de dados (analista de dados e de BI sênior
+# continuam entrando).
+# Data science / machine learning só entra em nível de abertura.
+CIENCIA_DE_DADOS = re.compile(
+    r"data scien|cientista de dados|ciencia de dados|machine learning|"
+    r"aprendizado de maquina|\bml\b|\bai\b|inteligencia artificial"
+)
+NIVEL_DE_ABERTURA = re.compile(r"junior|\bjr\b|entry|associate|\bi$")
+# Engenharia de dados não serve (vale também para vagas de futebol).
+ENGENHARIA_DE_DADOS = re.compile(
+    r"data engineer|engenheir[oa] (\(a\) )?de dados|analytics engineer|"
+    r"machine learning engineer|\bml engineer|dataops|data platform engineer"
+)
+# Vaga exclusiva para PcD ou minorias (você não pode se candidatar).
+_QUEM = (r"(pessoas? com deficiencia|\bpcds?\b|mulheres|pessoas? negras?|pretos?|"
+         r"lgbt|indigenas?|pessoas? trans|refugiad|50\+|acima de 50)")
+EXCLUSIVA_NO_TITULO = re.compile(
+    r"\bpcds?\b|pessoas? com deficiencia|vagas? afirmativas?|afirmativa para|"
+    r"exclusiv[ao]s? (para|a|de) " + _QUEM
+)
+EXCLUSIVA_NA_DESCRICAO = re.compile(
+    r"vagas? afirmativas?|exclusiv[ao]s? (para|a|de|ao) (candidat[oa]s? )?" + _QUEM + "|"
+    r"(somente|apenas|so) para " + _QUEM + "|"
+    r"(destinada|reservada|direcionada) (exclusivamente )?(a|para|as) " + _QUEM + "|"
+    r"exclusively for " + _QUEM
+)
+
+
+def nivel_nao_serve(titulo):
+  """Motivo (texto) se o nível do título não serve, ou None."""
+  t = normalizar(titulo)
+  if ENGENHARIA_DE_DADOS.search(t):
+    return "engenharia de dados"
+  if CIENCIA_DE_DADOS.search(t) and not NIVEL_DE_ABERTURA.search(t):
+    return "data science só em nível de abertura"
+  return None
+
+
+def exclusiva_para_minorias(titulo, descricao=""):
+  if EXCLUSIVA_NO_TITULO.search(normalizar(titulo)):
+    return True
+  return bool(EXCLUSIVA_NA_DESCRICAO.search(normalizar(descricao)))
+
 
 # Vagas com data mais antiga que isso são ignoradas (algumas fontes mantêm
 # vagas de anos atrás no ar).
@@ -264,13 +310,19 @@ def classificar(vagas, empresas_grandes, avaliacoes=None):
   aceitas = []
   cortes = {"antiga": 0, "título excluído": 0, "fora das categorias": 0,
             "local não serve": 0, "não é remota": 0, "empresa a evitar": 0,
-            "empresa confidencial": 0}
+            "empresa confidencial": 0, "nível": 0, "exclusiva PcD/minorias": 0}
 
   for vaga in vagas:
     aval = empresas.avaliacao(vaga["empresa"], avaliacoes)
     vaga["nota"] = aval["nota"] if aval else None
     if re.search(r"confidencial|confidential", normalizar(vaga["empresa"])):
       cortes["empresa confidencial"] += 1
+      continue
+    if nivel_nao_serve(vaga["titulo"]):
+      cortes["nível"] += 1
+      continue
+    if exclusiva_para_minorias(vaga["titulo"], vaga["descricao"]):
+      cortes["exclusiva PcD/minorias"] += 1
       continue
     if vaga["nota"] == empresas.EVITAR:
       cortes["empresa a evitar"] += 1
@@ -304,6 +356,10 @@ def classificar(vagas, empresas_grandes, avaliacoes=None):
       cortes["não é remota"] += 1
       continue
     if not local_geral_ok(vaga):
+      cortes["local não serve"] += 1
+      continue
+    # Vaga em inglês "remota" que só aceita gente de certos países.
+    if not PADRAO_BRASIL.search(normalizar(vaga["local"])) and         PADRAO_RESTRITO.search(normalizar(vaga["descricao"])):
       cortes["local não serve"] += 1
       continue
 

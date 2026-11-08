@@ -277,3 +277,52 @@ def test_pagina_da_empresa_no_linkedin():
   texto, porte = empresas.ler_pagina_linkedin(html)
   assert texto == "O Grupo Lagoa é uma empresa cearense, com 35 anos de tradição."
   assert porte == "1.001-5.000 funcionários"
+
+
+# --- nível, engenharia de dados, PcD e vagas operacionais em inglês ---
+
+def test_nivel_alto_e_data_science_so_de_abertura():
+  for t in ("Senior Data Scientist", "Cientista de Dados Sr", "Data Scientist",
+            "Cientista de Dados Pleno", "Machine Learning Engineer", "Data Engineer",
+            "Senior Data Engineer", "Engenheiro de Dados"):
+    assert c.nivel_nao_serve(t), t
+  # Analista de dados e de BI sênior continuam entrando.
+  for t in ("Data Scientist I", "Junior Data Scientist", "Cientista de Dados Jr",
+            "Analista de Dados Pleno", "Analista de Dados Sênior", "Analista de BI Sênior",
+            "Senior Data Analyst", "Lead Data Analyst", "Football Data Analyst"):
+    assert not c.nivel_nao_serve(t), t
+
+
+def test_cientista_e_engenheiro_de_dados_tambem_caem_no_futebol():
+  v = vaga("Senior Data Scientist", "Genius Sports", local="Remote", modelo="remoto",
+           descricao="Anywhere in LATAM", futebol=True)
+  assert classificar_uma(v) is None
+  v = vaga("Football Data Engineer", "Genius Sports", local="Remote", modelo="remoto",
+           descricao="Anywhere in LATAM", futebol=True)
+  assert classificar_uma(v) is None
+
+
+def test_vaga_exclusiva_para_pcd_ou_minorias_cai_fora():
+  assert classificar_uma(vaga("Assistente Administrativo - PCD", "Acme", modelo="remoto")) is None
+  assert classificar_uma(vaga("Analista de Dados", "Acme", modelo="remoto",
+                              descricao="Vaga exclusiva para pessoas com deficiência.")) is None
+  assert classificar_uma(vaga("Analista de Dados", "Acme", modelo="remoto",
+                              descricao="Vaga afirmativa para mulheres.")) is None
+  # "PcD bem-vindas" não é exclusiva: a vaga fica.
+  assert classificar_uma(vaga("Analista de Dados", "Acme", modelo="remoto",
+                              descricao="Pessoas com deficiência são bem-vindas.")) is not None
+
+
+def test_funcoes_operacionais_em_ingles():
+  for t in ("Data Entry Clerk", "Data Operator", "Administrative Assistant",
+            "Administrative Analyst", "Data Entry Specialist"):
+    assert c.categoria_geral(t) == c.ADMIN, t
+  aceita = classificar_uma(vaga("Administrative Assistant", "Acme", local="Latin America",
+                                modelo="remoto"))
+  assert aceita["categoria"] == c.ADMIN
+
+
+def test_vaga_geral_em_ingles_restrita_a_um_pais_cai_fora():
+  v = vaga("Data Entry Specialist", "Acme", local="Remote", modelo="remoto",
+           descricao="Candidates must be based in the US and authorized to work in the US.")
+  assert classificar_uma(v) is None

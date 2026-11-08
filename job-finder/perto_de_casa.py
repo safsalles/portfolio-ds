@@ -11,7 +11,7 @@ import os
 import re
 
 import empresas
-from classificacao import MAX_DIAS
+from classificacao import MAX_DIAS, exclusiva_para_minorias, nivel_nao_serve
 from util import SEM_TEMPO, normalizar
 
 ARQUIVO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "perto_de_casa.txt")
@@ -86,6 +86,8 @@ def exigencia_que_voce_nao_tem(vaga, filtros):
   d = normalizar(vaga.get("descricao", ""))
   if not d:
     return None
+  if exclusiva_para_minorias(vaga["titulo"], vaga.get("descricao", "")):
+    return "vaga exclusiva para PcD/minorias"
   for p in filtros["exigencias"]:
     m = p.search(d)
     if m:
@@ -114,7 +116,7 @@ def filtrar(vagas, filtros, avaliacoes):
   """Fica com as vagas presenciais/híbridas das cidades, recentes, cujo
   título passa nos filtros. Põe em cada uma a cidade e a nota da empresa."""
   aceitas, vistas = [], set()
-  cortes = {"fora das cidades": 0, "remota": 0, "antiga": 0, "cargo": 0,
+  cortes = {"fora das cidades": 0, "remota": 0, "antiga": 0, "cargo": 0, "nível ou PcD": 0,
             "empresa confidencial ou a evitar": 0, "repetida": 0}
   for vaga in vagas:
     cidade = cidade_da_vaga(vaga)
@@ -129,6 +131,9 @@ def filtrar(vagas, filtros, avaliacoes):
       continue
     if not titulo_serve(vaga["titulo"], filtros):
       cortes["cargo"] += 1
+      continue
+    if nivel_nao_serve(vaga["titulo"]) or exclusiva_para_minorias(vaga["titulo"]):
+      cortes["nível ou PcD"] += 1
       continue
     aval = empresas.avaliacao(vaga["empresa"], avaliacoes)
     vaga["nota"] = aval["nota"] if aval else None

@@ -18,6 +18,11 @@ A bot that collects jobs from several sources, sorts them into categories, puts 
 
    Indeed is left out: it requires an anti-bot check, which the bot does not bypass.
 2. **Classifies** each job by title into a category: Football Analytics, Data Analysis, BI Analyst, Administrative Analyst/Assistant, or Other (Production/Planning Engineering). Jobs outside these, internships, and titles with excluded terms are dropped.
+   What the bot drops by title or description, in both emails:
+   - **Data science / machine learning** only at entry level (senior data and BI analysts are still kept) (junior, jr, entry, associate or "I"); with no level in the title, it is dropped.
+   - **Data engineering** (data engineer, analytics engineer...), football jobs included.
+   - **Jobs exclusive to people with disabilities or minorities** (PcD, affirmative positions, women only, Black candidates, LGBT, 50+...). "PcD are welcome" doesn't count as exclusive.
+   - **English-language jobs** are kept only if they accept Brazil: those requiring residence or work authorization elsewhere are dropped. Operational roles in English (data entry, data operator, administrative assistant and administrative analyst) are searched on LinkedIn.
 3. **Filters by location**:
    - All jobs, football included, must be remote.
    - Football jobs: remote and open to people living in Brazil, or remote and based in Brazil. The bot reads the job description: if it requires residence or work authorization in the US, UK or Europe, the job is dropped; if it mentions Brazil, LATAM or "anywhere", it is kept; if it says nothing, it is kept with a note to check.
