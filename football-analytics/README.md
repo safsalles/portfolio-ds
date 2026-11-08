@@ -59,3 +59,5 @@ As estatísticas dos jogadores foram coletadas manualmente do [WhoScored](https:
 ## Fonte
 
 Os projetos partem da minha dissertação *MEM-GA: Método de Escolha Múltipla com Algoritmo Genético aplicado à formação de equipes de futebol* (Sérgio Augusto Faria Salles, Instituto Federal Fluminense, 2018). O MEM foi proposto na tese de Henrique Rego Monteiro da Hora (Universidade Federal Fluminense, 2013).
+
+O método aplicado ao futebol está descrito no artigo: Salles, S. A. F., da Hora, H. R. M., Erthal Júnior, M., Velasco, A. S. e Croce, P. R. (2022). Multiple Choice Method with Genetic Algorithm for the Formation of Soccer Teams. *Pesquisa Operacional*, 42, e243537. <https://doi.org/10.1590/0101-7438.2022.042.00243537>
