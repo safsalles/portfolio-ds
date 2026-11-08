@@ -26,6 +26,8 @@ Para R, o mesmo método está no pacote `memga`, na pasta [r](r/), que também s
 install.packages("memga", repos = c("https://safsalles.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
+Para MATLAB e GNU Octave, a versão está na pasta [matlab](matlab/).
+
 Para mexer no código, na pasta `mem-ga`:
 
 ```bash

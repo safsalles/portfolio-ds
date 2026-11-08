@@ -1,0 +1,7 @@
+"criterion","direction","weight"
+"Planning",1,0.9
+"Logistics",1,0.7
+"Quality",1,0.8
+"Costs",1,0.6
+"People",1,1
+"Absences",0,0.5

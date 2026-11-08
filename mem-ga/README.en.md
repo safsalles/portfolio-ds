@@ -28,6 +28,8 @@ For R, the same method is in the `memga` package, in the [r](r/) folder, which c
 install.packages("memga", repos = c("https://safsalles.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
+For MATLAB and GNU Octave, the version is in the [matlab](matlab/) folder.
+
 To work on the code, in the `mem-ga` folder:
 
 ```bash
