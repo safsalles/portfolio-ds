@@ -51,6 +51,16 @@ Um segundo e-mail, com as vagas **presenciais e híbridas** em Campos dos Goytac
 
 As vagas vêm em ordem de empresa, com a cidade, o modelo (presencial ou híbrido), a afinidade e a nota da empresa, como no e-mail principal. Para rodar só esse e-mail: `python job_finder.py --so-perto`.
 
+### Responder pelo e-mail
+
+Cada vaga dos dois e-mails tem três links. Clicar abre um e-mail pronto, é só enviar:
+
+- **✅ Já me candidatei**: a vaga sai da lista e vai para a seção "Já me candidatei", com a data (fica lá por 30 dias).
+- **🚫 Descartar**: a vaga não volta mais.
+- **⛔ Nunca mais essa empresa**: a empresa passa a ser "evitar" e nenhuma vaga dela volta.
+
+Na rodada seguinte, o bot lê essas respostas pelo IMAP do Gmail, com a mesma senha de app. Ele só considera mensagens vindas do seu e-mail e com assunto começando por `Radar:`, e só lê (não apaga nem marca nada). O estado fica em `status_vagas.json`, fora do repositório.
+
 ## Estrutura
 
 | Arquivo | O que faz |
@@ -62,6 +72,7 @@ As vagas vêm em ordem de empresa, com a cidade, o modelo (presencial ou híbrid
 | `afinidade.py` | Afinidade entre as suas competências e a vaga |
 | `perto_de_casa.py` | Filtro e ordem do e-mail Perto de casa |
 | `memoria.py` | Vagas já enviadas |
+| `respostas.py` | Lê suas respostas (candidatei, descartar, nunca mais) |
 | `email_vagas.py` | Monta e envia o e-mail |
 | `empresas.txt` | Sua avaliação das empresas |
 | `perto_de_casa.txt` | Cargos que entram e saem do Perto de casa |

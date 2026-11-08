@@ -9,6 +9,7 @@ from email.mime.text import MIMEText
 from classificacao import (LOCAL_CONFERIR, ORDEM_CATEGORIAS, P_FUTEBOL, P_GRANDE,
                            P_MEH, P_OUTRAS, P_QUERO)
 from empresas import QUERO_MUITO
+import respostas
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
@@ -33,6 +34,9 @@ ESTILO = """
   .sobre { font-size: 12px; color: #777; font-style: italic; }
   .skills { font-size: 12px; color: #777; }
   .afinidade { font-weight: normal; font-size: 13px; }
+  .acoes { font-size: 12px; margin-top: 2px; }
+  .acoes a { color: #777; text-decoration: none; margin-right: 12px; }
+  .feita { font-size: 13px; color: #555; margin-bottom: 6px; }
   .avaliar { font-size: 12px; font-family: Consolas, monospace; color: #444; }
 """
 
@@ -51,7 +55,7 @@ def _afinidade(v):
   return titulo, linha
 
 
-def montar_html(vagas, mensagem, para_avaliar=None):
+def montar_html(vagas, mensagem, para_avaliar=None, responder=None, ja_candidatadas=None):
   partes = [f"<html><head><style>{ESTILO}</style></head><body>",
             "<h2>Radar de Vagas</h2>", f"<p>{_e(mensagem)}</p>"]
   resumo = [f"{sum(1 for v in vagas if v['prioridade'] == p)} {nome.split(' ', 1)[1].lower()}"
@@ -78,14 +82,30 @@ def montar_html(vagas, mensagem, para_avaliar=None):
         if v["grupo_local"] == LOCAL_CONFERIR:
           aviso = ("<div class='aviso'>A vaga é remota mas não diz de que"
                    " países aceita candidatos. Confira antes de se candidatar.</div>")
-        partes.append(_html_vaga(v, cor, local, aviso))
+        partes.append(_html_vaga(v, cor, local, aviso, responder))
 
-  _fechar(partes, para_avaliar)
+  _fechar(partes, para_avaliar, ja_candidatadas, responder)
   return "".join(partes)
 
 
-def _html_vaga(v, cor, local, aviso=""):
+ROTULOS_RESPOSTA = ((respostas.CANDIDATEI, "✅ Já me candidatei"),
+                    (respostas.DESCARTAR, "🚫 Descartar"),
+                    (respostas.NUNCA_MAIS, "⛔ Nunca mais essa empresa"))
+
+
+def _links_resposta(v, responder):
+  """Os links que abrem um e-mail de resposta pronto (só enviar)."""
+  if not responder:
+    return ""
+  links = [f'<a href="{_e(respostas.link_resposta(acao, v, responder))}">{rotulo}</a>'
+           for acao, rotulo in ROTULOS_RESPOSTA
+           if acao != respostas.NUNCA_MAIS or v["empresa"]]
+  return "<div class='acoes'>" + "".join(links) + "</div>"
+
+
+def _html_vaga(v, cor, local, aviso="", responder=None):
   afinidade, faltam = _afinidade(v)
+  acoes = _links_resposta(v, responder)
   estrela = "⭐ " if v.get("nota") == QUERO_MUITO else ""
   sobre = (f"<div class='sobre'>{_e(v['sobre_empresa'])}</div>"
            if v.get("sobre_empresa") else "")
@@ -96,11 +116,29 @@ def _html_vaga(v, cor, local, aviso=""):
         {_e(local)} &nbsp;|&nbsp; {_e(v['publicada'])} &nbsp;|&nbsp; via {_e(v['fonte'])}</div>
       {faltam}{aviso}
       <div class="link"><a href="{_e(v['link'])}" target="_blank">Acessar vaga / Candidatar-se</a></div>
-      {sobre}
+      {acoes}{sobre}
     </div>"""
 
 
-def _fechar(partes, para_avaliar):
+def _html_candidatadas(lista):
+  partes = ["<h3 style='color:#1a7f37; border-color:#1a7f37'>✅ Já me candidatei"
+            f" ({len(lista)})</h3>"]
+  for v in lista:
+    dia = "/".join(reversed(v["data"].split("-")[1:]))
+    titulo = _e(v["titulo"])
+    if v.get("link"):
+      titulo = f"<a href=\"{_e(v['link'])}\" target=\"_blank\">{titulo}</a>"
+    partes.append(f"<div class='feita'>{dia} · {titulo} · {_e(v['empresa'] or 'Empresa não informada')}</div>")
+  return "".join(partes)
+
+
+def _fechar(partes, para_avaliar, ja_candidatadas=None, responder=None):
+  if ja_candidatadas:
+    partes.append(_html_candidatadas(ja_candidatadas))
+  if responder:
+    partes.append("<p class='info'>Os links ✅ 🚫 ⛔ abrem um e-mail pronto: é só enviar."
+                  " Na próxima rodada a vaga sai da lista (ou vai para \"Já me candidatei\"),"
+                  " e \"Nunca mais\" esconde todas as vagas da empresa.</p>")
   if para_avaliar:
     partes.append("<h3 style='color:#555; border-color:#555'>📝 Empresas novas para você avaliar"
                   f" ({len(para_avaliar)})</h3>"
@@ -116,7 +154,7 @@ COR_PERTO = "#7a3e9d"
 MODELO_ROTULO = {"presencial": "Presencial", "hibrido": "Híbrido", "": "Presencial ou híbrido"}
 
 
-def montar_html_perto(vagas, para_avaliar=None):
+def montar_html_perto(vagas, para_avaliar=None, responder=None, ja_candidatadas=None):
   """Vagas presenciais/híbridas nas cidades, em ordem de empresa."""
   partes = [f"<html><head><style>{ESTILO}</style></head><body>",
             "<h2>📍 Perto de casa</h2>"]
@@ -129,8 +167,8 @@ def montar_html_perto(vagas, para_avaliar=None):
                 f" ({novas} 🆕 novas desde o último e-mail): {cidades}.</p>")
   for v in vagas:
     local = f"{v['cidade']} · {MODELO_ROTULO.get(v['modelo'], v['modelo'])}"
-    partes.append(_html_vaga(v, COR_PERTO, local))
-  _fechar(partes, para_avaliar)
+    partes.append(_html_vaga(v, COR_PERTO, local, responder=responder))
+  _fechar(partes, para_avaliar, ja_candidatadas, responder)
   return "".join(partes)
 
 
@@ -148,14 +186,17 @@ def assunto(vagas):
   return f"Radar de Vagas: {texto}"
 
 
-def enviar(vagas, mensagem, remetente, senha_app, destinatario, para_avaliar=None):
-  return enviar_html(vagas, assunto(vagas), montar_html(vagas, mensagem, para_avaliar),
-                     remetente, senha_app, destinatario)
+def enviar(vagas, mensagem, remetente, senha_app, destinatario, para_avaliar=None,
+           ja_candidatadas=None):
+  """As respostas vão para o remetente: é a caixa que o bot lê pelo IMAP."""
+  corpo = montar_html(vagas, mensagem, para_avaliar, remetente, ja_candidatadas)
+  return enviar_html(vagas, assunto(vagas), corpo, remetente, senha_app, destinatario)
 
 
-def enviar_perto(vagas, remetente, senha_app, destinatario, para_avaliar=None):
-  return enviar_html(vagas, assunto_perto(vagas), montar_html_perto(vagas, para_avaliar),
-                     remetente, senha_app, destinatario)
+def enviar_perto(vagas, remetente, senha_app, destinatario, para_avaliar=None,
+                 ja_candidatadas=None):
+  corpo = montar_html_perto(vagas, para_avaliar, remetente, ja_candidatadas)
+  return enviar_html(vagas, assunto_perto(vagas), corpo, remetente, senha_app, destinatario)
 
 
 def enviar_html(vagas, titulo, corpo, remetente, senha_app, destinatario):

@@ -51,6 +51,16 @@ A second email with **on-site and hybrid** jobs in Campos dos Goytacazes, São J
 
 Jobs are sorted by company and show city, work model (on-site or hybrid), affinity and your company rating, as in the main email. To run only this email: `python job_finder.py --so-perto`.
 
+### Replying by email
+
+Every job in both emails has three links. Clicking one opens a ready-made email; just send it:
+
+- **✅ Já me candidatei** (I applied): the job leaves the list and goes to an "I applied" section with the date (kept there for 30 days).
+- **🚫 Descartar** (discard): the job never comes back.
+- **⛔ Nunca mais essa empresa** (never this company again): the company is rated "avoid" and none of its jobs come back.
+
+On the next run the bot reads these replies through Gmail IMAP, using the same app password. It only considers messages from your own address with a subject starting with `Radar:`, and it only reads (nothing is deleted or flagged). The state is kept in `status_vagas.json`, outside the repository.
+
 ## Structure
 
 | File | What it does |
@@ -62,6 +72,7 @@ Jobs are sorted by company and show city, work model (on-site or hybrid), affini
 | `afinidade.py` | Affinity between your skills and the job |
 | `perto_de_casa.py` | Filter and ordering for the close-to-home email |
 | `memoria.py` | Jobs already sent |
+| `respostas.py` | Reads your replies (applied, discard, never again) |
 | `email_vagas.py` | Builds and sends the email |
 | `empresas.txt` | Your company ratings |
 | `perto_de_casa.txt` | Job titles kept or dropped in the close-to-home email |

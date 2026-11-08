@@ -23,6 +23,7 @@ import email_vagas
 import empresas
 import memoria
 import perto_de_casa
+import respostas
 from classificacao import (MAX_DIAS, PADRAO_FUNCAO_FUTEBOL, categoria_geral, eh_futebol,
                            titulo_excluido, vale_abrir_descricao)
 from fontes import (empresas_futebol, glassdoor, gupy, infojobs,
@@ -166,15 +167,22 @@ def main():
   print(f"{len(empresas_grandes)} grandes empresas na lista, {len(avaliacoes)} avaliadas por você,"
         f" {len(minhas)} competências suas para a afinidade")
   vistas = memoria.carregar()
+  # Respostas ao e-mail (já me candidatei / descartar / nunca mais essa empresa).
+  estado = respostas.carregar()
+  respostas.ler_respostas(estado, config.get("EMAIL_REMETENTE"), config.get("SENHA_APP"),
+                          config.get("MEU_EMAIL"))
+  respostas.evitar_empresas(estado, avaliacoes)
   enviadas = []
 
   if not args.so_perto:
-    enviadas += radar(args, config, empresas_grandes, avaliacoes, minhas, vistas)
-  enviadas += perto(args, config, avaliacoes, minhas, vistas)
+    enviadas += radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado)
+  enviadas += perto(args, config, avaliacoes, minhas, vistas, estado)
 
   if enviadas:
     memoria.salvar(enviadas, vistas)
     print(f"{len(enviadas)} vagas guardadas em {memoria.CAMINHO}")
+  if not args.sem_email:
+    respostas.salvar(estado)
   return 0
 
 
@@ -192,7 +200,7 @@ def salvar_previa(caminho, html):
   print(f"\nPrévia do e-mail salva em {caminho} (nada foi enviado nem guardado)")
 
 
-def perto(args, config, avaliacoes, minhas, vistas):
+def perto(args, config, avaliacoes, minhas, vistas, estado):
   """E-mail Perto de casa. Devolve as vagas enviadas (ou [] em prévia)."""
   print("\n=== PERTO DE CASA ===")
   filtros = perto_de_casa.carregar_filtros()
@@ -208,6 +216,7 @@ def perto(args, config, avaliacoes, minhas, vistas):
     browser.close()
 
   aceitas = perto_de_casa.filtrar(vagas, filtros, avaliacoes)
+  aceitas = respostas.tirar_marcadas(aceitas, estado)
   # LinkedIn e Vagas.com não trazem a descrição na lista: abre a página só das
   # que sobraram, pra conferir o que a vaga exige.
   for v in aceitas:
@@ -224,16 +233,21 @@ def perto(args, config, avaliacoes, minhas, vistas):
   print(f"   {len(aceitas)} vagas, {sum(v['nova'] for v in aceitas)} novas,"
         f" {len(para_avaliar)} empresas novas para avaliar")
 
+  ja = respostas.candidatadas(estado, "perto")
   if args.sem_email:
-    salvar_previa(PREVIA_PERTO_PATH, email_vagas.montar_html_perto(aceitas, para_avaliar))
+    salvar_previa(PREVIA_PERTO_PATH, email_vagas.montar_html_perto(
+        aceitas, para_avaliar, config.get("EMAIL_REMETENTE"), ja))
     return []
   enviado = email_vagas.enviar_perto(
       aceitas, config.get("EMAIL_REMETENTE"), config.get("SENHA_APP"),
-      config.get("MEU_EMAIL"), para_avaliar)
-  return aceitas if enviado else []
+      config.get("MEU_EMAIL"), para_avaliar, ja)
+  if not enviado:
+    return []
+  respostas.lembrar(estado, aceitas, "perto")
+  return aceitas
 
 
-def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas):
+def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado):
   """E-mail principal. Devolve as vagas enviadas (ou [] em prévia)."""
   vagas = coletar_sem_navegador()
 
@@ -251,6 +265,7 @@ def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas):
     aceitas = classificacao.classificar(vagas, empresas_grandes, avaliacoes)
 
     novas = memoria.filtrar_novas(aceitas, {})  # tira repetidas entre fontes
+    novas = respostas.tirar_marcadas(novas, estado)
     marcar_novas(novas, vistas)
     print(f"{len(novas)} vagas abertas, {sum(v['nova'] for v in novas)} novas desde o último e-mail")
 
@@ -270,14 +285,19 @@ def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas):
     print(f"   {nome}: {sum(1 for v in novas if v['prioridade'] == prioridade)}")
   print(f"   empresas novas para avaliar: {len(para_avaliar)}")
 
+  ja = respostas.candidatadas(estado, "radar")
   if args.sem_email:
-    salvar_previa(PREVIA_PATH, email_vagas.montar_html(novas, MENSAGEM, para_avaliar))
+    salvar_previa(PREVIA_PATH, email_vagas.montar_html(
+        novas, MENSAGEM, para_avaliar, config.get("EMAIL_REMETENTE"), ja))
     return []
   enviado = email_vagas.enviar(
       novas, MENSAGEM, config.get("EMAIL_REMETENTE"), config.get("SENHA_APP"),
-      config.get("MEU_EMAIL"), para_avaliar,
+      config.get("MEU_EMAIL"), para_avaliar, ja,
   )
-  return novas if enviado else []
+  if not enviado:
+    return []
+  respostas.lembrar(estado, novas, "radar")
+  return novas
 
 
 if __name__ == "__main__":
