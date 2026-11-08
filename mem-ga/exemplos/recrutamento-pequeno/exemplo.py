@@ -15,11 +15,11 @@ from pathlib import Path
 
 import numpy as np
 
-from mem.busca import MAX_EVALUATIONS, exhaustive
-from mem.problema import load_problem as _load_problem
-from mem.problema import normalize
-from mem.radar import COLORS, MUTED, interactive, plot_radar
-from mem.regras import build_rule
+from memga.busca import MAX_EVALUATIONS, exhaustive
+from memga.problema import load_problem as _load_problem
+from memga.problema import normalize
+from memga.radar import COLORS, MUTED, interactive, plot_radar
+from memga.regras import build_rule
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parent / "data"
 DEFAULT_CHOICES = 2

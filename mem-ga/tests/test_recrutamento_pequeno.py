@@ -4,9 +4,9 @@ from math import comb
 import numpy as np
 import pytest
 
-from mem.busca import MAX_EVALUATIONS
-from mem.problema import Problem, normalize
-from mem.regras import mean_rule
+from memga.busca import MAX_EVALUATIONS
+from memga.problema import Problem, normalize
+from memga.regras import mean_rule
 
 
 def problem(payment, direction=None, weights=None, complementarity=None):

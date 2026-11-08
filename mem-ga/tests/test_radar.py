@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 import numpy as np  # noqa: E402
 import pytest  # noqa: E402
 
-from mem.radar import COLORS, MUTED, interactive, plot_radar  # noqa: E402
+from memga.radar import COLORS, MUTED, interactive, plot_radar  # noqa: E402
 
 LABELS = ["a", "b", "c", "d"]
 

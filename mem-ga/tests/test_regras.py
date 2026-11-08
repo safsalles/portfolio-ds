@@ -4,8 +4,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mem.problema import Problem, load_problem, normalize
-from mem.regras import MAX_MEAN_GROUPS, MeanRule, MinimumRule, build_rule, mean_rule, minimum_rule
+from memga.problema import Problem, load_problem, normalize
+from memga.regras import MAX_MEAN_GROUPS, MeanRule, MinimumRule, build_rule, mean_rule, minimum_rule
 
 DATA = Path(__file__).resolve().parents[1] / "exemplos" / "recrutamento-pequeno" / "data"
 

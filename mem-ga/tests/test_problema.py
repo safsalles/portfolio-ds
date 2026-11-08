@@ -3,7 +3,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mem.problema import Problem, load_problem, normalize
+from memga.problema import Problem, load_problem, normalize
 
 DATA = Path(__file__).resolve().parents[1] / "exemplos" / "recrutamento-pequeno" / "data"
 

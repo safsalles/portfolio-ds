@@ -7,7 +7,7 @@ import pytest
 from comum.jogadores import Dataset, build_scorer
 from escalacao.cli import main
 from escalacao.formacoes import PRESETS
-from mem.busca import GAConfig, run_ga
+from memga.busca import GAConfig, run_ga
 
 SHORT = GAConfig(iterations=200, population=20, stagnation=5, mutation_attempts=3)
 

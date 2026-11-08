@@ -16,11 +16,11 @@ from pathlib import Path
 
 import numpy as np
 
-from mem.busca import GAConfig, run_ga, traditional_choice
-from mem.problema import load_problem as _load_problem
-from mem.problema import normalize
-from mem.radar import COLORS, MUTED, interactive, plot_radar
-from mem.regras import build_rule
+from memga.busca import GAConfig, run_ga, traditional_choice
+from memga.problema import load_problem as _load_problem
+from memga.problema import normalize
+from memga.radar import COLORS, MUTED, interactive, plot_radar
+from memga.regras import build_rule
 
 DEFAULT_DATA_DIR = Path(__file__).resolve().parent / "data"
 DEFAULT_SEED = 2026

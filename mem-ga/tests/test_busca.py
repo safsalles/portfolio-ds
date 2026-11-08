@@ -6,9 +6,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from mem.busca import Choice, GAConfig, exhaustive, run_ga, traditional_choice
-from mem.problema import load_problem
-from mem.regras import build_rule, minimum_rule
+from memga.busca import Choice, GAConfig, exhaustive, run_ga, traditional_choice
+from memga.problema import load_problem
+from memga.regras import build_rule, minimum_rule
 
 DATA = Path(__file__).resolve().parents[1] / "exemplos" / "recrutamento-pequeno" / "data"
 REFERENCE = json.loads((Path(__file__).parent / "referencia.json").read_text(encoding="utf-8"))

@@ -3,8 +3,8 @@ from collections import Counter
 import numpy as np
 import pytest
 
-from mem.busca import traditional_choice
-from mem.regras import build_rule
+from memga.busca import traditional_choice
+from memga.regras import build_rule
 
 
 def test_mesma_semente_da_os_mesmos_dados(gerador):

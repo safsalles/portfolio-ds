@@ -15,7 +15,7 @@ from comum.goleiros import rank_goalkeepers
 from comum.jogadores import DEFAULT_DATA_DIR
 from contratacoes.opcoes import candidates_for, load_clubs, starters, suggest
 from escalacao.formacoes import PRESETS
-from mem.busca import run_ga
+from memga.busca import run_ga
 
 REFERENCE = json.loads((Path(__file__).parent / "referencia.json").read_text(encoding="utf-8"))
 

@@ -3,7 +3,7 @@
 import argparse
 from math import isfinite
 
-from mem.radar import interactive
+from memga.radar import interactive
 
 
 def tau_argument(text):

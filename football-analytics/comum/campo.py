@@ -1,6 +1,6 @@
 """O time em campo, no terminal, e o radar com os nomes dos critérios em português."""
 
-from mem.radar import plot_radar as draw_radar
+from memga.radar import plot_radar as draw_radar
 
 CRITERIA_NAMES = {
     "Tackles": "Desarmes", "Interception": "Interceptações", "Fouled": "Faltas sofridas",

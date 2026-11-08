@@ -16,7 +16,7 @@ from comum.goleiros import rank_goalkeepers
 from comum.jogadores import DEFAULT_DATA_DIR, DEFAULT_MIN_MINUTES, DEFAULT_TAU, build_scorer, load_dataset
 from comum.terminal import finish_with_radar, tau_argument
 from contratacoes.opcoes import STARTERS, candidates_for, load_clubs, parse_club, starters, suggest
-from mem.radar import COLORS, MUTED
+from memga.radar import COLORS, MUTED
 
 DEFAULT_OPTIONS = 5
 ANY_POSITION_WORDS = {"qualquer", "any"}

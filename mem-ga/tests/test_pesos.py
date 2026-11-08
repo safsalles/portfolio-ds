@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from mem.pesos import complementarity_from_data, group_weights
+from memga.pesos import complementarity_from_data, group_weights
 
 
 @pytest.fixture

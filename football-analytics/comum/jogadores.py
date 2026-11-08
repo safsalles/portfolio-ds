@@ -21,9 +21,9 @@ from comum.arquivos import (  # noqa: F401 (DataError e as constantes são usada
     require_columns,
 )
 from comum.goleiros import rank_goalkeepers
-from mem.pesos import complementarity_from_data, group_weights
-from mem.problema import normalize
-from mem.regras import minimum_rule
+from memga.pesos import complementarity_from_data, group_weights
+from memga.problema import normalize
+from memga.regras import minimum_rule
 
 DEFAULT_TAU = 0.24
 

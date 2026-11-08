@@ -4,7 +4,7 @@
 
 The Multiple Choice Method (MEM, from the Portuguese *Método de Escolha Múltipla*) picks a set of alternatives that complement each other, instead of taking the best ones one by one. It fits any choice where the group matters more than each part: teams, portfolios, committees.
 
-This repository packages the method as a Python package, `mem`, with:
+This repository packages the method as a Python package, `memga`, with:
 
 - two scoring rules: the one from the thesis that proposed the MEM (`media`, mean) and the adaptation from my master's dissertation (`minimo`, minimum), with the same interface;
 - two searches: trying every combination, for small problems, and a genetic algorithm (MEM-GA), for large ones;
@@ -16,7 +16,13 @@ The code is in English; messages, comments, column names and example data are in
 
 ## Installation
 
-In the `mem-ga` folder:
+From PyPI:
+
+```bash
+pip install memga
+```
+
+To work on the code, in the `mem-ga` folder:
 
 ```bash
 pip install -e ".[test]"
@@ -25,12 +31,31 @@ python -m pytest
 
 ## Usage
 
-From the `mem-ga` folder:
+The `memga()` function does it all: it builds the rule, runs the search and compares with the traditional choice. The two fictional examples ship with the package.
 
 ```python
-from mem.busca import run_ga
-from mem.problema import load_problem
-from mem.regras import build_rule
+from memga import memga, load_example
+
+# 2 of 8 candidates, trying every pair
+print(memga(load_example("small"), size=2))
+
+# A team of 4 among 300, with quotas per group, by the genetic algorithm
+result = memga(
+    load_example("large"), method="ga", tau=0.54,
+    quotas={"analyst": 2, "engineer": 1, "manager": 1}, seed=1,
+)
+print(result.team, result.score)
+# ('P007', 'P038', 'P192', 'P276') 0.6785714285714286
+```
+
+The main arguments are `method` (`"exhaustive"` or `"ga"`), `rule` (`"mean"`, the thesis rule, or `"minimum"`), `tau`, `quotas` and `config` (a `GAConfig`). Without `rule`, the exhaustive search uses `"mean"` and the genetic algorithm uses `"minimum"`. The result has `team`, `score`, `ranking` (exhaustive search), `history` (genetic algorithm) and `traditional`.
+
+To use the modules separately, from the `mem-ga` folder:
+
+```python
+from memga.busca import run_ga
+from memga.problema import load_problem
+from memga.regras import build_rule
 
 problem = load_problem("exemplos/recrutamento-grande/data")
 rule = build_rule(problem, "minimo", tau=0.54)
@@ -42,11 +67,11 @@ print(sorted(problem.alternatives[i] for i in result.team), result.score)
 
 | Module | What it does |
 | --- | --- |
-| `mem.problema` | `Problem` (alternatives, criteria, direction, weights, groups), `load_problem` to read the CSVs, and `normalize` |
-| `mem.pesos` | Complementarity computed from the data (1 − \|r\|, as in CRITIC, within each group) and per-group weights |
-| `mem.regras` | The two rules, `mean_rule` and `minimum_rule`, and `build_rule` to build either from a `Problem` |
-| `mem.busca` | `exhaustive` (every combination), `run_ga` (genetic algorithm) and `traditional_choice` (the best of each group, for comparison) |
-| `mem.radar` | Radar chart with one panel per set |
+| `memga.problema` | `Problem` (alternatives, criteria, direction, weights, groups), `load_problem` to read the CSVs, and `normalize` |
+| `memga.pesos` | Complementarity computed from the data (1 − \|r\|, as in CRITIC, within each group) and per-group weights |
+| `memga.regras` | The two rules, `mean_rule` and `minimum_rule`, and `build_rule` to build either from a `Problem` |
+| `memga.busca` | `exhaustive` (every combination), `run_ga` (genetic algorithm) and `traditional_choice` (the best of each group, for comparison) |
+| `memga.radar` | Radar chart with one panel per set |
 
 ## The method
 

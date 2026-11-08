@@ -1,6 +1,6 @@
 """As buscas do MEM: exaustiva, para problemas pequenos, e por algoritmo genético.
 
-As duas funcionam com qualquer regra de `mem.regras`, porque só usam `rate(conjunto)`.
+As duas funcionam com qualquer regra de `memga.regras`, porque só usam `rate(conjunto)`.
 """
 
 from dataclasses import dataclass
@@ -23,12 +23,23 @@ class Choice:
     score: float  # fração dos grupos de critérios que alcançam o tau
 
 
-def exhaustive(rule, n_alternatives, size):
-    """Equação 3.9: ordena todos os conjuntos pela nota. Empates ficam na mesma posição."""
+def exhaustive(rule, n_alternatives, size, groups=None, quotas=None):
+    """Equação 3.9: ordena todos os conjuntos pela nota. Empates ficam na mesma posição.
+
+    Com `quotas` (vagas por grupo) e `groups` (o grupo de cada alternativa), só entram
+    na ordem os conjuntos que respeitam as vagas.
+    """
     total = comb(n_alternatives, size) * rule.n_combos
     if total > MAX_EVALUATIONS:
         raise ValueError(f"Seriam {total} avaliações, demais para testar uma a uma.")
     sets = list(combinations(range(n_alternatives), size))
+    if quotas:
+        labels = np.asarray(groups)
+        wanted = {group: quota for group, quota in quotas.items() if quota > 0}
+        sets = [
+            chosen for chosen in sets
+            if all(int((labels[list(chosen)] == group).sum()) == quota for group, quota in wanted.items())
+        ]
     scores = [rule.rate(chosen)[0] for chosen in sets]
     order = sorted(range(len(sets)), key=lambda row: (-scores[row], sets[row]))
 

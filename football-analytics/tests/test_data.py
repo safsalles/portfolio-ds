@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from mem.pesos import complementarity_from_data as complementarity_matrix
-from mem.pesos import group_weights as position_weights
+from memga.pesos import complementarity_from_data as complementarity_matrix
+from memga.pesos import group_weights as position_weights
 from comum.jogadores import DataError, load_dataset, normalize
 
 

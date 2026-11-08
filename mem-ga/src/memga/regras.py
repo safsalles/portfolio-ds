@@ -12,8 +12,8 @@ from math import comb, isfinite
 
 import numpy as np
 
-from mem.pesos import complementarity_from_data, group_weights
-from mem.problema import normalize
+from memga.pesos import complementarity_from_data, group_weights
+from memga.problema import normalize
 
 MAX_MEAN_GROUPS = 10_000  # acima disso, a regra da média fica lenta demais para a busca
 
@@ -46,7 +46,9 @@ class MinimumRule:
 
     def rate(self, team):
         values = self.combo_values(team)
-        return float((values >= self.tau).mean()), float(np.minimum(values, self.tau).mean())
+        # O arredondamento evita que um valor igual ao tau caia abaixo dele por erro de ponto flutuante.
+        passed = values.round(12) >= self.tau
+        return float(passed.mean()), float(np.minimum(values, self.tau).mean())
 
 
 @dataclass(frozen=True)

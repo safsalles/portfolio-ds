@@ -16,8 +16,8 @@ from comum.goleiros import GOALKEEPER_CRITERIA
 from comum.jogadores import DEFAULT_DATA_DIR, DEFAULT_MIN_MINUTES, DEFAULT_TAU, build_scorer, load_dataset
 from comum.terminal import finish_with_radar, tau_argument
 from escalacao.formacoes import PRESETS, FormationError, parse_formation
-from mem.busca import GAConfig, run_ga, traditional_choice
-from mem.radar import COLORS, MUTED
+from memga.busca import GAConfig, run_ga, traditional_choice
+from memga.radar import COLORS, MUTED
 
 PROGRESS_BAR_WIDTH = 30
 

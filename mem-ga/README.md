@@ -4,7 +4,7 @@
 
 O Método de Escolha Múltipla (MEM) escolhe um conjunto de alternativas que se completam, em vez de pegar as melhores uma a uma. Serve para montar equipes, carteiras, comitês, qualquer escolha em que o grupo importa mais que cada parte.
 
-Este repositório traz o método como um pacote Python, `mem`, com:
+Este repositório traz o método como um pacote Python, `memga`, com:
 
 - as duas regras de nota: a da tese que propôs o MEM (`media`) e a adaptação da minha dissertação (`minimo`), com a mesma interface;
 - duas buscas: testar todas as combinações, para problemas pequenos, e um algoritmo genético (MEM-GA), para os grandes;
@@ -14,7 +14,13 @@ Dois exemplos fictícios de recrutamento mostram o uso: um pequeno, para acompan
 
 ## Instalação
 
-Na pasta `mem-ga`:
+Do PyPI:
+
+```bash
+pip install memga
+```
+
+Para mexer no código, na pasta `mem-ga`:
 
 ```bash
 pip install -e ".[test]"
@@ -23,12 +29,31 @@ python -m pytest
 
 ## Uso
 
-A partir da pasta `mem-ga`:
+A função `memga()` faz tudo: monta a regra, roda a busca e compara com a escolha tradicional. Os dois exemplos fictícios vêm dentro do pacote.
 
 ```python
-from mem.busca import run_ga
-from mem.problema import load_problem
-from mem.regras import build_rule
+from memga import memga, load_example
+
+# 2 de 8 candidatos, testando todas as duplas
+print(memga(load_example("small"), size=2))
+
+# Equipe de 4 entre 300, com vagas por grupo, pelo algoritmo genético
+resultado = memga(
+    load_example("large"), method="ga", tau=0.54,
+    quotas={"analyst": 2, "engineer": 1, "manager": 1}, seed=1,
+)
+print(resultado.team, resultado.score)
+# ('P007', 'P038', 'P192', 'P276') 0.6785714285714286
+```
+
+Os argumentos principais são `method` (`"exhaustive"` ou `"ga"`), `rule` (`"mean"`, a da tese, ou `"minimum"`), `tau`, `quotas` e `config` (um `GAConfig`). Sem `rule`, a busca exaustiva usa `"mean"` e o algoritmo genético usa `"minimum"`. O resultado traz `team`, `score`, `ranking` (na busca exaustiva), `history` (no algoritmo genético) e `traditional`.
+
+Para usar os módulos separadamente, a partir da pasta `mem-ga`:
+
+```python
+from memga.busca import run_ga
+from memga.problema import load_problem
+from memga.regras import build_rule
 
 problem = load_problem("exemplos/recrutamento-grande/data")
 rule = build_rule(problem, "minimo", tau=0.54)
@@ -40,11 +65,11 @@ print(sorted(problem.alternatives[i] for i in result.team), result.score)
 
 | Módulo | O que faz |
 | --- | --- |
-| `mem.problema` | `Problem` (alternativas, critérios, direção, pesos, grupos), `load_problem` para ler os CSVs e `normalize` |
-| `mem.pesos` | Complementação calculada dos dados (1 − \|r\|, como no CRITIC, dentro de cada grupo) e pesos por grupo |
-| `mem.regras` | As duas regras, `mean_rule` e `minimum_rule`, e `build_rule` para montar uma delas a partir de um `Problem` |
-| `mem.busca` | `exhaustive` (todas as combinações), `run_ga` (algoritmo genético) e `traditional_choice` (os melhores de cada grupo, para comparar) |
-| `mem.radar` | Gráfico de radar com um painel por conjunto |
+| `memga.problema` | `Problem` (alternativas, critérios, direção, pesos, grupos), `load_problem` para ler os CSVs e `normalize` |
+| `memga.pesos` | Complementação calculada dos dados (1 − \|r\|, como no CRITIC, dentro de cada grupo) e pesos por grupo |
+| `memga.regras` | As duas regras, `mean_rule` e `minimum_rule`, e `build_rule` para montar uma delas a partir de um `Problem` |
+| `memga.busca` | `exhaustive` (todas as combinações), `run_ga` (algoritmo genético) e `traditional_choice` (os melhores de cada grupo, para comparar) |
+| `memga.radar` | Gráfico de radar com um painel por conjunto |
 
 ## O método
 
