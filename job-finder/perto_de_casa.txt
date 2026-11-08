@@ -108,6 +108,32 @@ engenharia mecanica
 engenharia eletrica
 engenharia civil
 arquitet
+# --- loja (líder, coordenador, gerente, operador de loja...) ---
+\bloja
+# --- vendas ---
+vendas
+\bvenda\b
+pos-venda
+pos venda
+vendedor
+consultor comercial
+executivo comercial
+representante comercial
+relacionamento comercial
+assistente comercial
+# --- fiscal, contábil, TI e meio ambiente ---
+fiscal
+contab
+\bti\b
+tecnologia da informacao
+analista de sistemas
+desenvolvedor
+programador
+suporte
+infraestrutura
+redes
+meio ambiente
+ambiental
 # --- níveis de entrada ---
 estagi
 jovem aprendiz
@@ -136,7 +162,7 @@ controladoria
 controller
 contas a pagar
 contas a receber
-fiscal
+# fiscal (tirado: você não quer fiscal/contábil)
 tesouraria
 auditoria
 # --- comercial e pricing ---

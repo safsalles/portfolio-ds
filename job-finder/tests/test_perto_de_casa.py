@@ -23,6 +23,23 @@ def test_cargos_ruins_e_profissoes_que_voce_nao_tem_saem():
     assert not p.titulo_serve(titulo, FILTROS), titulo
 
 
+def test_loja_vendas_fiscal_ti_e_ambiente_saem():
+  for titulo in ("Líder De Loja | ATACADÃO", "COORDENADOR DE LOJA - Campos", "Gerente de Loja",
+                 "Operador de Loja", "ANALISTA DE POS VENDAS", "GERENTE DE VENDAS - SGA TOYOTA",
+                 "Analista Comercial De Vendas", "Analista Fiscal Sênior", "Analista Contábil Pleno",
+                 "Analista De TI", "Analista de Sistemas", "Analista de Suporte PL",
+                 "Analista de Meio Ambiente", "Analista de Relacionamento Comercial"):
+    assert not p.titulo_serve(titulo, FILTROS), titulo
+
+
+def test_empresas_que_voce_quer_evitar():
+  import empresas
+  avaliacoes = empresas.carregar()
+  for empresa in ("Barcelos", "ATACADAO", "Assaí Atacadista", "DOME Serviços Integrados",
+                  "Lojas Renner"):
+    assert empresas.avaliacao(empresa, avaliacoes)["nota"] == "evitar", empresa
+
+
 def test_cargos_do_seu_perfil_entram():
   for titulo in ("Analista Administrativo", "Assistente Administrativo",
                  "Analista de Planejamento", "Comprador Pleno", "Analista de BI",
