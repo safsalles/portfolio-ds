@@ -42,6 +42,22 @@ def test_empresas_que_voce_quer_evitar():
     assert empresas.avaliacao(empresa, avaliacoes)["nota"] == "evitar", empresa
 
 
+def test_descricao_que_exige_o_que_voce_nao_tem():
+  v = vaga("Técnico de Planejamento")
+  v["descricao"] = "Requisitos: Ensino Técnico na área industrial, civil ou de processamento de dados. CFT ativo."
+  assert p.exigencia_que_voce_nao_tem(v, FILTROS)
+  v["descricao"] = "Formação técnica em edificações. Registro no CRM ativo."
+  assert p.exigencia_que_voce_nao_tem(v, FILTROS)
+
+
+def test_tecnico_aceito_se_a_vaga_aceita_superior():
+  v = vaga("Analista de Planejamento")
+  v["descricao"] = "Formação técnica ou ensino superior em Engenharia de Produção."
+  assert p.exigencia_que_voce_nao_tem(v, FILTROS) is None
+  v["descricao"] = ""
+  assert p.exigencia_que_voce_nao_tem(v, FILTROS) is None  # sem descrição: passa
+
+
 def test_cargos_do_seu_perfil_entram():
   for titulo in ("Analista Administrativo", "Assistente Administrativo",
                  "Analista de Planejamento", "Analista de Inteligência Comercial", "Analista de BI",

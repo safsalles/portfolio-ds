@@ -197,6 +197,15 @@ def perto(args, config, avaliacoes, minhas, vistas):
     browser.close()
 
   aceitas = perto_de_casa.filtrar(vagas, filtros, avaliacoes)
+  # LinkedIn e Vagas.com não trazem a descrição na lista: abre a página só das
+  # que sobraram, pra conferir o que a vaga exige.
+  for v in aceitas:
+    if not v["descricao"] or len(v["descricao"]) < 600:
+      if v["fonte"] == "LinkedIn":
+        linkedin.completar_descricao(v)
+      elif v["fonte"] == "Vagas.com":
+        vagas_com.completar_descricao(v)
+  aceitas = perto_de_casa.tirar_por_exigencia(aceitas, filtros)
   marcar_novas(aceitas, vistas)
   afinidade.completar(aceitas, minhas)
   empresas.completar_descricoes(aceitas, avaliacoes)

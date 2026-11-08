@@ -37,7 +37,7 @@ def _converter(j):
       local=f"{cidade}, Brasil" if cidade else "Brasil",
       modelo=MODELOS.get(j.get("workplaceType"), ""),
       minutos=minutos, publicada=rotulo,
-      descricao=limpar_html(j.get("description"))[:3000],
+      descricao=limpar_html(j.get("description"))[:8000],
       # A página de carreiras da empresa (de onde sai o "sobre"):
       # https://<empresa>.gupy.io/
       url_empresa=(re.match(r"https://[^/]+/", link) or [""])[0],

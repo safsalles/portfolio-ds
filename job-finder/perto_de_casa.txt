@@ -10,6 +10,11 @@
 # Uma vaga entra quando o título:
 #   1. tem algum termo de [sempre] (passa direto, mesmo com termo excluído), ou
 #   2. NÃO tem nenhum termo de [excluir] e tem algum termo de [areas].
+#
+# Depois, o bot lê a DESCRIÇÃO da vaga e tira as que pedem algo que você não tem:
+#   [exigencias]: registro em conselho de classe, etc. (sempre tira).
+#   [exigencias_tecnicas]: formação técnica; só tira se a vaga NÃO aceitar
+#   ensino superior (se a descrição citar superior/graduação, fica).
 
 [sempre]
 # Professor ou docente, só de faculdade.
@@ -206,3 +211,31 @@ coordenador
 supervisor
 lider
 analista
+
+[exigencias]
+# Registro ativo em conselho de classe que você não tem.
+\bcft\b
+\bcrt\b
+\bcrm\b
+\boab\b
+\bcrc\b
+\bcrf\b
+\bcoren\b
+\bcrn\b
+\bcrp\b
+\bcro\b
+\bcref\b
+\bcrea\b.{0,20}\b(ativo|regular)
+registro .{0,20}(conselho|crea|cft|crm|oab|crc)
+nr-?10
+nr-?35
+cnh .{0,3}(c|d|e)\b
+
+[exigencias_tecnicas]
+# Formação técnica exigida (só vale se a vaga não aceitar superior).
+ensino tecnico
+curso tecnico
+formacao tecnica
+tecnico em
+tecnico na area
+tecnico completo

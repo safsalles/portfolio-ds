@@ -42,7 +42,8 @@ def _padrao(termo):
 
 
 def carregar_filtros(caminho=ARQUIVO):
-  filtros = {"sempre": [], "excluir": [], "areas": []}
+  filtros = {"sempre": [], "excluir": [], "areas": [],
+             "exigencias": [], "exigencias_tecnicas": []}
   secao = None
   with open(caminho, "r", encoding="utf-8") as f:
     for linha in f:
@@ -73,6 +74,40 @@ def titulo_serve(titulo, filtros):
   if any(p.search(t) for p in filtros["excluir"]):
     return False
   return any(p.search(t) for p in filtros["areas"])
+
+
+ACEITA_SUPERIOR = re.compile(r"ensino superior|superior completo|superior em|graduacao|bacharel|"
+                             r"formacao superior|nivel superior|engenharia de producao")
+
+
+def exigencia_que_voce_nao_tem(vaga, filtros):
+  """Lê a descrição e devolve o trecho que pede algo que você não tem (ou
+  None). Sem descrição, não dá para saber: a vaga passa."""
+  d = normalizar(vaga.get("descricao", ""))
+  if not d:
+    return None
+  for p in filtros["exigencias"]:
+    m = p.search(d)
+    if m:
+      return m.group(0)
+  if not ACEITA_SUPERIOR.search(d):
+    for p in filtros["exigencias_tecnicas"]:
+      m = p.search(d)
+      if m:
+        return m.group(0)
+  return None
+
+
+def tirar_por_exigencia(vagas, filtros):
+  """Tira as vagas cuja descrição exige algo que você não tem."""
+  ficam = []
+  for v in vagas:
+    motivo = exigencia_que_voce_nao_tem(v, filtros)
+    if motivo:
+      print(f"   tirada pela descrição ({motivo!r}): {v['titulo'][:50]} | {v['empresa'][:25]}")
+    else:
+      ficam.append(v)
+  return ficam
 
 
 def filtrar(vagas, filtros, avaliacoes):
