@@ -4,7 +4,7 @@
 
 O GA-MEM funciona ao contrário da [escalação](../escalacao/README.md): em vez de montar um time do zero, parte de um clube e sugere as contratações que mais melhoram a complementação dele. A nota é a mesma, explicada [no README da escalação](../escalacao/README.md#o-método).
 
-Faz parte do [football-analytics](../README.md). Instale as dependências como no [README do repositório](../README.md#instalação) e rode a partir da pasta do repositório:
+Faz parte do [football-analytics](../README.md). Instale as dependências como no [README do football-analytics](../README.md#instalação) e rode a partir da pasta `football-analytics`:
 
 ```bash
 python -m contratacoes

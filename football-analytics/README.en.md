@@ -2,7 +2,7 @@
 
 *Read in: [Português](README.md)*
 
-Football analysis projects using data from the 2017 Brazilian Championship. Both use the Multiple Choice Method, from the [mem-ga](https://github.com/safsalles/mem-ga) package, to find players who complement each other, instead of adding up the strongest ones.
+Football analysis projects using data from the 2017 Brazilian Championship. Both use the Multiple Choice Method, from the [mem-ga](../mem-ga/README.en.md) package in the sibling folder, to find players who complement each other, instead of adding up the strongest ones.
 
 ![Teams by formation](escalacao/images/times.png)
 
@@ -17,17 +17,17 @@ The code is in English; folder names, messages, comments and the programs' outpu
 
 ## Installation
 
-In the repository folder:
+In the `football-analytics` folder:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-This installs `mem-ga` straight from GitHub, along with NumPy, Matplotlib and pytest.
+This installs `mem-ga` from the sibling folder, in editable mode, along with NumPy, Matplotlib and pytest.
 
 ## How to run
 
-Both programs run from the repository folder and ask for what is missing: the formation, for the lineup, and the club and position, for signings. To skip the questions:
+Both programs run from the `football-analytics` folder and ask for what is missing: the formation, for the lineup, and the club and position, for signings. To skip the questions:
 
 ```bash
 python -m escalacao --formation 4-4-2 --seed 2017

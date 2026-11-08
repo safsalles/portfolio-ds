@@ -1,4 +1,4 @@
-"""Para rodar, a partir da pasta do repositório: python -m contratacoes"""
+"""Para rodar, a partir da pasta `football-analytics`: python -m contratacoes"""
 
 from contratacoes.cli import main
 

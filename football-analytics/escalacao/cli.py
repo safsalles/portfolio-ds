@@ -1,6 +1,6 @@
 """MEM-GA: monta um time de futebol com o Método de Escolha Múltipla e algoritmo genético.
 
-Para rodar, a partir da pasta do repositório: python -m escalacao
+Para rodar, a partir da pasta `football-analytics`: python -m escalacao
 
 A nota e a busca vêm do pacote `mem` (regra `minimo` e algoritmo genético), com a posição
 no papel de grupo e a formação como vagas por posição.

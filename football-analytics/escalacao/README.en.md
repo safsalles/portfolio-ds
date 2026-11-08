@@ -8,7 +8,7 @@ The project began in my master's dissertation and uses data from the 2017 Brazil
 
 ![Teams by formation](images/times.png)
 
-Part of [football-analytics](../README.en.md). The generic method lives in [mem-ga](https://github.com/safsalles/mem-ga), with examples outside football. The sibling project, [signings](../contratacoes/README.en.md), suggests signings for a club with the same score. The [full analysis](analise.ipynb), in Portuguese, shows the team for each formation and why the most complementary team is not the 10 strongest players.
+Part of [football-analytics](../README.en.md). The generic method lives in [mem-ga](../../mem-ga/README.en.md), with examples outside football. The sibling project, [signings](../contratacoes/README.en.md), suggests signings for a club with the same score. The [full analysis](analise.ipynb), in Portuguese, shows the team for each formation and why the most complementary team is not the 10 strongest players.
 
 ## The method
 
@@ -42,11 +42,11 @@ A pair only passes if the team is good on both criteria, so a strong criterion d
 
 The default tau is 0.24. With it, the median club's starters pass 0.458 of the pairs, and the best team found reaches 0.9739, so the score still separates teams. With other data, tau needs recalibrating, and the [results](#results) show what changes with it.
 
-The score is the `minimo` rule from [mem-ga](https://github.com/safsalles/mem-ga), and the search is its genetic algorithm, with the position as the group and the formation as quotas per position. The mem-ga README explains [why the rule uses criteria in pairs and the minimum](https://github.com/safsalles/mem-ga/blob/main/README.en.md#the-two-rules), instead of the thesis's mean n at a time.
+The score is the `minimo` rule from [mem-ga](../../mem-ga/README.en.md), and the search is its genetic algorithm, with the position as the group and the formation as quotas per position. The mem-ga README explains [why the rule uses criteria in pairs and the minimum](../../mem-ga/README.en.md#the-two-rules), instead of the thesis's mean n at a time.
 
 ## How to run
 
-Install the dependencies as in the [repository README](../README.en.md#installation). Then, from the repository folder, run:
+Install the dependencies as in the [football-analytics README](../README.en.md#installation). Then, from the `football-analytics` folder, run:
 
 ```bash
 python -m escalacao

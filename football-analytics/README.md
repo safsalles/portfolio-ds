@@ -2,7 +2,7 @@
 
 *Leia em: [English](README.en.md)*
 
-Projetos de análise de futebol com dados do Campeonato Brasileiro de 2017. Os dois usam o Método de Escolha Múltipla, do pacote [mem-ga](https://github.com/safsalles/mem-ga), para achar jogadores que se completam, em vez de somar os mais fortes.
+Projetos de análise de futebol com dados do Campeonato Brasileiro de 2017. Os dois usam o Método de Escolha Múltipla, do pacote [mem-ga](../mem-ga/README.md), na pasta vizinha, para achar jogadores que se completam, em vez de somar os mais fortes.
 
 ![Times por formação](escalacao/images/times.png)
 
@@ -15,17 +15,17 @@ A [análise completa](escalacao/analise.ipynb) mostra os times de cada formaçã
 
 ## Instalação
 
-Na pasta do repositório:
+Na pasta `football-analytics`:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Isso instala o `mem-ga` direto do GitHub, junto com NumPy, Matplotlib e pytest.
+Isso instala o `mem-ga` da pasta vizinha, em modo editável, junto com NumPy, Matplotlib e pytest.
 
 ## Como rodar
 
-Os dois programas rodam a partir da pasta do repositório e perguntam o que falta: a formação, no caso da escalação, e o clube e a posição, no caso das contratações. Para pular as perguntas:
+Os dois programas rodam a partir da pasta `football-analytics` e perguntam o que falta: a formação, no caso da escalação, e o clube e a posição, no caso das contratações. Para pular as perguntas:
 
 ```bash
 python -m escalacao --formation 4-4-2 --seed 2017

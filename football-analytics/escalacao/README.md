@@ -8,7 +8,7 @@ O projeto nasceu na minha dissertação de mestrado e usa dados do Campeonato Br
 
 ![Times por formação](images/times.png)
 
-Faz parte do [football-analytics](../README.md). O método genérico fica no [mem-ga](https://github.com/safsalles/mem-ga), com exemplos fora do futebol. O projeto vizinho, [contratações](../contratacoes/README.md), sugere contratações para um clube com a mesma nota. A [análise completa](analise.ipynb) mostra os times de cada formação e por que o time mais complementar não é o dos 10 jogadores mais fortes.
+Faz parte do [football-analytics](../README.md). O método genérico fica no [mem-ga](../../mem-ga/README.md), com exemplos fora do futebol. O projeto vizinho, [contratações](../contratacoes/README.md), sugere contratações para um clube com a mesma nota. A [análise completa](analise.ipynb) mostra os times de cada formação e por que o time mais complementar não é o dos 10 jogadores mais fortes.
 
 ## O método
 
@@ -42,11 +42,11 @@ Um par só passa se o time for bom nos dois critérios, então um critério fort
 
 O tau padrão é 0,24. Com ele, os titulares do clube mediano passam em 0,458 dos pares, e o melhor time encontrado fica em 0,9739, então a nota ainda diferencia os times. Com outros dados, é preciso recalibrar o tau, e os [resultados](#resultados) mostram o que muda com ele.
 
-A nota é a regra `minimo` do [mem-ga](https://github.com/safsalles/mem-ga), e a busca é o algoritmo genético de lá, com a posição no papel de grupo e a formação como vagas por posição. O README do mem-ga explica [por que a regra usa os critérios dois a dois e o mínimo](https://github.com/safsalles/mem-ga#as-duas-regras), em vez da média n a n da tese.
+A nota é a regra `minimo` do [mem-ga](../../mem-ga/README.md), e a busca é o algoritmo genético de lá, com a posição no papel de grupo e a formação como vagas por posição. O README do mem-ga explica [por que a regra usa os critérios dois a dois e o mínimo](../../mem-ga/README.md#as-duas-regras), em vez da média n a n da tese.
 
 ## Como rodar
 
-Instale as dependências como no [README do repositório](../README.md#instalação). Depois, a partir da pasta do repositório, execute:
+Instale as dependências como no [README do football-analytics](../README.md#instalação). Depois, a partir da pasta `football-analytics`, execute:
 
 ```bash
 python -m escalacao
@@ -103,7 +103,7 @@ No final, o gráfico de radar do time abre em outra janela, e o programa termina
 
 Subir `--iterations` para 20.000 ou mais pode deixar a execução bem mais lenta em algumas formações. O 4-1-4-1 chegou a 105 segundos com 20.000 iterações e a 357 segundos com 30.000, em 10 processos paralelos.
 
-Para rodar os testes, também a partir da pasta do repositório:
+Para rodar os testes, também a partir da pasta `football-analytics`:
 
 ```bash
 python -m pytest

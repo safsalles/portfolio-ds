@@ -1,4 +1,4 @@
-mem-ga @ git+https://github.com/safsalles/mem-ga@v1.0
+-e ../mem-ga
 numpy>=2.0
 matplotlib>=3.8
 pytest>=8.0

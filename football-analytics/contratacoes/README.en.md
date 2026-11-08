@@ -4,7 +4,7 @@
 
 GA-MEM works the other way around from the [lineup](../escalacao/README.en.md): instead of building a team from scratch, it starts from a club and suggests the signings that most improve its complementarity. The score is the same, explained [in the lineup README](../escalacao/README.en.md#the-method).
 
-Part of [football-analytics](../README.en.md). Install the dependencies as in the [repository README](../README.en.md#installation) and run from the repository folder:
+Part of [football-analytics](../README.en.md). Install the dependencies as in the [football-analytics README](../README.en.md#installation) and run from the `football-analytics` folder:
 
 ```bash
 python -m contratacoes

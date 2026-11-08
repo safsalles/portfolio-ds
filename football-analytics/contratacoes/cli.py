@@ -1,6 +1,6 @@
 """GA-MEM: lista as contratações que mais melhoram a complementação de um time.
 
-Para rodar, a partir da pasta do repositório: python -m contratacoes
+Para rodar, a partir da pasta `football-analytics`: python -m contratacoes
 
 Usa a mesma nota e os mesmos dados da escalação. Em vez de montar um time do zero, parte
 do time atual do clube e mostra as melhores opções de uma contratação.

@@ -1,4 +1,4 @@
-"""Para rodar, a partir da pasta do repositório: python -m escalacao"""
+"""Para rodar, a partir da pasta `football-analytics`: python -m escalacao"""
 
 from escalacao.cli import main
 

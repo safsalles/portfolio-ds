@@ -1,7 +1,7 @@
 """Confere que os resultados continuam iguais aos gravados antes da divisão.
 
-O referencia.json foi gravado em 2026-11-07 com o código de antes da divisão, quando
-ele ainda estava no repositório portfolio-ds. Se um destes testes falhar, algo mudou no
+O referencia.json foi gravado em 2026-11-07 com o código de antes da divisão entre
+mem-ga/ e football-analytics/ (commit e206e9a do portfolio-ds). Se um destes testes falhar, algo mudou no
 resultado. Não edite referencia.json:
 ache a causa.
 """
