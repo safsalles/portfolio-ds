@@ -4,7 +4,7 @@ O File Exchange é a loja de códigos da MathWorks. Quem usa MATLAB acha o pacot
 
 ## 0. Antes de publicar: testar no MATLAB
 
-Os testes passaram no GNU Octave 9.4, mas **nunca foram rodados no MATLAB**. Antes de publicar, rode uma vez:
+**Já feito em 08/11/2026:** os testes passaram no GNU Octave 9.4 e também no MATLAB Online (12 testes, nenhum falhou), e o radar abriu. Se você mudar o código, rode de novo assim:
 
 1. Abra o **MATLAB Online** em <https://matlab.mathworks.com> (grátis com uma conta MathWorks, com um limite de horas por mês).
 2. Envie a pasta `matlab` para lá (arraste a pasta, ou compacte em `.zip` e use *Upload*).

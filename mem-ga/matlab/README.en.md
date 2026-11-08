@@ -8,7 +8,9 @@ It needs MATLAB R2016b or newer (or GNU Octave 7 or newer). It uses no toolbox.
 
 ## Installation
 
-Download the `matlab` folder and add it to the MATLAB path:
+From the [File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/185196-memga-multiple-choice-method-for-selecting-sets-of-alternatives): in MATLAB, open **Add-Ons → Get Add-Ons**, search for `memga` and click **Add**.
+
+Or download the `matlab` folder and add it to the MATLAB path:
 
 ```matlab
 addpath('path/to/mem-ga/matlab')
@@ -54,7 +56,7 @@ run_tests('full')  % also runs the full genetic algorithm on the large example
 
 The reference values in `tests/ref` come from the Python version, so the versions agree: the ranking of the `'mean'` rule is identical, and the `'minimum'` rule agrees at the top of the ranking (below that, sets that sit exactly at tau can fall on either side because of floating point).
 
-The tests passed on GNU Octave 9.4. They have not been run on MATLAB yet.
+The tests passed on GNU Octave 9.4 and on MATLAB Online (November 2026), and the radar chart opens without errors.
 
 ## Reference
 
