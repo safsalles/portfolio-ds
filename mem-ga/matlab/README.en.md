@@ -42,7 +42,7 @@ To use your own data, build the problem with `memga_problem(values)`, a matrix w
 | `'Options'` | Genetic algorithm settings, from `memga_options`. |
 | `'Seed'` | A seed to repeat a result. |
 
-Type `help memga` for the full list. The result is a struct with `team`, `score`, `ranking` (exhaustive search), `history` (genetic algorithm) and `traditional`.
+Type `help memga` for the full list. The result is a struct with `team`, `score`, `ranking` (exhaustive search), `history` (genetic algorithm) and `traditional`. If no set reaches `tau`, `memga` issues a warning with the highest value found, to help choose a smaller `tau`.
 
 The genetic algorithm with the default settings takes about 75 seconds on the large example, in Octave. It does not prove the best answer, so repeat it with other seeds.
 

@@ -4,6 +4,7 @@ Ela junta o que está nos outros módulos: monta a regra de nota, roda a busca e
 o algoritmo genético e compara o resultado com a escolha tradicional.
 """
 
+import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -11,6 +12,7 @@ import numpy as np
 
 from memga.busca import GAConfig, exhaustive, run_ga, traditional_choice
 from memga.problema import Problem, load_problem, normalize
+from memga.radar import COLORS, MUTED, plot_radar
 from memga.regras import build_rule
 
 DEFAULT_TAU = 0.24
@@ -50,6 +52,31 @@ class MemgaResult:
     ranking: list[Ranked] = field(default_factory=list)
     history: list[float] = field(default_factory=list)
     payment: np.ndarray | None = None
+
+    def radar(self, compare=True, path=None, show=True):
+        """Desenha o radar do conjunto escolhido, critério a critério.
+
+        Compara a média do conjunto com a escolha tradicional e com a média de todas as
+        alternativas. Salva em `path`, se houver, e abre uma janela se `show` for verdadeiro.
+        Os valores são os normalizados de 0 a 1 (1 é o melhor), já ajustados pelo grupo
+        quando há grupos, então um valor pode passar de 1.
+        """
+        names = list(self.problem.alternatives)
+
+        def mean_of(team):
+            return self.payment[[names.index(name) for name in team]].mean(axis=0)
+
+        profiles = [("All alternatives", self.payment.mean(axis=0), MUTED, "dash")]
+        if compare:
+            profiles.append(("Traditional choice", mean_of(self.traditional[0]), COLORS[1], "line"))
+        profiles.append(("Selected set", mean_of(self.team), COLORS[0], "fill"))
+        labels = [
+            f"{name}*" if direction == 0 else name
+            for name, direction in zip(self.problem.criteria, self.problem.direction)
+        ]
+        note = "* Less is better, so the axis is inverted: 1 is the best." if 0 in self.problem.direction else ""
+        title = f"Selected set: {', '.join(self.team)} ({self.score:.1%})"
+        plot_radar(labels, [(title, profiles)], path, show, note)
 
     def __str__(self):
         search = "exhaustive search" if self.method == "exhaustive" else "genetic algorithm"
@@ -150,12 +177,27 @@ def memga(problem, size=None, method="exhaustive", rule=None, tau=DEFAULT_TAU, q
     result = dict(method=method, rule=rule, tau=tau, size=size, problem=problem,
                   traditional=traditional, quotas=quotas, seed=seed, payment=fitted.payment)
     if method == "exhaustive":
+        found = exhaustive(fitted, len(names), size, problem.groups, quotas)
         ranking = [
-            Ranked(c.position, tuple(names[i] for i in c.alternatives), c.score)
-            for c in exhaustive(fitted, len(names), size, problem.groups, quotas)
+            Ranked(c.position, tuple(names[i] for i in c.alternatives), c.score) for c in found
         ]
+        if ranking[0].score == 0:
+            _warn_no_set_reaches_tau(fitted, tau, [c.alternatives for c in found])
         return MemgaResult(team=ranking[0].alternatives, score=ranking[0].score, ranking=ranking, **result)
 
     found = run_ga(fitted, problem.groups, quotas, size, config or GAConfig(), seed, on_progress)
+    if found.score == 0:
+        _warn_no_set_reaches_tau(fitted, tau, [found.team])
     return MemgaResult(team=tuple(names[i] for i in found.team), score=found.score,
                        history=found.history, **result)
+
+
+def _warn_no_set_reaches_tau(fitted, tau, sets):
+    """Avisa quando nenhum conjunto alcança o tau, com o maior valor encontrado."""
+    highest = max(float(fitted.combo_values(chosen).max()) for chosen in sets)
+    warnings.warn(
+        f"Nenhum conjunto alcança o tau ({tau:g}): o maior valor encontrado foi {highest:.3g}. "
+        "Tente um tau menor ou informe a matriz de complementaridade: calculada de poucas "
+        "alternativas, ela costuma ficar perto de zero.",
+        stacklevel=3,
+    )

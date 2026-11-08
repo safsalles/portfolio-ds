@@ -130,3 +130,29 @@ def test_size_must_match_quotas(large):
         memga(large, size=3, quotas=QUOTAS, method="ga")
     with pytest.raises(ValueError, match="não estão"):
         memga(large, quotas={"pilot": 2}, method="ga")
+
+
+def test_warns_when_no_set_reaches_tau():
+    import numpy as np
+
+    from memga.problema import Problem
+
+    values = np.array([[9, 4, 3], [8, 5, 4], [3, 9, 8], [6, 6, 6]], float)
+    tiny = Problem(("a", "b", "c", "d"), ("x", "y", "z"), values, np.array([1, 1, 0]), np.ones(3))
+    with pytest.warns(UserWarning, match="Nenhum conjunto alcança o tau"):
+        result = memga(tiny, size=2, tau=0.2)
+    assert result.score == 0
+
+
+def test_no_warning_when_some_set_reaches_tau(small, recwarn):
+    memga(small, size=2)
+    assert not [w for w in recwarn if "tau" in str(w.message)]
+
+
+def test_radar_saves_a_png(small, tmp_path):
+    target = tmp_path / "radar.png"
+    memga(small, size=2).radar(path=target, show=False)
+    assert target.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+    other = tmp_path / "sem-comparacao.png"
+    memga(small, size=2).radar(compare=False, path=other, show=False)
+    assert other.exists()

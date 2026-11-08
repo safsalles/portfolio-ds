@@ -15,7 +15,8 @@ addpath(fileparts(here));
 tests = {@test_problem_checks, @test_read_problem, @test_exhaustive_matches_python, ...
          @test_scores_match_python, @test_example_prefers_complement, @test_quotas_exhaustive, ...
          @test_traditional_and_score, @test_ga_basics, @test_ga_seed, ...
-         @test_ga_finds_exhaustive_best, @test_bad_arguments, @test_print_and_radar};
+         @test_ga_finds_exhaustive_best, @test_bad_arguments, @test_print_and_radar, ...
+         @test_warns_when_no_set_reaches_tau};
 if full
     tests{end + 1} = @test_ga_large_best;
 end
@@ -279,6 +280,20 @@ set(0, 'DefaultFigureVisible', 'off');
 memga_radar(result);
 close all
 set(0, 'DefaultFigureVisible', 'on');
+end
+
+function test_warns_when_no_set_reaches_tau(~)
+values = [9 4 3; 8 5 4; 3 9 8; 6 6 6];
+tiny = memga_problem(values, 'Direction', {'max', 'max', 'min'});
+lastwarn('');
+result = memga(tiny, 2, 'Tau', 0.2);
+[~, id] = lastwarn;
+check(result.score == 0, 'every set scores 0');
+check(strcmp(id, 'memga:noSetReachesTau'), 'warns when no set reaches tau');
+lastwarn('');
+memga(memga_load_example('small'), 2);
+[~, id] = lastwarn;
+check(~strcmp(id, 'memga:noSetReachesTau'), 'no warning when some set reaches tau');
 end
 
 function test_ga_large_best(here)

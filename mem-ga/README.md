@@ -54,7 +54,7 @@ print(resultado.team, resultado.score)
 # ('P007', 'P038', 'P192', 'P276') 0.6785714285714286
 ```
 
-Os argumentos principais são `method` (`"exhaustive"` ou `"ga"`), `rule` (`"mean"`, a da tese, ou `"minimum"`), `tau`, `quotas` e `config` (um `GAConfig`). Sem `rule`, a busca exaustiva usa `"mean"` e o algoritmo genético usa `"minimum"`. O resultado traz `team`, `score`, `ranking` (na busca exaustiva), `history` (no algoritmo genético) e `traditional`.
+Os argumentos principais são `method` (`"exhaustive"` ou `"ga"`), `rule` (`"mean"`, a da tese, ou `"minimum"`), `tau`, `quotas` e `config` (um `GAConfig`). Sem `rule`, a busca exaustiva usa `"mean"` e o algoritmo genético usa `"minimum"`. O resultado traz `team`, `score`, `ranking` (na busca exaustiva), `history` (no algoritmo genético) e `traditional`. Para ver o gráfico de radar do conjunto escolhido contra a escolha tradicional, use `resultado.radar()` (ou `resultado.radar(path="radar.png", show=False)` para salvar em arquivo). Se nenhum conjunto alcançar o `tau`, `memga()` avisa e diz o maior valor encontrado, para ajudar a escolher um `tau` menor.
 
 Para usar os módulos separadamente, a partir da pasta `mem-ga`:
 

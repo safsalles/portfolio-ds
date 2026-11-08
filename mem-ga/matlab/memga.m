@@ -124,4 +124,11 @@ else
     result.score = found.score;
     result.history = found.history;
 end
+
+if result.score == 0
+    warning('memga:noSetReachesTau', ...
+            ['No set reaches tau (%g): the highest value found was %.3g. Try a smaller tau, ' ...
+             'or give the complementarity matrix: computed from few alternatives, it tends to be near zero.'], ...
+            tau, found.max_value);
+end
 end

@@ -56,7 +56,7 @@ print(result.team, result.score)
 # ('P007', 'P038', 'P192', 'P276') 0.6785714285714286
 ```
 
-The main arguments are `method` (`"exhaustive"` or `"ga"`), `rule` (`"mean"`, the thesis rule, or `"minimum"`), `tau`, `quotas` and `config` (a `GAConfig`). Without `rule`, the exhaustive search uses `"mean"` and the genetic algorithm uses `"minimum"`. The result has `team`, `score`, `ranking` (exhaustive search), `history` (genetic algorithm) and `traditional`.
+The main arguments are `method` (`"exhaustive"` or `"ga"`), `rule` (`"mean"`, the thesis rule, or `"minimum"`), `tau`, `quotas` and `config` (a `GAConfig`). Without `rule`, the exhaustive search uses `"mean"` and the genetic algorithm uses `"minimum"`. The result has `team`, `score`, `ranking` (exhaustive search), `history` (genetic algorithm) and `traditional`. To see the radar chart of the selected set against the traditional choice, use `result.radar()` (or `result.radar(path="radar.png", show=False)` to save it to a file). If no set reaches `tau`, `memga()` warns and reports the highest value found, to help choose a smaller `tau`.
 
 To use the modules separately, from the `mem-ga` folder:
 

@@ -42,7 +42,7 @@ Para usar seus dados, monte o problema com `memga_problem(valores)`, uma matriz 
 | `'Options'` | Ajustes do algoritmo genético, de `memga_options`. |
 | `'Seed'` | Semente, para repetir um resultado. |
 
-Digite `help memga` para a lista completa. O resultado é uma struct com `team`, `score`, `ranking` (na busca exaustiva), `history` (no algoritmo genético) e `traditional`.
+Digite `help memga` para a lista completa. O resultado é uma struct com `team`, `score`, `ranking` (na busca exaustiva), `history` (no algoritmo genético) e `traditional`. Se nenhum conjunto alcançar o `tau`, `memga` emite um aviso com o maior valor encontrado, para ajudar a escolher um `tau` menor.
 
 O algoritmo genético com as configurações padrão leva cerca de 75 segundos no exemplo grande, no Octave. Ele não prova a melhor resposta, então vale repetir com outras sementes.
 

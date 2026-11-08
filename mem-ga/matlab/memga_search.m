@@ -42,12 +42,7 @@ scores = zeros(n_sets, 1);
 chunk = 50000;
 for first = 1:chunk:n_sets
     index = first:min(first + chunk - 1, n_sets);
-    picked = sets(index, :);
-    sums = zeros(numel(index), size(rule.payment, 2));
-    for j = 1:set_size
-        sums = sums + rule.payment(picked(:, j), :);
-    end
-    scores(index) = memga_rules('rate_means', rule, sums / set_size);
+    scores(index) = memga_rules('rate_means', rule, set_means(rule, sets(index, :)));
 end
 
 % sort is stable and nchoosek is in lexicographic order, so ties keep that order.
@@ -55,7 +50,27 @@ end
 ranked = scores(order);
 is_new = [true; diff(ranked) ~= 0];
 position = cummax((1:n_sets)' .* is_new);
-result = struct('sets', sets(order, :), 'score', ranked, 'position', position);
+
+% When no set reaches tau, report the highest value found, to help choose tau.
+max_value = NaN;
+if ranked(1) == 0
+    max_value = 0;
+    for first = 1:chunk:n_sets
+        index = first:min(first + chunk - 1, n_sets);
+        values = memga_rules('values', rule, set_means(rule, sets(index, :)));
+        max_value = max(max_value, max(values(:)));
+    end
+end
+result = struct('sets', sets(order, :), 'score', ranked, 'position', position, 'max_value', max_value);
+end
+
+function means = set_means(rule, picked)
+% Average performance of each set (one per row of PICKED) on each criterion.
+sums = zeros(size(picked, 1), size(rule.payment, 2));
+for j = 1:size(picked, 2)
+    sums = sums + rule.payment(picked(:, j), :);
+end
+means = sums / size(picked, 2);
 end
 
 % ======================================================================
@@ -148,7 +163,12 @@ end
 if progress
     fprintf('\n');
 end
-result = struct('team', best.team, 'score', best.score, 'history', history);
+max_value = NaN;
+if best.score == 0
+    means = mean(rule.payment(best.team, :), 1);
+    max_value = max(memga_rules('values', rule, means));
+end
+result = struct('team', best.team, 'score', best.score, 'history', history, 'max_value', max_value);
 end
 
 function key = team_key(team)
