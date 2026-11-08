@@ -10,7 +10,7 @@ from memga.api import MemgaResult, Ranked, load_example, memga
 from memga.busca import GAConfig, traditional_choice
 from memga.problema import Problem, load_problem
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 __all__ = [
     "GAConfig",

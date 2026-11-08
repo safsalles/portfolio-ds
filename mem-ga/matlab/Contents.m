@@ -1,5 +1,5 @@
 % MEMGA - Multiple Choice Method for selecting sets of alternatives
-% Version 1.1.0
+% Version 1.2.0
 %
 % Main function
 %   memga               - select a set of alternatives (exhaustive search or genetic algorithm)

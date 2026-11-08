@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "memga"
-version = "1.1.0"
+version = "1.2.0"
 description = "Multiple Choice Method (MEM): select a set of alternatives that complement each other, by exhaustive search or a genetic algorithm"
 readme = "README.md"
 requires-python = ">=3.10"
