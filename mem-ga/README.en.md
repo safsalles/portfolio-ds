@@ -2,6 +2,8 @@
 
 *Read in: [Português](README.md)*
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24062574.svg)](https://doi.org/10.5281/zenodo.24062574)
+
 The Multiple Choice Method (MEM, from the Portuguese *Método de Escolha Múltipla*) picks a set of alternatives that complement each other, instead of taking the best ones one by one. It fits any choice where the group matters more than each part: teams, portfolios, committees.
 
 This repository packages the method as a Python package, `memga`, with:
@@ -176,4 +178,4 @@ And, where it applies, the original method:
 
 > da Hora, H. R. M. and Costa, H. G. (2015). Proposta de um método multicritério para escolha múltipla. *Production*, 25(2). <https://doi.org/10.1590/0103-6513.084812>
 
-To cite the software, the [CITATION.cff](CITATION.cff) file has the details, and the Zenodo DOI will be added here once it exists.
+To cite the software, use the DOI that stands for all versions, [10.5281/zenodo.24062574](https://doi.org/10.5281/zenodo.24062574). The [CITATION.cff](CITATION.cff) file has the details, and version 1.2.0 has its own DOI, [10.5281/zenodo.24062575](https://doi.org/10.5281/zenodo.24062575).

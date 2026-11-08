@@ -9,6 +9,11 @@ abstract: >-
   Python, R, MATLAB and GNU Octave.
 version: "1.2.0"
 date-released: "2026-11-08"
+doi: "10.5281/zenodo.24062574"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.24062575"
+    description: "The DOI of version 1.2.0. The DOI above stands for all versions."
 license: MIT
 repository-code: "https://github.com/safsalles/portfolio-ds/tree/main/mem-ga"
 url: "https://github.com/safsalles/portfolio-ds/tree/main/mem-ga"

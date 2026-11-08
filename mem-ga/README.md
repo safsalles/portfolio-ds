@@ -2,6 +2,8 @@
 
 *Leia em: [English](README.en.md)*
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24062574.svg)](https://doi.org/10.5281/zenodo.24062574)
+
 O Método de Escolha Múltipla (MEM) escolhe um conjunto de alternativas que se completam, em vez de pegar as melhores uma a uma. Serve para montar equipes, carteiras, comitês, qualquer escolha em que o grupo importa mais que cada parte.
 
 Este repositório traz o método como um pacote Python, `memga`, com:
@@ -174,4 +176,4 @@ E, se for o caso, o método original:
 
 > da Hora, H. R. M. e Costa, H. G. (2015). Proposta de um método multicritério para escolha múltipla. *Production*, 25(2). <https://doi.org/10.1590/0103-6513.084812>
 
-Para citar o software, o arquivo [CITATION.cff](CITATION.cff) traz os dados, e o DOI do Zenodo será acrescentado aqui quando existir.
+Para citar o software, use o DOI que representa todas as versões, [10.5281/zenodo.24062574](https://doi.org/10.5281/zenodo.24062574). O arquivo [CITATION.cff](CITATION.cff) traz os dados, e a versão 1.2.0 tem o DOI próprio [10.5281/zenodo.24062575](https://doi.org/10.5281/zenodo.24062575).
