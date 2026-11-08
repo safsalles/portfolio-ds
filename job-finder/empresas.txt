@@ -38,6 +38,8 @@ Nomus | ok | ERP para indústrias de pequeno e médio porte
 Bemol Digital | ok | Braço digital da Bemol, maior varejista da Amazônia
 LawnStarter | ok | Marketplace americano de jardinagem com time remoto
 Zummit | ok | Consultoria de dados e BI
+Sysmap | ok
+Vetta | ok
 
 # --- meh ---
 Bernoulli Educação | meh | Rede de escolas e sistema de ensino de Belo Horizonte
@@ -52,6 +54,12 @@ Projectiva Holding | meh | Holding de serviços empresariais
 Extractta | meh | Empresa de tecnologia e extração de dados
 JOPY | meh | Startup de recrutamento e vagas
 BH Complete Solutions | meh | Empresa de serviços terceirizados
+Certsys | meh
+CLINICA SIM | meh
+King of Languages | meh
+Radix Engenharia e Software | ok
+RESET RH CONSULTORIA LTDA | ok
+
 
 # --- evitar ---
 Barcelos | evitar | Atacado e supermercados
@@ -59,3 +67,4 @@ Atacadão | evitar | Atacarejo do grupo Carrefour
 Assaí | evitar | Rede de atacarejo
 Dom Atacadista | evitar | Rede de atacarejo
 Lojas Renner | evitar | Varejista de moda
+Oportunidades | evitar | Uma empresa que há mais de 40 anos desenvolve soluções para transformar os sonhos dos nossos clientes e colaboradores em experiências incríveis.
