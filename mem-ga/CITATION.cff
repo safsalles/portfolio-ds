@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "memga: Multiple Choice Method for selecting sets of alternatives"
+abstract: >-
+  Selects a set of alternatives that complement each other, instead of ranking the
+  alternatives one by one. Implements the Multiple Choice Method (MEM) and an adaptation
+  for larger problems, with an exhaustive search and a genetic algorithm. Available for
+  Python, R, MATLAB and GNU Octave.
+version: "1.2.0"
+date-released: "2026-11-08"
+license: MIT
+repository-code: "https://github.com/safsalles/portfolio-ds/tree/main/mem-ga"
+url: "https://github.com/safsalles/portfolio-ds/tree/main/mem-ga"
+keywords:
+  - multicriteria decision making
+  - genetic algorithm
+  - selection of sets
+  - Python
+  - R
+  - MATLAB
+authors:
+  - family-names: Salles
+    given-names: Sérgio Augusto Faria
+    email: safsalles@hotmail.com
+  - family-names: da Hora
+    given-names: Henrique Rego Monteiro
+references:
+  - type: article
+    title: "Proposta de um método multicritério para escolha múltipla"
+    authors:
+      - family-names: da Hora
+        given-names: Henrique Rego Monteiro
+      - family-names: Costa
+        given-names: Helder Gomes
+    journal: "Production"
+    volume: 25
+    issue: 2
+    year: 2015
+    doi: "10.1590/0103-6513.084812"
