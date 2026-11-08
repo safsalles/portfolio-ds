@@ -15,8 +15,19 @@
 # Professor ou docente, só de faculdade.
 \b(professor|docente)\b.*\b(ensino superior|faculdade|universi|graduacao|pos-graduacao|mba)
 \b(ensino superior|faculdade|universi|graduacao|pos-graduacao|mba).*\b(professor|docente)\b
+# Cargo comercial só se for de inteligência comercial.
+inteligencia comercial
 
 [excluir]
+# --- comercial, compras e negociação com fornecedores e clientes ---
+comercial
+comprador
+compras
+negociac
+key account
+trade marketing
+atendimento ao cliente
+sucesso do cliente
 # --- funções operacionais ---
 estoquista
 repositor
@@ -165,15 +176,12 @@ contas a receber
 # fiscal (tirado: você não quer fiscal/contábil)
 tesouraria
 auditoria
-# --- comercial e pricing ---
-comercial
+# --- pricing e inteligência de mercado ---
+# (comercial só entra como "inteligência comercial", pela seção [sempre])
 pricing
 precificacao
-mercado
-trade marketing
+inteligencia de mercado
 # --- supply chain e logística ---
-compras
-comprador
 suprimentos
 supply
 logistic

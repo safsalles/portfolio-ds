@@ -28,21 +28,23 @@ def test_loja_vendas_fiscal_ti_e_ambiente_saem():
                  "Operador de Loja", "ANALISTA DE POS VENDAS", "GERENTE DE VENDAS - SGA TOYOTA",
                  "Analista Comercial De Vendas", "Analista Fiscal Sênior", "Analista Contábil Pleno",
                  "Analista De TI", "Analista de Sistemas", "Analista de Suporte PL",
-                 "Analista de Meio Ambiente", "Analista de Relacionamento Comercial"):
+                 "Analista de Meio Ambiente", "Analista de Relacionamento Comercial",
+                 "Comprador Pleno", "Analista de Compras", "Executivo de Trade Marketing",
+                 "Assistente Comercial", "Analista de Negociação"):
     assert not p.titulo_serve(titulo, FILTROS), titulo
 
 
 def test_empresas_que_voce_quer_evitar():
   import empresas
   avaliacoes = empresas.carregar()
-  for empresa in ("Barcelos", "ATACADAO", "Assaí Atacadista", "DOME Serviços Integrados",
+  for empresa in ("Barcelos", "ATACADAO", "Assaí Atacadista", "Dom Atacadista",
                   "Lojas Renner"):
     assert empresas.avaliacao(empresa, avaliacoes)["nota"] == "evitar", empresa
 
 
 def test_cargos_do_seu_perfil_entram():
   for titulo in ("Analista Administrativo", "Assistente Administrativo",
-                 "Analista de Planejamento", "Comprador Pleno", "Analista de BI",
+                 "Analista de Planejamento", "Analista de Inteligência Comercial", "Analista de BI",
                  "Coordenador de Logística", "Analista de Fluxo de Caixa",
                  "Analista de Medição", "Supervisor de Qualidade"):
     assert p.titulo_serve(titulo, FILTROS), titulo
@@ -74,9 +76,9 @@ def test_filtro_tira_remota_fora_das_cidades_e_repetida_e_ordena_por_empresa():
   aceitas = p.filtrar([
       vaga("Analista Administrativo", "Zeta"),
       vaga("Analista Administrativo", "Zeta"),  # a mesma vaga em outra fonte
-      vaga("Analista de Compras", "Alfa", modelo="hibrido"),
+      vaga("Analista de Planejamento", "Alfa", modelo="hibrido"),
       vaga("Analista de Dados", "Beta", modelo="remoto"),
-      vaga("Analista de Compras", "Gama", local="Niterói, Rio de Janeiro, Brasil"),
+      vaga("Analista de Planejamento", "Gama", local="Niterói, Rio de Janeiro, Brasil"),
       vaga("Analista Financeiro", "Empresa Confidencial"),
       vaga("Estoquista", "Alfa"),
   ], FILTROS, {})
