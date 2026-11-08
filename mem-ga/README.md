@@ -14,10 +14,16 @@ Dois exemplos fictícios de recrutamento mostram o uso: um pequeno, para acompan
 
 ## Instalação
 
-Do PyPI:
+Do [PyPI](https://pypi.org/project/memga/):
 
 ```bash
 pip install memga
+```
+
+Para R, o mesmo método está no pacote `memga`, na pasta [r](r/), que também se instala pelo [R-universe](https://safsalles.r-universe.dev):
+
+```r
+install.packages("memga", repos = c("https://safsalles.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 Para mexer no código, na pasta `mem-ga`:

@@ -16,10 +16,16 @@ The code is in English; messages, comments, column names and example data are in
 
 ## Installation
 
-From PyPI:
+From [PyPI](https://pypi.org/project/memga/):
 
 ```bash
 pip install memga
+```
+
+For R, the same method is in the `memga` package, in the [r](r/) folder, which can also be installed from [R-universe](https://safsalles.r-universe.dev):
+
+```r
+install.packages("memga", repos = c("https://safsalles.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 To work on the code, in the `mem-ga` folder:
