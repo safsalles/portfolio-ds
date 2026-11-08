@@ -1,0 +1,55 @@
+# Sua avaliação das empresas. Uma por linha:
+#   Nome da empresa | nota | por que a empresa é maneira (uma linha)
+#
+# Notas (de cima para baixo no e-mail):
+#   quero muito  -> bloco "Empresas que você quer", no topo dele
+#   quero        -> bloco "Empresas que você quer"
+#   ok           -> segue a regra normal (grande empresa ou outras)
+#   meh          -> vai para o fim do e-mail
+#   evitar       -> a vaga nem aparece
+#
+# A comparação ignora maiúsculas e acentos e procura o nome inteiro dentro
+# do nome da empresa da vaga ("Genius Sports" casa com "Genius Sports Group").
+# Empresas que aparecerem no e-mail e não estiverem aqui vão para a seção
+# "Empresas novas para você avaliar": copie a linha sugerida e dê a nota.
+
+# --- quero muito ---
+Genius Sports | quero muito | Dados e tecnologia esportiva; fornece os dados oficiais de ligas no mundo todo, inclusive do Brasileirão com a CBF
+
+# --- quero ---
+Semantix | quero | Empresa brasileira de dados e IA, listada na Nasdaq
+BairesDev | quero | Consultoria de software 100% remota, com clientes globais e milhares de devs na América Latina
+Constructor | quero | Motor de busca e recomendação com IA para grandes e-commerces
+Customer.io | quero | Plataforma de automação de mensagens para empresas de tecnologia, time remoto global
+
+# --- ok ---
+Reflow | ok | Startup de 2024 de inteligência de força de trabalho (workforce intelligence)
+Looqbox | ok | Startup brasileira que responde perguntas de negócio em linguagem natural sobre os dados da empresa
+Nexdom Healthtech | ok | Healthtech de tecnologia para o sistema Unimed
+Vetta Tecnologia | ok | Digitalização e software para a indústria, do grupo SMS
+Gera Sales Ecosystem | ok | SaaS de gestão de vendas e força de campo, no mercado desde 2005
+Asaas | ok | Fintech de cobrança e conta digital para pequenas e médias empresas
+Unicred | ok | Cooperativa de crédito nacional, nascida entre profissionais de saúde
+Libbs Farmacêutica | ok | Farmacêutica brasileira de capital nacional, com fábrica própria em SP
+Anima Educação | ok | Um dos maiores grupos de ensino superior do Brasil
+Grupo SysMap | ok | Consultoria de tecnologia com foco em telecom e transformação digital
+Quality Digital | ok | Consultoria de e-commerce e transformação digital para varejo
+Nomus | ok | ERP para indústrias de pequeno e médio porte
+Bemol Digital | ok | Braço digital da Bemol, maior varejista da Amazônia
+LawnStarter | ok | Marketplace americano de jardinagem com time remoto
+Zummit | ok | Consultoria de dados e BI
+
+# --- meh ---
+Bernoulli Educação | meh | Rede de escolas e sistema de ensino de Belo Horizonte
+Poliedro Educação | meh | Sistema de ensino e colégios focados em vestibulares
+Grupo Real | meh | Grupo empresarial de varejo e distribuição
+Método Grupo | meh | Grupo de serviços e gestão administrativa
+BMA Advogados | meh | Escritório de advocacia empresarial no Rio e em SP
+INDI Staffing Services | meh | Agência de recrutamento e terceirização de profissionais
+Atlântico | meh | Instituto de pesquisa e desenvolvimento em tecnologia, em Fortaleza
+Grupo Bancobrás | meh | Grupo de serviços financeiros e correspondentes bancários
+Projectiva Holding | meh | Holding de serviços empresariais
+Extractta | meh | Empresa de tecnologia e extração de dados
+JOPY | meh | Startup de recrutamento e vagas
+BH Complete Solutions | meh | Empresa de serviços terceirizados
+Oportunidades | meh | Nome genérico usado por agregadores de vagas

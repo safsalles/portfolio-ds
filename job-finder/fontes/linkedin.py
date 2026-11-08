@@ -1,0 +1,87 @@
+"""LinkedIn pela busca pública de vagas (sem login).
+
+Não usa a sua conta, então não tem risco de banimento. Em troca, o LinkedIn
+limita quantas buscas seguidas aceita: o bot faz poucas, com pausa entre
+elas, e se for bloqueado segue com as outras fontes.
+"""
+
+import re
+import time
+from urllib.parse import urlencode
+
+from util import baixar, limpar_html, minutos_desde, nova_vaga
+
+URL_BUSCA = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search?"
+URL_VAGA = "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/{id}"
+
+BRASIL = "106057199"
+AMERICA_LATINA = "91000011"
+MUNDO = "92000000"
+REMOTO = "2"  # filtro f_WT do LinkedIn
+
+PAUSA = 6  # segundos entre pedidos
+
+
+def _ler_cards(html):
+  # O modelo (remoto/híbrido/presencial) fica vazio: a busca pública ignora o
+  # filtro de remoto, então ele é lido depois na descrição da vaga.
+  vagas = []
+  for card in html.split("<li>")[1:]:
+    m_link = re.search(r'href="(https://[a-z]+\.linkedin\.com/jobs/view/[^"?]+)', card)
+    if not m_link:
+      continue
+    titulo = re.search(r'base-search-card__title">\s*([^<]+)', card)
+    empresa = re.search(r'base-search-card__subtitle">[\s\S]*?>\s*([^<]+)</a>', card)
+    local = re.search(r'job-search-card__location">\s*([^<]+)', card)
+    data = re.search(r'datetime="([^"]+)"', card)
+    minutos, rotulo = minutos_desde(data.group(1) if data else None)
+    vagas.append(nova_vaga(
+        limpar_html(titulo.group(1)) if titulo else "",
+        limpar_html(empresa.group(1)) if empresa else "",
+        m_link.group(1), "LinkedIn",
+        local=limpar_html(local.group(1)) if local else "",
+        minutos=minutos, publicada=rotulo,
+    ))
+  return vagas
+
+
+SEMANA = "r604800"
+MES = "r2592000"
+
+
+def buscar(buscas):
+  """buscas: lista de (palavras, geoId, só_remoto, período). O período é
+  SEMANA ou MES (vagas de futebol são raras, então olham o mês todo)."""
+  vagas = {}
+  for palavras, geo, so_remoto, periodo in buscas:
+    parametros = {"keywords": palavras, "geoId": geo, "f_TPR": periodo}
+    if so_remoto:
+      parametros["f_WT"] = REMOTO
+    html = baixar(URL_BUSCA + urlencode(parametros), tentativas=2, pausa=PAUSA)
+    time.sleep(PAUSA)
+    if html is None:
+      print(f"   LinkedIn: '{palavras}' bloqueada ou falhou, pulando")
+      continue
+    encontradas = _ler_cards(html)
+    print(f"   LinkedIn: '{palavras}' -> {len(encontradas)} vagas")
+    for v in encontradas:
+      vagas.setdefault(v["link"], v)
+  return list(vagas.values())
+
+
+def completar_descricao(vaga):
+  """Abre a vaga pra ler a descrição (de onde saem o modelo de trabalho e
+  se aceita quem mora no Brasil). Devolve False se a vaga já não aceita
+  candidaturas."""
+  m = re.search(r"-(\d+)$", vaga["link"].rstrip("/"))
+  if not m:
+    return True
+  html = baixar(URL_VAGA.format(id=m.group(1)), tentativas=2, pausa=PAUSA)
+  time.sleep(PAUSA)
+  if html is None:
+    return True
+  if re.search(r"no longer accepting applications|não aceita mais candidaturas", html, re.I):
+    return False
+  corpo = re.search(r'show-more-less-html__markup[^>]*>([\s\S]*?)</div>', html)
+  vaga["descricao"] = limpar_html(corpo.group(1) if corpo else html)
+  return True

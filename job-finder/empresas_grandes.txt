@@ -1,0 +1,196 @@
+# Grandes empresas: vagas delas vêm logo depois das de futebol no e-mail.
+# Uma empresa por linha. Linhas com # são comentários.
+# A comparação ignora maiúsculas e acentos e procura a palavra inteira no
+# nome da empresa da vaga: "itau" casa com "Itaú Unibanco".
+# Evite nomes curtos e ambíguos (ex.: "Oi", "Via"), que casam com qualquer coisa.
+#
+# Primeira versão montada a partir de: GPTW Brasil (grandes empresas),
+# LinkedIn Top Companies Brasil, Valor 1000 e Forbes Global 2000 (primeiras
+# posições) e multinacionais/big techs que contratam remoto no Brasil.
+# Não é a lista oficial de nenhum ranking: edite à vontade.
+
+# --- Bancos, pagamentos e mercado financeiro ---
+itau
+bradesco
+santander
+banco do brasil
+caixa economica
+btg pactual
+xp inc
+xp investimentos
+nubank
+nu pagamentos
+inter&co
+banco inter
+c6 bank
+pagbank
+pagseguro
+stone co
+cielo
+mastercard
+visa
+b3
+sicredi
+sicoob
+porto seguro
+bb seguridade
+american express
+paypal
+
+# --- Tecnologia ---
+google
+microsoft
+amazon
+aws
+meta platforms
+apple
+ibm
+oracle
+sap
+sap labs
+salesforce
+cisco
+dell
+hp
+intel
+nvidia
+adobe
+accenture
+avanade
+deloitte
+pwc
+ey
+kpmg
+mckinsey
+bcg
+bain
+capgemini
+cognizant
+thoughtworks
+ci&t
+totvs
+stefanini
+globant
+mercado livre
+mercadolivre
+ifood
+magalu
+magazine luiza
+americanas
+via varejo
+casas bahia
+netshoes
+zé delivery
+quintoandar
+loft
+olx
+picpay
+ebanx
+vtex
+rd station
+creditas
+neon
+will bank
+hotmart
+conta azul
+locaweb
+lwsa
+serasa experian
+experian
+spotify
+netflix
+uber
+airbnb
+booking
+
+# --- Telecom, energia e indústria ---
+vivo
+telefonica
+tim brasil
+claro
+embratel
+petrobras
+vale
+raizen
+cosan
+rumo
+ambev
+heineken
+coca-cola
+natura
+boticario
+grupo boticario
+unilever
+nestle
+procter & gamble
+p&g
+johnson & johnson
+loreal
+basf
+dow
+bayer
+siemens
+schneider electric
+3m
+stellantis
+volkswagen
+toyota
+weg
+embraer
+gerdau
+suzano
+braskem
+jbs
+brf
+marfrig
+eurofarma
+ache
+rede d'or
+dasa
+hapvida
+unimed
+localiza
+movida
+gol linhas aereas
+latam airlines
+azul linhas aereas
+cbmm
+eletrobras
+cemig
+copel
+sabesp
+enel
+neoenergia
+engie
+cpfl
+
+# --- Varejo e consumo ---
+carrefour
+grupo pao de acucar
+gpa
+assai
+renner
+riachuelo
+c&a
+centauro
+grupo sbf
+arezzo
+nike
+adidas
+decathlon
+smart fit
+ultrapar
+ipiranga
+vibra energia
+mcdonald's
+arcos dorados
+
+# --- Mídia, educação e outros ---
+globo
+grupo globo
+cogna
+yduqs
+hilton
+marriott
+dhl
+mercado pago
