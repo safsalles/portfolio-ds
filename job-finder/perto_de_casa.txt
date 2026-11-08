@@ -1,0 +1,174 @@
+# Filtros do e-mail "Perto de casa" (vagas presenciais e híbridas em
+# Campos dos Goytacazes, São João da Barra e Macaé).
+#
+# Um termo por linha. A comparação ignora maiúsculas e acentos e procura o
+# começo da palavra no título da vaga: "farmaceutic" pega "Farmacêutico" e
+# "Farmacêutica". Linhas com # são comentários.
+# Linha com barra invertida é uma expressão regular: \bbi\b só pega "BI"
+# como palavra inteira, não "bilíngue".
+#
+# Uma vaga entra quando o título:
+#   1. tem algum termo de [sempre] (passa direto, mesmo com termo excluído), ou
+#   2. NÃO tem nenhum termo de [excluir] e tem algum termo de [areas].
+
+[sempre]
+# Professor ou docente, só de faculdade.
+\b(professor|docente)\b.*\b(ensino superior|faculdade|universi|graduacao|pos-graduacao|mba)
+\b(ensino superior|faculdade|universi|graduacao|pos-graduacao|mba).*\b(professor|docente)\b
+
+[excluir]
+# --- funções operacionais ---
+estoquista
+repositor
+operador
+auxiliar de limpeza
+auxiliar de servicos gerais
+servicos gerais
+faxin
+limpeza
+copeir
+cozinh
+garcom
+garconete
+atendente
+operador de caixa
+balconist
+vendedor
+promotor
+ajudante
+auxiliar de producao
+auxiliar de carga
+conferente
+separador
+embalador
+motorista
+entregador
+motoboy
+vigilante
+porteiro
+vigia
+seguranca patrimonial
+recepcionista
+telemarketing
+operador de telemarketing
+lavador
+\baux\.? de operac
+auxiliar de operac
+inspetor
+suporte tecnico
+obras
+plantao
+acaiteria
+# --- ofícios técnicos que você não exerce ---
+soldador
+eletricista
+mecanico
+montador
+pedreiro
+carpinteiro
+pintor
+caldeireiro
+encanador
+torneiro
+tecnico de seguranca
+tecnico em seguranca
+tecnico de manutencao
+tecnico em manutencao
+# --- profissões regulamentadas que você não tem ---
+\bmedic[oa]s?\b
+enfermeir
+tecnico de enfermagem
+tecnico em enfermagem
+farmaceutic
+dentista
+odontolog
+cirurgiao
+fisioterapeut
+nutricionista
+psicolog
+fonoaudiolog
+terapeuta ocupacional
+veterinari
+biomedic
+radiolog
+advogad
+juridic
+professor
+docente
+pedagog
+contador
+engenheiro civil
+engenheiro eletricista
+engenheiro eletrico
+engenheiro mecanico
+engenheiro quimico
+engenheiro de petroleo
+engenheiro naval
+engenharia mecanica
+engenharia eletrica
+engenharia civil
+arquitet
+# --- níveis de entrada ---
+estagi
+jovem aprendiz
+aprendiz
+
+[areas]
+# --- dados e sistemas de gestão ---
+dados
+data
+\bbi\b
+business intelligence
+analytics
+indicadores
+inteligencia
+sistemas de gestao
+erp
+totvs
+sap
+# --- administrativo e financeiro ---
+administrativ
+financeir
+faturamento
+custos
+orcament
+controladoria
+controller
+contas a pagar
+contas a receber
+fiscal
+tesouraria
+auditoria
+# --- comercial e pricing ---
+comercial
+pricing
+precificacao
+mercado
+trade marketing
+# --- supply chain e logística ---
+compras
+comprador
+suprimentos
+supply
+logistic
+estoque
+abastecimento
+planejamento
+pcp
+demanda
+# --- processos, qualidade e engenharia de produção ---
+processos
+qualidade
+melhoria continua
+engenheiro de producao
+engenharia de producao
+producao
+operacoes
+projetos
+# --- gestão ---
+gestao
+gerente
+coordenador
+supervisor
+lider
+analista

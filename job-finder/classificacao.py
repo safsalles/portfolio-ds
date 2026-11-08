@@ -195,14 +195,15 @@ def eh_futebol(vaga):
 
 def local_futebol(vaga):
   """Para vagas de futebol: devolve o grupo de local, ou None se não serve
-  (presencial fora do Brasil, ou remoto só para EUA/Reino Unido/Europa)."""
+  (não é remota, ou é remota só para EUA/Reino Unido/Europa). Vaga de
+  futebol também precisa ser remota."""
   local = normalizar(vaga["local"])
   descricao = normalizar(vaga["descricao"])
 
-  if PADRAO_BRASIL.search(local):
-    return LOCAL_BRASIL
   if vaga["modelo"] != "remoto":
     return None
+  if PADRAO_BRASIL.search(local):
+    return LOCAL_BRASIL
   if PADRAO_RESTRITO.search(descricao):
     return None
   # "Aceita Brasil" só quando a vaga não amarra a um país e cita Brasil,
@@ -262,11 +263,15 @@ def classificar(vagas, empresas_grandes, avaliacoes=None):
   avaliacoes = avaliacoes or {}
   aceitas = []
   cortes = {"antiga": 0, "título excluído": 0, "fora das categorias": 0,
-            "local não serve": 0, "não é remota": 0, "empresa a evitar": 0}
+            "local não serve": 0, "não é remota": 0, "empresa a evitar": 0,
+            "empresa confidencial": 0}
 
   for vaga in vagas:
     aval = empresas.avaliacao(vaga["empresa"], avaliacoes)
     vaga["nota"] = aval["nota"] if aval else None
+    if re.search(r"confidencial|confidential", normalizar(vaga["empresa"])):
+      cortes["empresa confidencial"] += 1
+      continue
     if vaga["nota"] == empresas.EVITAR:
       cortes["empresa a evitar"] += 1
       continue

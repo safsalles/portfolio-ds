@@ -67,9 +67,15 @@ def test_grande_empresa_por_palavra_inteira():
 
 # --- futebol ---
 
-def test_futebol_no_brasil_mesmo_presencial():
+def test_futebol_presencial_no_brasil_cai_fora():
   v = vaga("Estagiário de Análise de Dados", "Federação Paulista de Futebol",
            local="São Paulo, São Paulo, Brazil", modelo="presencial")
+  assert classificar_uma(v) is None
+
+
+def test_futebol_remoto_no_brasil_entra():
+  v = vaga("Analista de Dados", "Federação Paulista de Futebol",
+           local="São Paulo, São Paulo, Brazil", modelo="remoto")
   aceita = classificar_uma(v)
   assert aceita["categoria"] == c.FUTEBOL
   assert aceita["prioridade"] == c.P_FUTEBOL
@@ -168,9 +174,9 @@ def test_remota_amarrada_a_outro_pais_vai_para_conferir_mesmo_citando_brasil():
   assert classificar_uma(v)["grupo_local"] == c.LOCAL_CONFERIR
 
 
-def test_operacoes_de_futebol_no_brasil_entram():
+def test_operacoes_de_futebol_no_brasil_entram_se_remotas():
   v = vaga("Football Operations Specialist", "Genius Sports",
-           local="Rio de Janeiro, Rio de Janeiro, Brazil", futebol=True)
+           local="Rio de Janeiro, Rio de Janeiro, Brazil", modelo="remoto", futebol=True)
   assert classificar_uma(v)["grupo_local"] == c.LOCAL_BRASIL
 
 
@@ -181,7 +187,7 @@ def test_ordem_futebol_grandes_resto():
       vaga("Analista de Dados", "Acme", modelo="remoto"),
       vaga("Analista de BI", "Nubank", modelo="remoto"),
       vaga("Analista de Desempenho", "Esporte Clube Bahia",
-           local="Salvador, Brazil", modelo="presencial"),
+           local="Salvador, Brazil", modelo="remoto"),
   ], GRANDES)
   ordem = [v["empresa"] for v in c.ordenar(vagas)]
   assert ordem == ["Esporte Clube Bahia", "Nubank", "Acme"]
@@ -248,3 +254,26 @@ def test_suas_competencias_saem_do_curriculo():
   minhas = afinidade.minhas_competencias()
   assert {"SQL", "Python", "Power BI"} <= minhas
   assert "Spark" not in minhas
+
+
+def test_empresa_confidencial_cai_fora():
+  assert classificar_uma(vaga("Analista de Dados", "Empresa Confidencial", modelo="remoto")) is None
+
+
+# --- descrição da empresa pela Gupy e pelo LinkedIn ---
+
+def test_sobre_da_gupy():
+  html = ('..."about":"\u003cp\u003eO que te encanta? ❤️\u003c/p\u003e\u003cp\u003e❤️ '
+          'Muito além da maior varejista de moda do país, somos um ecossistema.\u003c/p\u003e"...')
+  assert empresas.ler_sobre_gupy(html) == \
+      "Muito além da maior varejista de moda do país, somos um ecossistema."
+
+
+def test_pagina_da_empresa_no_linkedin():
+  html = ('<meta name="description" content="Super Lagoa | 30.057 seguidores no LinkedIn. '
+          'Feliz com você todo dia! | O Grupo Lagoa é uma empresa cearense, com 35 anos de '
+          'tradição. São 16 lojas.">'
+          '<dt>Tamanho da empresa</dt> <dd>1.001-5.000 funcionários</dd>')
+  texto, porte = empresas.ler_pagina_linkedin(html)
+  assert texto == "O Grupo Lagoa é uma empresa cearense, com 35 anos de tradição."
+  assert porte == "1.001-5.000 funcionários"

@@ -34,6 +34,7 @@ def _ler_cards(html):
     empresa = re.search(r'base-search-card__subtitle">[\s\S]*?>\s*([^<]+)</a>', card)
     local = re.search(r'job-search-card__location">\s*([^<]+)', card)
     data = re.search(r'datetime="([^"]+)"', card)
+    url_empresa = re.search(r'(https://[a-z]+\.linkedin\.com/company/[^"?]+)', card)
     minutos, rotulo = minutos_desde(data.group(1) if data else None)
     vagas.append(nova_vaga(
         limpar_html(titulo.group(1)) if titulo else "",
@@ -41,6 +42,7 @@ def _ler_cards(html):
         m_link.group(1), "LinkedIn",
         local=limpar_html(local.group(1)) if local else "",
         minutos=minutos, publicada=rotulo,
+        url_empresa=url_empresa.group(1) if url_empresa else "",
     ))
   return vagas
 
@@ -85,3 +87,23 @@ def completar_descricao(vaga):
   corpo = re.search(r'show-more-less-html__markup[^>]*>([\s\S]*?)</div>', html)
   vaga["descricao"] = limpar_html(corpo.group(1) if corpo else html)
   return True
+
+
+def buscar_cidade(local, paginas=3, periodo=MES):
+  """Todas as vagas de uma cidade (sem palavra-chave). local é o texto que o
+  LinkedIn entende, como "Macaé, Rio de Janeiro, Brazil"."""
+  vagas = {}
+  for pagina in range(paginas):
+    parametros = {"location": local, "f_TPR": periodo, "start": pagina * 10}
+    html = baixar(URL_BUSCA + urlencode(parametros), tentativas=2, pausa=PAUSA)
+    time.sleep(PAUSA)
+    if html is None:
+      print(f"   LinkedIn: {local} bloqueada ou falhou, pulando")
+      break
+    encontradas = _ler_cards(html)
+    for v in encontradas:
+      vagas.setdefault(v["link"], v)
+    if len(encontradas) < 10:
+      break
+  print(f"   LinkedIn: {local} -> {len(vagas)} vagas")
+  return list(vagas.values())

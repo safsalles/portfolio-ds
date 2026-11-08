@@ -85,11 +85,13 @@ def minutos_desde(data_iso):
 
 def nova_vaga(titulo, empresa, link, fonte, local="", modelo="",
               minutos=SEM_TEMPO, publicada="data n/d", descricao="",
-              fonte_de_futebol=False):
+              fonte_de_futebol=False, url_empresa=""):
   """Formato único de vaga, igual para todas as fontes.
 
   modelo: "remoto", "hibrido", "presencial" ou "" (não informado).
   fonte_de_futebol: True quando a fonte só tem empresas de futebol.
+  url_empresa: página da empresa na fonte (Gupy, LinkedIn), para ler o
+  "sobre" dela.
   """
   return {
       "titulo": (titulo or "").strip(),
@@ -102,4 +104,55 @@ def nova_vaga(titulo, empresa, link, fonte, local="", modelo="",
       "publicada": publicada,
       "descricao": descricao or "",
       "fonte_de_futebol": fonte_de_futebol,
+      "url_empresa": url_empresa,
   }
+
+
+MESES_CURTOS = {"jan": 1, "fev": 2, "mar": 3, "abr": 4, "mai": 5, "jun": 6,
+                "jul": 7, "ago": 8, "set": 9, "out": 10, "nov": 11, "dez": 12}
+
+
+def data_do_card(texto, agora=None):
+  """Lê a data como os sites de vaga escrevem no card e devolve
+  (minutos atrás, rótulo). Entende: '24h', '4 dia(s)', '30d+', 'Há 4 dias',
+  'Hoje', 'Ontem', '19/10/2026', '05/11' e '6 nov'. Datas sem ano são do
+  ano corrente, ou do anterior se cairiam no futuro."""
+  agora = agora or datetime.now()
+  t = normalizar(texto)
+
+  def dias_atras(dias, rotulo):
+    return int(dias * 1440), rotulo
+
+  m = re.search(r"\b(\d+)\s*h\b", t)
+  if m:
+    return int(m.group(1)) * 60, f"{m.group(1)} horas atrás"
+  if re.search(r"\bhoje\b", t):
+    return dias_atras(0, "hoje")
+  if re.search(r"\bontem\b", t):
+    return dias_atras(1, "ontem")
+  m = re.search(r"\b(\d+)\s*d\+", t)
+  if m:
+    return dias_atras(int(m.group(1)), f"há mais de {m.group(1)} dias")
+  m = re.search(r"\b(\d+)\s*(?:dia\(s\)|dias?\b|d\b)", t)
+  if m:
+    n = int(m.group(1))
+    return dias_atras(n, f"{n} dia{'s' if n != 1 else ''} atrás")
+
+  data = None
+  m = re.search(r"\b(\d{1,2})/(\d{1,2})(?:/(\d{4}))?\b", t)
+  if m:
+    dia, mes, ano = int(m.group(1)), int(m.group(2)), m.group(3)
+  else:
+    m = re.search(r"\b(\d{1,2})\s+(" + "|".join(MESES_CURTOS) + r")\b", t)
+    dia, mes, ano = (int(m.group(1)), MESES_CURTOS[m.group(2)], None) if m else (0, 0, None)
+  if dia:
+    try:
+      data = datetime(int(ano) if ano else agora.year, mes, dia)
+      if not ano and data > agora:
+        data = data.replace(year=agora.year - 1)
+    except ValueError:
+      data = None
+  if data is None:
+    return SEM_TEMPO, "data n/d"
+  minutos = max(0, int((agora - data).total_seconds() // 60))
+  return minutos, f"publicada em {data:%d/%m/%Y}"

@@ -56,7 +56,9 @@ def montar_html(vagas, mensagem, para_avaliar=None):
             "<h2>Radar de Vagas</h2>", f"<p>{_e(mensagem)}</p>"]
   resumo = [f"{sum(1 for v in vagas if v['prioridade'] == p)} {nome.split(' ', 1)[1].lower()}"
             for p, (nome, _) in BLOCOS.items()]
-  partes.append(f"<p class='info'>{len(vagas)} vagas novas: {', '.join(resumo)}.</p>")
+  novas = sum(1 for v in vagas if v.get("nova"))
+  partes.append(f"<p class='info'>{len(vagas)} vagas abertas ({novas} 🆕 novas desde o último"
+                f" e-mail): {', '.join(resumo)}.</p>")
 
   for prioridade, (nome_bloco, cor) in BLOCOS.items():
     do_bloco = [v for v in vagas if v["prioridade"] == prioridade]
@@ -76,53 +78,99 @@ def montar_html(vagas, mensagem, para_avaliar=None):
         if v["grupo_local"] == LOCAL_CONFERIR:
           aviso = ("<div class='aviso'>A vaga é remota mas não diz de que"
                    " países aceita candidatos. Confira antes de se candidatar.</div>")
-        afinidade, faltam = _afinidade(v)
-        estrela = "⭐ " if v.get("nota") == QUERO_MUITO else ""
-        sobre = (f"<div class='sobre'>{_e(v['sobre_empresa'])}</div>"
-                 if v.get("sobre_empresa") else "")
-        partes.append(f"""
-          <div class="vaga" style="border-color:{cor}">
-            <div class="titulo" style="color:{cor}">{estrela}{_e(v['titulo'])}{afinidade}</div>
-            <div class="info">{_e(v['empresa'] or 'Empresa não informada')} &nbsp;|&nbsp;
-              {_e(local)} &nbsp;|&nbsp; {_e(v['publicada'])} &nbsp;|&nbsp; via {_e(v['fonte'])}</div>
-            {faltam}{aviso}
-            <div class="link"><a href="{_e(v['link'])}" target="_blank">Acessar vaga / Candidatar-se</a></div>
-            {sobre}
-          </div>""")
+        partes.append(_html_vaga(v, cor, local, aviso))
 
+  _fechar(partes, para_avaliar)
+  return "".join(partes)
+
+
+def _html_vaga(v, cor, local, aviso=""):
+  afinidade, faltam = _afinidade(v)
+  estrela = "⭐ " if v.get("nota") == QUERO_MUITO else ""
+  sobre = (f"<div class='sobre'>{_e(v['sobre_empresa'])}</div>"
+           if v.get("sobre_empresa") else "")
+  return f"""
+    <div class="vaga" style="border-color:{cor}">
+      <div class="titulo" style="color:{cor}">{estrela}{'🆕 ' if v.get('nova') else ''}{_e(v['titulo'])}{afinidade}</div>
+      <div class="info">{_e(v['empresa'] or 'Empresa não informada')} &nbsp;|&nbsp;
+        {_e(local)} &nbsp;|&nbsp; {_e(v['publicada'])} &nbsp;|&nbsp; via {_e(v['fonte'])}</div>
+      {faltam}{aviso}
+      <div class="link"><a href="{_e(v['link'])}" target="_blank">Acessar vaga / Candidatar-se</a></div>
+      {sobre}
+    </div>"""
+
+
+def _fechar(partes, para_avaliar):
   if para_avaliar:
     partes.append("<h3 style='color:#555; border-color:#555'>📝 Empresas novas para você avaliar"
                   f" ({len(para_avaliar)})</h3>"
                   "<p class='info'>Copie as linhas para o <b>empresas.txt</b> e troque o"
                   " <b>ok</b> pela sua nota: quero muito, quero, ok, meh ou evitar.</p>")
     partes.append("<div class='avaliar'>" + "<br>".join(_e(l) for l in para_avaliar) + "</div>")
-
   partes.append("<hr><p style='font-size:11px;color:#888'>Bot automatizado rodando via Python.</p>")
   partes.append("</body></html>")
+
+
+# --- E-MAIL "PERTO DE CASA" ---
+COR_PERTO = "#7a3e9d"
+MODELO_ROTULO = {"presencial": "Presencial", "hibrido": "Híbrido", "": "Presencial ou híbrido"}
+
+
+def montar_html_perto(vagas, para_avaliar=None):
+  """Vagas presenciais/híbridas nas cidades, em ordem de empresa."""
+  partes = [f"<html><head><style>{ESTILO}</style></head><body>",
+            "<h2>📍 Perto de casa</h2>"]
+  por_cidade = {}
+  for v in vagas:
+    por_cidade[v["cidade"]] = por_cidade.get(v["cidade"], 0) + 1
+  novas = sum(1 for v in vagas if v.get("nova"))
+  cidades = ", ".join(f"{n} em {c}" for c, n in por_cidade.items())
+  partes.append(f"<p class='info'>{len(vagas)} vagas presenciais ou híbridas"
+                f" ({novas} 🆕 novas desde o último e-mail): {cidades}.</p>")
+  for v in vagas:
+    local = f"{v['cidade']} · {MODELO_ROTULO.get(v['modelo'], v['modelo'])}"
+    partes.append(_html_vaga(v, COR_PERTO, local))
+  _fechar(partes, para_avaliar)
   return "".join(partes)
+
+
+def assunto_perto(vagas):
+  novas = sum(1 for v in vagas if v.get("nova"))
+  return f"📍 Perto de casa: {len(vagas)} vaga(s) em Campos, SJB e Macaé, {novas} nova(s)"
 
 
 def assunto(vagas):
   futebol = sum(1 for v in vagas if v["prioridade"] == P_FUTEBOL)
-  texto = f"{len(vagas)} vaga(s) nova(s)"
+  novas = sum(1 for v in vagas if v.get("nova"))
+  texto = f"{len(vagas)} vaga(s) aberta(s), {novas} nova(s)"
   if futebol:
-    texto = f"⚽ {futebol} de futebol | {texto} no total"
+    texto = f"⚽ {futebol} de futebol | {texto}"
   return f"Radar de Vagas: {texto}"
 
 
 def enviar(vagas, mensagem, remetente, senha_app, destinatario, para_avaliar=None):
+  return enviar_html(vagas, assunto(vagas), montar_html(vagas, mensagem, para_avaliar),
+                     remetente, senha_app, destinatario)
+
+
+def enviar_perto(vagas, remetente, senha_app, destinatario, para_avaliar=None):
+  return enviar_html(vagas, assunto_perto(vagas), montar_html_perto(vagas, para_avaliar),
+                     remetente, senha_app, destinatario)
+
+
+def enviar_html(vagas, titulo, corpo, remetente, senha_app, destinatario):
   if not vagas:
-    print("Nenhuma vaga nova hoje, e-mail não enviado.")
+    print("Nenhuma vaga aberta hoje, e-mail não enviado.")
     return False
   if not (remetente and senha_app and destinatario):
     print("Credenciais de e-mail ausentes no arquivo de configuração.")
     return False
 
   msg = MIMEMultipart("alternative")
-  msg["Subject"] = assunto(vagas)
+  msg["Subject"] = titulo
   msg["From"] = remetente
   msg["To"] = destinatario
-  msg.attach(MIMEText(montar_html(vagas, mensagem, para_avaliar), "html", "utf-8"))
+  msg.attach(MIMEText(corpo, "html", "utf-8"))
   try:
     print(f"Enviando e-mail para {destinatario}...")
     with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:

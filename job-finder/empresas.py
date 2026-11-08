@@ -13,7 +13,7 @@ import time
 from datetime import datetime
 from urllib.parse import quote
 
-from util import baixar_json, normalizar
+from util import baixar, baixar_json, limpar_html, normalizar
 
 ARQUIVO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "empresas.txt")
 CACHE = os.path.expanduser(r"~\Desktop\aux portfolio\job finder\descricoes_empresas.json")
@@ -101,31 +101,105 @@ def _da_wikipedia(empresa):
   return ""
 
 
+# --- DESCRIÇÃO PELA GUPY E PELO LINKEDIN ---
+
+PAUSA_LINKEDIN = 4
+_linkedin_bloqueado = False  # se o LinkedIn recusar, para de pedir nesta rodada
+
+
+def primeira_frase(texto, minimo=40, maximo=200):
+  """A primeira frase com conteúdo ("O que te encanta? ❤️" não conta)."""
+  frases = re.split(r"(?<=[.!?])\s+", (texto or "").strip())
+  frase = next((f for f in frases if len(f) >= minimo), frases[0] if frases else "")
+  frase = re.sub(r"^[^\w\"(]+", "", frase)  # emoji ou símbolo no começo
+  return frase if len(frase) <= maximo else frase[:maximo].rsplit(" ", 1)[0] + "…"
+
+
+def ler_sobre_gupy(html):
+  """O "sobre" da página de carreiras da Gupy vem num JSON dentro da página."""
+  m = re.search(r'"about":"((?:[^"\\]|\\.)*)"', html or "")
+  if not m:
+    return ""
+  try:
+    return primeira_frase(limpar_html(json.loads(f'"{m.group(1)}"')))
+  except ValueError:
+    return ""
+
+
+def ler_pagina_linkedin(html):
+  """Da página pública da empresa no LinkedIn: (descrição, porte).
+  A descrição está no <meta description>: "Nome | N seguidores | slogan | sobre"."""
+  m = re.search(r'<meta name="description" content="([^"]*)"', html or "")
+  texto = ""
+  if m:
+    partes = [p.strip() for p in limpar_html(m.group(1)).split(" | ")[1:]
+              if "seguidores" not in p and "followers" not in p]
+    sobre = primeira_frase(partes[-1]) if partes else ""
+    texto = sobre if len(sobre) >= 40 or len(partes) < 2 else partes[0]
+  m = re.search(r"(?:Tamanho da empresa|Company size)\s*([\d.,]+(?:-[\d.,]+)?\+?\s*(?:funcion\w+|employees))",
+                limpar_html(html or ""))
+  return texto, (m.group(1) if m else "")
+
+
+def _da_pagina(url):
+  """(texto, porte) da página da empresa na Gupy ou no LinkedIn."""
+  global _linkedin_bloqueado
+  if "gupy.io" in url:
+    return ler_sobre_gupy(baixar(url, silencioso=True)), ""
+  if "linkedin.com/company/" in url and not _linkedin_bloqueado:
+    html = baixar(url, pausa=PAUSA_LINKEDIN, silencioso=True)
+    time.sleep(PAUSA_LINKEDIN)
+    if html is None:
+      _linkedin_bloqueado = True
+      print("   LinkedIn recusou a página de empresa; o resto fica para a próxima rodada")
+      return "", ""
+    return ler_pagina_linkedin(html)
+  return "", ""
+
+
 def completar_descricoes(vagas, avaliacoes):
-  """Põe em cada vaga a nota e a descrição da empresa. Empresas fora do
-  empresas.txt são procuradas na Wikipédia (uma vez; fica no cache)."""
+  """Põe em cada vaga a nota, a descrição e o porte da empresa.
+
+  A descrição vem do empresas.txt; se a empresa não estiver lá, da página
+  dela na Gupy ou no LinkedIn e, por último, da Wikipédia. O porte
+  (funcionários) vem do LinkedIn. Tudo fica no cache: cada página é lida
+  uma vez só.
+  """
   cache = _carregar_cache()
   hoje = datetime.now()
   mudou = False
   for vaga in vagas:
     aval = avaliacao(vaga["empresa"], avaliacoes)
-    if aval:
-      vaga["nota"] = aval["nota"]
-      vaga["sobre_empresa"] = aval["descricao"]
-      continue
-    vaga["nota"] = None
+    vaga["nota"] = aval["nota"] if aval else None
     chave = normalizar(vaga["empresa"])
     if not chave:
       vaga["sobre_empresa"] = ""
       continue
-    guardada = cache.get(chave)
-    velha = guardada and not guardada["texto"] and (
-        hoje - datetime.fromisoformat(guardada["data"])).days > DIAS_PARA_TENTAR_DE_NOVO
-    if guardada is None or velha:
-      guardada = {"texto": _da_wikipedia(vaga["empresa"]), "data": hoje.date().isoformat()}
-      cache[chave] = guardada
+    info = cache.get(chave) or {"texto": "", "porte": "", "urls": [], "data": hoje.date().isoformat()}
+    info.setdefault("porte", "")
+    info.setdefault("urls", [])
+    url = vaga.get("url_empresa", "")
+    # Página nova da empresa e ainda falta algo (descrição ou porte): lê.
+    falta = not info["texto"] or not info["porte"]
+    if url and url not in info["urls"] and falta and not (
+        "linkedin" in url and _linkedin_bloqueado):
+      texto, porte = _da_pagina(url)
+      if texto or porte or "gupy" in url:
+        info["urls"].append(url)
+      info["texto"] = info["texto"] or texto
+      info["porte"] = info["porte"] or porte
+      cache[chave] = info
       mudou = True
-    vaga["sobre_empresa"] = guardada["texto"]
+    # Sem descrição: Wikipédia, na primeira vez ou a cada 30 dias.
+    velha = (hoje - datetime.fromisoformat(info["data"])).days > DIAS_PARA_TENTAR_DE_NOVO
+    if not aval and not info["texto"] and (chave not in cache or velha):
+      info["texto"] = _da_wikipedia(vaga["empresa"])
+      info["data"] = hoje.date().isoformat()
+      cache[chave] = info
+      mudou = True
+
+    sobre = aval["descricao"] if aval and aval["descricao"] else info["texto"]
+    vaga["sobre_empresa"] = " · ".join(x for x in (sobre, info["porte"]) if x)
   if mudou:
     _salvar_cache(cache)
 
