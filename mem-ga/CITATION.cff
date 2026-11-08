@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it using the metadata below."
+message: "If you use this software, please cite it using the metadata below, and also the article that describes the method with the genetic algorithm (see references)."
 type: software
 title: "memga: Multiple Choice Method for selecting sets of alternatives"
 abstract: >-
@@ -23,9 +23,31 @@ authors:
   - family-names: Salles
     given-names: Sérgio Augusto Faria
     email: safsalles@hotmail.com
+    orcid: "https://orcid.org/0000-0003-3701-5743"
   - family-names: da Hora
     given-names: Henrique Rego Monteiro
+    orcid: "https://orcid.org/0000-0001-7192-9245"
 references:
+  - type: article
+    title: "Multiple Choice Method with Genetic Algorithm for the Formation of Soccer Teams"
+    authors:
+      - family-names: Salles
+        given-names: Sérgio Augusto Faria
+      - family-names: da Hora
+        given-names: Henrique Rego Monteiro
+      - family-names: Erthal Júnior
+        given-names: Milton
+      - family-names: Velasco
+        given-names: André Soares
+      - family-names: Croce
+        given-names: Paulo Rossi
+    journal: "Pesquisa Operacional"
+    volume: 42
+    number: "e243537"
+    pages: 21
+    year: 2022
+    issn: "0101-7438"
+    doi: "10.1590/0101-7438.2022.042.00243537"
   - type: article
     title: "Proposta de um método multicritério para escolha múltipla"
     authors:

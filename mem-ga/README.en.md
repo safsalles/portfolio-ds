@@ -165,3 +165,15 @@ The `media` rule, with exhaustive search, was checked against the thesis's numer
 ## Source
 
 The MEM was proposed in the doctoral thesis *Método de Escolha Múltipla: uma proposta multicritério para seleção em conjunto de mais de uma alternativa*, by Henrique Rego Monteiro da Hora (Universidade Federal Fluminense, 2013). The `minimo` rule and the genetic algorithm come from the master's dissertation *MEM-GA: Método de Escolha Múltipla com Algoritmo Genético aplicado à formação de equipes de futebol*, by Sérgio Augusto Faria Salles (Instituto Federal Fluminense, 2018), written in MATLAB and ported here to Python.
+
+## How to cite
+
+If you use the method in your work, cite the article that describes it with the genetic algorithm:
+
+> Salles, S. A. F., da Hora, H. R. M., Erthal Júnior, M., Velasco, A. S. and Croce, P. R. (2022). Multiple Choice Method with Genetic Algorithm for the Formation of Soccer Teams. *Pesquisa Operacional*, 42, e243537. <https://doi.org/10.1590/0101-7438.2022.042.00243537>
+
+And, where it applies, the original method:
+
+> da Hora, H. R. M. and Costa, H. G. (2015). Proposta de um método multicritério para escolha múltipla. *Production*, 25(2). <https://doi.org/10.1590/0103-6513.084812>
+
+To cite the software, the [CITATION.cff](CITATION.cff) file has the details, and the Zenodo DOI will be added here once it exists.

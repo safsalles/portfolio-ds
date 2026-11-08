@@ -22,8 +22,8 @@ Entre em <https://zenodo.org/signup/>. O jeito mais prático é **Log in with Gi
 - **Publication date:** a data de hoje
 - **Version:** `1.2.0`
 - **Creators:**
-  1. `Salles, Sérgio Augusto Faria` (afiliação e ORCID, se quiser)
-  2. `da Hora, Henrique Rego Monteiro`
+  1. `Salles, Sérgio Augusto Faria`, ORCID `0000-0003-3701-5743`, afiliação a seu critério
+  2. `da Hora, Henrique Rego Monteiro`, ORCID `0000-0001-7192-9245`
 - **Description:**
 
   > Selects a set of alternatives that complement each other, instead of ranking the alternatives one by one. Implements the Multiple Choice Method (MEM) proposed in da Hora and Costa (2015), and an adaptation for larger problems that scores criteria in pairs. The best set is found by exhaustive search or by a genetic algorithm, with optional quotas per group. Available for Python (PyPI), R (R-universe, submitted to CRAN), and MATLAB / GNU Octave (File Exchange). Version 1.2.0 of the Python and MATLAB packages and version 0.1.0 of the R package.
@@ -33,7 +33,8 @@ Entre em <https://zenodo.org/signup/>. O jeito mais prático é **Log in with Gi
 - **Related works** (opcional, mas ajuda a ligar tudo):
   - `https://pypi.org/project/memga/`, tipo *Is supplemented by* / ou *Is alternate identifier*, recurso *Software*
   - `https://safsalles.r-universe.dev/memga`, mesma relação
-  - `https://doi.org/10.1590/0103-6513.084812`, relação *Is derived from*, recurso *Publication / Article*
+  - `https://doi.org/10.1590/0101-7438.2022.042.00243537`, relação *Is described by*, recurso *Publication / Article* (o artigo do MEM-GA, de 2022)
+  - `https://doi.org/10.1590/0103-6513.084812`, relação *Is derived from*, recurso *Publication / Article* (o método original)
 - **Funding, Subjects, etc.:** deixe em branco.
 
 ## 4. Publicar

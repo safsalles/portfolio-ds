@@ -163,3 +163,15 @@ A regra `media`, com a busca exaustiva, foi conferida com a aplicação numéric
 ## Fonte
 
 O MEM foi proposto na tese *Método de Escolha Múltipla: uma proposta multicritério para seleção em conjunto de mais de uma alternativa*, de Henrique Rego Monteiro da Hora (Universidade Federal Fluminense, 2013). A regra `minimo` e o algoritmo genético vêm da dissertação *MEM-GA: Método de Escolha Múltipla com Algoritmo Genético aplicado à formação de equipes de futebol*, de Sérgio Augusto Faria Salles (Instituto Federal Fluminense, 2018), escrita em MATLAB e trazida aqui para Python.
+
+## Como citar
+
+Se você usar o método em um trabalho, cite o artigo que o descreve com o algoritmo genético:
+
+> Salles, S. A. F., da Hora, H. R. M., Erthal Júnior, M., Velasco, A. S. e Croce, P. R. (2022). Multiple Choice Method with Genetic Algorithm for the Formation of Soccer Teams. *Pesquisa Operacional*, 42, e243537. <https://doi.org/10.1590/0101-7438.2022.042.00243537>
+
+E, se for o caso, o método original:
+
+> da Hora, H. R. M. e Costa, H. G. (2015). Proposta de um método multicritério para escolha múltipla. *Production*, 25(2). <https://doi.org/10.1590/0103-6513.084812>
+
+Para citar o software, o arquivo [CITATION.cff](CITATION.cff) traz os dados, e o DOI do Zenodo será acrescentado aqui quando existir.
