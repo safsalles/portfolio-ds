@@ -12,7 +12,7 @@ import re
 
 import empresas
 from classificacao import antiga, exclusiva_para_minorias, nivel_nao_serve
-from util import normalizar
+from util import empresa_base, normalizar
 
 ARQUIVO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "perto_de_casa.txt")
 
@@ -141,7 +141,7 @@ def filtrar(vagas, filtros, avaliacoes):
       cortes["empresa confidencial ou a evitar"] += 1
       continue
     # A mesma vaga em duas fontes: título + empresa + cidade.
-    chave = (normalizar(vaga["titulo"]), normalizar(vaga["empresa"]), cidade)
+    chave = (normalizar(vaga["titulo"]), empresa_base(vaga["empresa"]), cidade)
     if chave in vistas:
       cortes["repetida"] += 1
       continue

@@ -59,6 +59,8 @@ Cada vaga dos dois e-mails tem três links. Clicar abre um e-mail pronto, é só
 - **🚫 Descartar**: a vaga não volta mais.
 - **⛔ Nunca mais essa empresa**: a empresa passa a ser "evitar" e nenhuma vaga dela volta.
 
+Na seção **"Empresas novas para você avaliar"**, cada empresa tem links de nota (⭐ Quero muito, 👍 Quero, ✔ Ok, 😐 Meh, ⛔ Evitar). A nota vale por cima do `empresas.txt`, sem mexer nele; se a empresa já estiver lá, a resposta mais recente vence.
+
 Na rodada seguinte, o bot lê essas respostas pelo IMAP do Gmail, com a mesma senha de app. Ele só considera mensagens vindas do seu e-mail e com assunto começando por `Radar:`, e só lê (não apaga nem marca nada). O estado fica em `status_vagas.json`, fora do repositório.
 
 ## Estrutura

@@ -23,6 +23,25 @@ def normalizar(texto):
   return "".join(c for c in texto if unicodedata.category(c) != "Mn")
 
 
+# Palavras que muitas fontes põem (ou não) no nome da mesma empresa:
+# "Vetta Tecnologia" no Gupy, "Vetta" no LinkedIn.
+_PALAVRAS_DE_EMPRESA = {
+    "ltda", "sa", "s", "a", "me", "epp", "eireli", "inc", "llc", "corp", "co",
+    "tecnologia", "tecnologias", "technology", "technologies", "tech",
+    "brasil", "brazil", "do", "da", "de", "e", "grupo", "group", "holding",
+    "solucoes", "solutions", "servicos", "services", "sistemas", "software",
+    "consultoria", "consulting",
+}
+
+
+def empresa_base(nome):
+  """Nome da empresa sem sufixos como Ltda, S.A., Tecnologia, Brasil, Grupo,
+  só para achar a mesma empresa escrita de dois jeitos."""
+  palavras = re.sub(r"[^a-z0-9]+", " ", normalizar(nome)).split()
+  uteis = [p for p in palavras if p not in _PALAVRAS_DE_EMPRESA]
+  return " ".join(uteis or palavras)
+
+
 def limpar_html(texto):
   """Tira as tags e junta os espaços de uma descrição em HTML."""
   texto = html.unescape(texto or "")

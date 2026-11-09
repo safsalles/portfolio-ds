@@ -59,6 +59,8 @@ Every job in both emails has three links. Clicking one opens a ready-made email;
 - **🚫 Descartar** (discard): the job never comes back.
 - **⛔ Nunca mais essa empresa** (never this company again): the company is rated "avoid" and none of its jobs come back.
 
+In the **"Empresas novas para você avaliar"** (new companies to rate) section, each company has rating links (⭐ Quero muito, 👍 Quero, ✔ Ok, 😐 Meh, ⛔ Evitar). The rating applies on top of `empresas.txt` without editing it; if the company is already there, the most recent reply wins.
+
 On the next run the bot reads these replies through Gmail IMAP, using the same app password. It only considers messages from your own address with a subject starting with `Radar:`, and it only reads (nothing is deleted or flagged). The state is kept in `status_vagas.json`, outside the repository.
 
 ## Structure

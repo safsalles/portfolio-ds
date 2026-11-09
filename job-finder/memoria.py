@@ -7,18 +7,22 @@ import json
 import os
 from datetime import date, timedelta
 
-from util import normalizar
+from util import empresa_base, normalizar
 
 CAMINHO = os.path.expanduser(r"~\Desktop\aux portfolio\job finder\vagas_vistas.json")
 DIAS_PARA_ESQUECER = 120  # depois disso, se a vaga voltar a aparecer, ela é enviada de novo
 
 
 def chaves(vaga):
-  """Duas chaves por vaga: o link e título+empresa. A segunda pega a mesma
-  vaga publicada em duas fontes (ex.: Gupy e Remotar)."""
+  """Três chaves por vaga: o link, título+empresa e título+empresa sem
+  sufixos (Ltda, Tecnologia, Brasil...). As duas últimas pegam a mesma vaga
+  publicada em duas fontes ("Vetta Tecnologia" no Gupy, "Vetta" no LinkedIn).
+  As chaves antigas continuam valendo: a memória já guardada não se perde."""
+  titulo = normalizar(vaga["titulo"])
   return [
       vaga["link"].split("?")[0].rstrip("/"),
-      f"{normalizar(vaga['titulo'])}|{normalizar(vaga['empresa'])}",
+      f"{titulo}|{normalizar(vaga['empresa'])}",
+      f"{titulo}|{empresa_base(vaga['empresa'])}",
   ]
 
 

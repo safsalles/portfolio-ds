@@ -8,7 +8,9 @@ assunto do tipo "Radar: candidatei #1a2b3c4d (Analista de Dados | Acme)";
   candidatei   a vaga sai da lista e vai para a seção "Já me candidatei"
                (fica lá por DIAS_CANDIDATADA dias, com a data);
   descartar    a vaga não volta mais;
-  nunca mais   a empresa passa a ser "evitar": nenhuma vaga dela volta.
+  nunca mais   a empresa passa a ser "evitar": nenhuma vaga dela volta;
+  nota         (nas "Empresas novas para você avaliar") quero muito, quero,
+               ok, meh ou evitar: vale por cima do empresas.txt.
 
 O estado fica em status_vagas.json, fora do repositório.
 """
@@ -23,7 +25,7 @@ from datetime import date, timedelta
 from email.header import decode_header
 from urllib.parse import quote
 
-from util import normalizar
+from util import empresa_base, normalizar
 
 CAMINHO = os.path.expanduser(r"~\Desktop\aux portfolio\job finder\status_vagas.json")
 IMAP_SERVER = "imap.gmail.com"
@@ -33,13 +35,33 @@ DIAS_LER = 60           # lê as respostas dos últimos N dias
 
 CANDIDATEI, DESCARTAR, NUNCA_MAIS = "candidatei", "descartar", "nunca mais"
 ACOES = (CANDIDATEI, DESCARTAR, NUNCA_MAIS)
-ASSUNTO = re.compile(r"radar:\s*(candidatei|descartar|nunca mais)\s*#([0-9a-f]{8})")
+NOTA = "nota "  # "nota quero muito", "nota quero", "nota ok", "nota meh", "nota evitar"
+ASSUNTO = re.compile(r"radar:\s*(candidatei|descartar|nunca mais|"
+                     r"nota (?:quero muito|quero|ok|meh|evitar))\s*#([0-9a-f]{8})")
+
+
+def _hash(chave):
+  return hashlib.sha1(chave.encode("utf-8")).hexdigest()[:8]
 
 
 def codigo(vaga):
-  """8 caracteres, de título + empresa (a mesma vaga em duas fontes tem o mesmo)."""
-  chave = f"{normalizar(vaga['titulo'])}|{normalizar(vaga['empresa'])}"
-  return hashlib.sha1(chave.encode("utf-8")).hexdigest()[:8]
+  """8 caracteres, de título + empresa sem sufixos (a mesma vaga em duas
+  fontes, "Vetta Tecnologia" e "Vetta", tem o mesmo código)."""
+  return _hash(f"{normalizar(vaga['titulo'])}|{empresa_base(vaga['empresa'])}")
+
+
+def codigo_antigo(vaga):
+  """Código de antes, com o nome exato da empresa: as respostas já guardadas
+  usam ele."""
+  return _hash(f"{normalizar(vaga['titulo'])}|{normalizar(vaga['empresa'])}")
+
+
+def link_nota(nota, empresa, destinatario):
+  """mailto: que dá uma nota à empresa (quero muito, quero, ok, meh, evitar)."""
+  cod = _hash(empresa_base(empresa))
+  assunto = f"Radar: {NOTA}{nota} #{cod} ({empresa})"
+  corpo = "É só enviar este e-mail. O bot lê na próxima rodada."
+  return f"mailto:{destinatario}?subject={quote(assunto)}&body={quote(corpo)}"
 
 
 def link_resposta(acao, vaga, destinatario):
@@ -56,7 +78,7 @@ def link_resposta(acao, vaga, destinatario):
 # --- ESTADO ---
 
 def vazio():
-  return {"vagas": {}, "empresas_evitar": {}, "indice": {}}
+  return {"vagas": {}, "empresas_evitar": {}, "notas_empresas": {}, "indice": {}}
 
 
 def carregar(caminho=CAMINHO):
@@ -96,10 +118,19 @@ def aplicar(estado, acao, cod, sobre="", data=None):
   usado se a vaga não estiver no índice."""
   data = data or date.today().isoformat()
   vaga = estado["indice"].get(cod)
+  if acao.startswith(NOTA):
+    # A resposta mais recente vence: dar nota tira a empresa de "nunca mais".
+    empresa = sobre.strip()
+    if empresa:
+      estado["empresas_evitar"].pop(normalizar(empresa), None)
+      estado["notas_empresas"][normalizar(empresa)] = {
+          "nome": empresa, "nota": acao[len(NOTA):], "data": data}
+    return
   if acao == NUNCA_MAIS:
     empresa = vaga["empresa"] if vaga else sobre.strip()
     if empresa and normalizar(empresa) not in ("", "empresa nao informada"):
       estado["empresas_evitar"][normalizar(empresa)] = empresa
+      estado["notas_empresas"].pop(normalizar(empresa), None)
     return
   if not vaga and "|" in sobre:
     titulo, empresa = (p.strip() for p in sobre.split("|", 1))
@@ -172,8 +203,14 @@ def ler_respostas(estado, usuario, senha_app, meu_email):
 # --- USO NO BOT ---
 
 def evitar_empresas(estado, avaliacoes):
-  """Põe as empresas de "nunca mais" como evitar (sem mexer no empresas.txt)."""
+  """Aplica por cima do empresas.txt (sem mexer nele) as notas que você deu
+  por e-mail e as empresas de "nunca mais", que viram evitar."""
   import empresas
+  for chave, dado in estado["notas_empresas"].items():
+    if chave in avaliacoes:
+      avaliacoes[chave]["nota"] = dado["nota"]
+    else:
+      avaliacoes[chave] = {"nome": dado["nome"], "nota": dado["nota"], "descricao": ""}
   for chave, nome in estado["empresas_evitar"].items():
     if chave in avaliacoes:
       avaliacoes[chave]["nota"] = empresas.EVITAR
@@ -183,7 +220,8 @@ def evitar_empresas(estado, avaliacoes):
 
 def tirar_marcadas(vagas, estado):
   """Tira das listas as vagas descartadas e as que você já se candidatou."""
-  ficam = [v for v in vagas if codigo(v) not in estado["vagas"]]
+  ficam = [v for v in vagas
+           if codigo(v) not in estado["vagas"] and codigo_antigo(v) not in estado["vagas"]]
   if len(ficam) < len(vagas):
     print(f"   {len(vagas) - len(ficam)} vaga(s) tirada(s): já candidatada ou descartada")
   return ficam

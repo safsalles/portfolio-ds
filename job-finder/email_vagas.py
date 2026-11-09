@@ -120,6 +120,22 @@ def _html_vaga(v, cor, local, aviso="", responder=None):
     </div>"""
 
 
+ROTULOS_NOTA = (("quero muito", "⭐ Quero muito"), ("quero", "👍 Quero"),
+                ("ok", "✔ Ok"), ("meh", "😐 Meh"), ("evitar", "⛔ Evitar"))
+
+
+def _html_empresa(linha, responder):
+  """Uma empresa para avaliar: nome, o que ela faz e os links de nota.
+  `linha` vem como "Nome | ok | descrição"."""
+  partes = [p.strip() for p in linha.split("|", 2)]
+  nome = partes[0]
+  sobre = f"<div class='sobre'>{_e(partes[2])}</div>" if len(partes) > 2 and partes[2] else ""
+  links = "".join(f'<a href="{_e(respostas.link_nota(nota, nome, responder))}">{rotulo}</a>'
+                  for nota, rotulo in ROTULOS_NOTA)
+  return (f"<div class='feita'><b>{_e(nome)}</b>{sobre}"
+          f"<div class='acoes'>{links}</div></div>")
+
+
 def _html_candidatadas(lista):
   partes = ["<h3 style='color:#1a7f37; border-color:#1a7f37'>✅ Já me candidatei"
             f" ({len(lista)})</h3>"]
@@ -141,10 +157,15 @@ def _fechar(partes, para_avaliar, ja_candidatadas=None, responder=None):
                   " e \"Nunca mais\" esconde todas as vagas da empresa.</p>")
   if para_avaliar:
     partes.append("<h3 style='color:#555; border-color:#555'>📝 Empresas novas para você avaliar"
-                  f" ({len(para_avaliar)})</h3>"
-                  "<p class='info'>Copie as linhas para o <b>empresas.txt</b> e troque o"
-                  " <b>ok</b> pela sua nota: quero muito, quero, ok, meh ou evitar.</p>")
-    partes.append("<div class='avaliar'>" + "<br>".join(_e(l) for l in para_avaliar) + "</div>")
+                  f" ({len(para_avaliar)})</h3>")
+    if responder:
+      partes.append("<p class='info'>Clique na nota: abre um e-mail pronto, é só enviar."
+                    " Na próxima rodada a empresa já entra com a sua nota.</p>")
+      partes.extend(_html_empresa(linha, responder) for linha in para_avaliar)
+    else:
+      partes.append("<p class='info'>Copie as linhas para o <b>empresas.txt</b> e troque o"
+                    " <b>ok</b> pela sua nota: quero muito, quero, ok, meh ou evitar.</p>")
+      partes.append("<div class='avaliar'>" + "<br>".join(_e(l) for l in para_avaliar) + "</div>")
   partes.append("<hr><p style='font-size:11px;color:#888'>Bot automatizado rodando via Python.</p>")
   partes.append("</body></html>")
 

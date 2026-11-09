@@ -91,3 +91,56 @@ def test_email_tem_os_links_e_a_secao_ja_me_candidatei():
   assert "✅ Já me candidatei (1)" in html and "05/11" in html
   # Sem remetente (prévia sem config), sem links.
   assert "mailto:" not in email_vagas.montar_html([v], "oi")
+
+
+def test_descarte_vale_para_a_vaga_com_o_nome_da_empresa_escrito_de_outro_jeito():
+  estado = r.vazio()
+  r.aplicar(estado, r.DESCARTAR, r.codigo(vaga("Analista de BI", "Vetta Tecnologia")),
+            "Analista de BI | Vetta Tecnologia")
+  assert r.tirar_marcadas([vaga("Analista de BI", "Vetta")], estado) == []
+
+
+def test_resposta_antiga_com_codigo_do_nome_exato_continua_valendo():
+  estado = r.vazio()
+  v = vaga("Analista de BI", "Vetta Tecnologia")
+  estado["vagas"][r.codigo_antigo(v)] = {"acao": r.DESCARTAR, "data": "2026-11-08"}
+  assert r.tirar_marcadas([v], estado) == []
+
+
+def test_nota_da_empresa_por_email():
+  from urllib.parse import unquote
+  link = r.link_nota("quero muito", "Acme Tecnologia", "bot@gmail.com")
+  assunto = unquote(link.split("subject=")[1].split("&")[0])
+  acao, cod, sobre = r.ler_assunto(assunto)
+  assert (acao, sobre) == ("nota quero muito", "Acme Tecnologia")
+  assert r.ler_assunto("Radar: nota quero #12345678 (X)")[0] == "nota quero"  # não vira "quero muito"
+
+  estado = r.vazio()
+  r.aplicar(estado, acao, cod, sobre)
+  avaliacoes = {"acme tecnologia": {"nome": "Acme Tecnologia", "nota": empresas.OK, "descricao": "x"}}
+  r.evitar_empresas(estado, avaliacoes)
+  assert avaliacoes["acme tecnologia"]["nota"] == empresas.QUERO_MUITO
+  assert avaliacoes["acme tecnologia"]["descricao"] == "x"  # mantém a descrição do txt
+  # Empresa fora do empresas.txt passa a existir só com a nota.
+  r.aplicar(estado, "nota meh", "deadbeef", "Beta Ltda")
+  r.evitar_empresas(estado, avaliacoes)
+  assert empresas.avaliacao("Beta Ltda", avaliacoes)["nota"] == empresas.MEH
+
+
+def test_resposta_mais_recente_vence_entre_nota_e_nunca_mais():
+  estado = r.vazio()
+  r.aplicar(estado, r.NUNCA_MAIS, "deadbeef", "Beta")
+  r.aplicar(estado, "nota quero", "deadbeef", "Beta")
+  assert "beta" not in estado["empresas_evitar"] and estado["notas_empresas"]["beta"]["nota"] == "quero"
+  r.aplicar(estado, r.NUNCA_MAIS, "deadbeef", "Beta")
+  assert "beta" in estado["empresas_evitar"] and "beta" not in estado["notas_empresas"]
+
+
+def test_email_mostra_links_de_nota_so_com_destinatario():
+  v = vaga()
+  v.update(prioridade=3, categoria="Análise de Dados", grupo_local="Brasil", publicada="hoje")
+  linhas = ["Acme | ok | Faz coisas"]
+  com = email_vagas.montar_html([v], "oi", linhas, "bot@gmail.com")
+  assert "⭐ Quero muito</a>" in com and "Faz coisas" in com
+  sem = email_vagas.montar_html([v], "oi", linhas)
+  assert "Acme | ok | Faz coisas" in sem and "Quero muito" not in sem
