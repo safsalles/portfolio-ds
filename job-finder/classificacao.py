@@ -177,6 +177,9 @@ def titulo_excluido(titulo):
 # Modelo de trabalho escrito na descrição. Híbrido e presencial são testados
 # antes de remoto: "remote flex days" numa vaga 4 dias no escritório é híbrida.
 _HIBRIDO = re.compile(r"hibrid|hybrid")
+_BENEFICIO_HOME = re.compile(
+    r"(auxilio|ajuda de custo|verba|vale|bonus|beneficio|stipend|allowance)"
+    r"\s*(de |para |-)?\s*home ?office|home ?office\s*(allowance|stipend)")
 _PRESENCIAL = re.compile(
     r"100% presencial|modalidade:? presencial|modelo de trabalho:? presencial|"
     r"trabalho presencial|atuacao presencial|\bon-?site\b|in[- ]office|"
@@ -197,7 +200,8 @@ def modelo_pela_descricao(titulo, local, descricao):
     return "remoto"
   if _HIBRIDO.search(topo):
     return "hibrido"
-  texto = normalizar(descricao)
+  # "Auxílio home office: R$ 200" é benefício, não o modelo da vaga.
+  texto = _BENEFICIO_HOME.sub("", normalizar(descricao))
   if _HIBRIDO.search(texto):
     return "hibrido"
   if _PRESENCIAL.search(texto):

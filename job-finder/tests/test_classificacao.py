@@ -139,6 +139,14 @@ def test_modelo_lido_da_descricao():
   assert c.modelo_pela_descricao("Analista", "", "Vaga para analista") == ""
 
 
+def test_auxilio_home_office_nao_torna_a_vaga_remota():
+  # Mercado Pago, Osasco: "Auxílio home office: R$ 200" é benefício.
+  beneficios = "Vale refeição: R$ 51,00/dia\nAuxílio home office: R$ 200,00\nSeguro de vida"
+  assert c.modelo_pela_descricao("Assistente", "Osasco / SP", beneficios) == ""
+  assert c.modelo_pela_descricao("Assistente", "", "Trabalho em home office") == "remoto"
+  assert c.modelo_pela_descricao("Assistente", "", "Home office allowance: R$ 200") == ""
+
+
 def test_futebol_sem_modelo_fora_do_brasil_cai_fora():
   # Era o caso do LinkedIn: a busca dizia "remoto" mas a vaga é presencial.
   v = vaga("U15-16 Performance Analyst", "Manchester United",

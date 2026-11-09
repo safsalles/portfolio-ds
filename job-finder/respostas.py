@@ -171,7 +171,16 @@ def ler_respostas(estado, usuario, senha_app, meu_email):
   try:
     with imaplib.IMAP4_SSL(IMAP_SERVER) as imap:
       imap.login(usuario, senha_app)
-      imap.select("INBOX", readonly=True)
+      # Quem arquiva as respostas depois de tratar tira elas da Caixa de entrada:
+      # lê em "Todos os e-mails" (pasta com a flag \All, qualquer idioma).
+      pasta = "INBOX"
+      for linha in imap.list()[1]:
+        texto = linha.decode(errors="replace") if isinstance(linha, bytes) else str(linha)
+        if "\\All" in texto:
+          pasta = texto.rsplit(' "/" ', 1)[-1].strip()
+          break
+      if imap.select(pasta, readonly=True)[0] != "OK":
+        imap.select("INBOX", readonly=True)
       status, dados = imap.search(None, "FROM", f'"{meu_email}"', "SUBJECT", '"Radar:"',
                                   "SINCE", desde)
       if status != "OK":
