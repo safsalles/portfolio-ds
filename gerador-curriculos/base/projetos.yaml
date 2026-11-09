@@ -1,20 +1,28 @@
 projetos:
   - id: job-finder
-    nome: Job Finder
+    nome: Radar de Vagas (Job Finder)
     link: github.com/safsalles/portfolio-ds
-    fonte: linkedin
+    fonte: portfolio-ds/job-finder (README e commits até 2026-11-08)
     texto:
-      pt: "Bot em Python com Playwright que busca vagas, filtra por título e modalidade e envia os resultados organizados por e-mail."
-      en: "Python bot built with Playwright that searches job postings, filters them by title and work model, and emails the organized results."
-      es: "Bot en Python con Playwright que busca ofertas de empleo, las filtra por título y modalidad y envía los resultados organizados por correo electrónico."
+      pt: "Bot em Python (Playwright e APIs públicas) que busca vagas em 8 fontes, classifica, filtra por título, modalidade e local, calcula a afinidade com as minhas competências e envia as vagas novas por e-mail todo dia. Testes automatizados."
+      en: "Python bot (Playwright and public APIs) that searches job postings across 8 sources, classifies and filters them by title, work model and location, scores the match with my skills and emails the new postings every day. Automated tests."
+      es: "Bot en Python (Playwright y APIs públicas) que busca ofertas en 8 fuentes, las clasifica y filtra por título, modalidad y ubicación, calcula la afinidad con mis competencias y envía las ofertas nuevas por correo a diario."
   - id: mem-ga
-    nome: MEM-GA
+    nome: MEM-GA (memga)
     link: github.com/safsalles/portfolio-ds
-    fonte: conversa 2026-11-06
+    fonte: portfolio-ds/mem-ga (README, CITATION.cff e commits até 2026-11-08)
     texto:
-      pt: "Versão em Python do método multicritério com algoritmo genético da minha dissertação, aplicado à formação de times de futebol com dados do Brasileirão 2017."
-      en: "Python version of the multicriteria method with a genetic algorithm from my master's thesis, applied to soccer team formation using 2017 Brazilian league data."
-      es: "Versión en Python del método multicriterio con algoritmo genético de mi tesis de maestría, aplicado a la formación de equipos de fútbol con datos del Brasileirão 2017."
+      pt: "Pacote do método multicritério com algoritmo genético da minha dissertação. Publicado no PyPI (Python), no R-universe (R) e no File Exchange (MATLAB e Octave), com testes automatizados e DOI no Zenodo."
+      en: "Package for the multicriteria method with a genetic algorithm from my master's thesis. Published on PyPI (Python), R-universe (R) and File Exchange (MATLAB and Octave), with automated tests and a Zenodo DOI."
+      es: "Paquete del método multicriterio con algoritmo genético de mi tesis de maestría. Publicado en PyPI (Python), R-universe (R) y File Exchange (MATLAB y Octave), con DOI en Zenodo."
+  - id: football-analytics
+    nome: Football Analytics
+    link: github.com/safsalles/portfolio-ds
+    fonte: portfolio-ds/football-analytics (README e commits até 2026-11-08)
+    texto:
+      pt: "Análises de futebol com dados do Brasileirão 2017 e o pacote memga: monta o time de 10 jogadores de linha que mais se completa em uma formação e sugere contratações que melhoram a complementação de um clube. Python, notebook de análise e testes automatizados."
+      en: "Soccer analytics with 2017 Brazilian league data and the memga package: builds the 10-outfield-player team that complements itself best in a formation and suggests signings that improve a club's complementarity. Python, analysis notebook and automated tests."
+      es: "Análisis de fútbol con datos del Brasileirão 2017 y el paquete memga: arma el equipo de 10 jugadores de campo que más se complementa en una formación y sugiere fichajes que mejoran la complementariedad de un club. Python, notebook de análisis y pruebas automatizadas."
   - id: curriculos
     nome: {pt: Sistema de Currículos, en: Résumé System, es: Sistema de Currículums}
     link: ""
