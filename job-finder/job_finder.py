@@ -58,9 +58,17 @@ TERMOS_GUPY = [
 # "Só remoto" é um pedido ao LinkedIn, que nem sempre obedece; o modelo de
 # trabalho é conferido depois na descrição de cada vaga.
 BUSCAS_LINKEDIN = [
-    ("analista de dados", linkedin.BRASIL, True, linkedin.SEMANA),
-    ("data analyst", linkedin.BRASIL, True, linkedin.SEMANA),
-    ("analista de bi", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("analista de dados", linkedin.BRASIL, True, linkedin.SEMANA, 2),
+    ("data analyst", linkedin.BRASIL, True, linkedin.SEMANA, 2),
+    ("analista de bi", linkedin.BRASIL, True, linkedin.SEMANA, 2),
+    ("power bi", linkedin.BRASIL, True, linkedin.SEMANA, 2),
+    ("data labeling", linkedin.BRASIL, True, linkedin.SEMANA),
+    # Muita vaga remota de dados é "América Latina" (ex.: BairesDev), não "Brasil".
+    ("analista de dados", linkedin.AMERICA_LATINA, True, linkedin.SEMANA, 2),
+    ("data analyst", linkedin.AMERICA_LATINA, True, linkedin.SEMANA, 2),
+    ("analista de bi", linkedin.AMERICA_LATINA, True, linkedin.SEMANA, 2),
+    ("power bi", linkedin.AMERICA_LATINA, True, linkedin.SEMANA, 2),
+    ("business intelligence", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
     ("assistente administrativo", linkedin.BRASIL, True, linkedin.SEMANA),
     ("futebol", linkedin.BRASIL, False, linkedin.MES),
     ("scout futebol", linkedin.BRASIL, False, linkedin.MES),
@@ -88,13 +96,15 @@ TERMOS_GERAIS = [
     "assistente administrativo", "analista administrativo",
 ]
 TERMOS_GLASSDOOR = TERMOS_GERAIS + ["futebol"]  # só remotas (filtro do site)
-TERMOS_INFOJOBS = TERMOS_GERAIS + ["futebol"]
+# "bolsista": bolsas remotas do Instituto Euvaldo Lodi, "Todo Brasil".
+TERMOS_INFOJOBS = TERMOS_GERAIS + ["futebol", "power bi", "bolsista dados", "bolsista sql",
+                                   "bolsista python"]
 TERMOS_VAGAS_COM = TERMOS_GERAIS + ["futebol", "analista de desempenho"]
 
 
 # Cada descrição do LinkedIn é um pedido a mais (com pausa); o limite evita
 # que o LinkedIn bloqueie e que a rodada demore demais.
-MAX_DESCRICOES_LINKEDIN = 70
+MAX_DESCRICOES_LINKEDIN = 90
 # O Vagas.com não diz na lista se a vaga é remota: abre a página das que
 # podem servir, até este limite por rodada.
 MAX_DESCRICOES_VAGAS_COM = 40

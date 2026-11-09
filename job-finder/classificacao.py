@@ -26,6 +26,8 @@ PADROES_CATEGORIA = [
     (ADMIN, r"administrativ|administrative|data entry|data clerk"
             r"|assistente de escritorio|auxiliar de escritorio|data operator"
             r"|operador de dados"),
+    # Bolsas do Instituto Euvaldo Lodi (InfoJobs): o título lista as tecnologias.
+    (DADOS, r"bolsista.*(\bsql\b|python|pyspark|machine learning|estatistic)"),
     (DADOS, r"\bdados\b|\bdata\b|analytics|cientista|scientist|estatistic"
             r"|insights?\b|analista de performance|performance analyst"),
     (OUTRAS, r"engenheir[oa]\(?a?\)? de (producao|planejamento)"
@@ -39,7 +41,7 @@ EXCLUIR_NO_TITULO = re.compile(
     r"estag|\bintern\b|\binternship\b|trainee|\bengineer|engenheir|"
     r"seguranca|arquitet|architect|infraestrutura|ux/ui|ui/ux|"
     r"recrutamento|selecao|fiscal|software|mobile|c\+\+|\bjava\b|devops|"
-    r"product manager|gerente de produto|banco de dados|database"
+    r"product manager|gerente de produto|banco de dados|database|bolsista doutor"
 )
 
 # --- CIÊNCIA E ENGENHARIA DE DADOS, E VAGAS AFIRMATIVAS ---
@@ -76,7 +78,9 @@ def nivel_nao_serve(titulo):
   t = normalizar(titulo)
   if ENGENHARIA_DE_DADOS.search(t):
     return "engenharia de dados"
-  if CIENCIA_DE_DADOS.search(t) and not NIVEL_DE_ABERTURA.search(t):
+  # Bolsa de pesquisa é vaga de abertura, mesmo sendo de ciência de dados.
+  if (CIENCIA_DE_DADOS.search(t) and not NIVEL_DE_ABERTURA.search(t)
+      and "bolsista" not in t):
     return "data science só em nível de abertura"
   return None
 
@@ -90,6 +94,16 @@ def exclusiva_para_minorias(titulo, descricao=""):
 # Vagas com data mais antiga que isso são ignoradas (algumas fontes mantêm
 # vagas de anos atrás no ar).
 MAX_DIAS = 45
+# Bolsas de pesquisa (Instituto Euvaldo Lodi) ficam abertas por meses.
+MAX_DIAS_BOLSA = 120
+
+
+def antiga(vaga):
+  if vaga["minutos"] == SEM_TEMPO:
+    return False
+  limite = MAX_DIAS_BOLSA if "bolsista" in normalizar(vaga["titulo"]) else MAX_DIAS
+  return vaga["minutos"] > limite * 1440
+
 
 # --- FUTEBOL ---
 # Empresas cujo negócio é futebol/dados esportivos.
@@ -328,7 +342,7 @@ def classificar(vagas, empresas_grandes, avaliacoes=None):
       cortes["empresa a evitar"] += 1
       continue
 
-    if vaga["minutos"] != SEM_TEMPO and vaga["minutos"] > MAX_DIAS * 1440:
+    if antiga(vaga):
       cortes["antiga"] += 1
       continue
 

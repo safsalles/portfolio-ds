@@ -11,8 +11,8 @@ import os
 import re
 
 import empresas
-from classificacao import MAX_DIAS, exclusiva_para_minorias, nivel_nao_serve
-from util import SEM_TEMPO, normalizar
+from classificacao import antiga, exclusiva_para_minorias, nivel_nao_serve
+from util import normalizar
 
 ARQUIVO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "perto_de_casa.txt")
 
@@ -126,7 +126,7 @@ def filtrar(vagas, filtros, avaliacoes):
     if vaga["modelo"] == "remoto" or re.search(r"remot|home office", normalizar(vaga["titulo"])):
       cortes["remota"] += 1
       continue
-    if vaga["minutos"] != SEM_TEMPO and vaga["minutos"] > MAX_DIAS * 1440:
+    if antiga(vaga):
       cortes["antiga"] += 1
       continue
     if not titulo_serve(vaga["titulo"], filtros):

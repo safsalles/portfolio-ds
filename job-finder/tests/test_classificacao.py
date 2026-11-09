@@ -326,3 +326,25 @@ def test_vaga_geral_em_ingles_restrita_a_um_pais_cai_fora():
   v = vaga("Data Entry Specialist", "Acme", local="Remote", modelo="remoto",
            descricao="Candidates must be based in the US and authorized to work in the US.")
   assert classificar_uma(v) is None
+
+
+def test_bolsa_do_iel_com_sql_python_entra_e_doutor_nao():
+  import classificacao as c
+  for titulo in ("Bolsista Mestre [SQL, Modelagem Relacional, Data Quality, Python/Pyspark] ICT",
+                 "Bolsista Mestre [Dados Em CRM, SQL, Python ] Bradesco",
+                 "Bolsista Mestre ( Cientista De Dados – NLP E Sistemas De Busca)"):
+    assert c.categoria_geral(titulo) == c.DADOS
+    assert not c.titulo_excluido(titulo)
+    assert not c.nivel_nao_serve(titulo)  # bolsa é nível de abertura
+  assert c.titulo_excluido("Bolsista Doutor [Garantias, Agente Inteligente, IA Generativa]")
+  assert c.nivel_nao_serve("Senior Data Scientist")  # sem bolsa, continua cortando
+
+
+def test_bolsa_aceita_mais_dias_que_vaga_comum():
+  bolsa = nova_vaga("Bolsista Mestre [SQL, Python]", "IEL", "https://x/b", "InfoJobs",
+                    local="Todo Brasil", minutos=77 * 1440)
+  comum = nova_vaga("Analista de Dados", "Acme", "https://x/c", "InfoJobs",
+                    local="Brasil", minutos=77 * 1440)
+  assert not c.antiga(bolsa)
+  assert c.antiga(comum)
+  assert c.antiga(dict(bolsa, minutos=130 * 1440))

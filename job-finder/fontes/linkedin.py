@@ -52,22 +52,30 @@ MES = "r2592000"
 
 
 def buscar(buscas):
-  """buscas: lista de (palavras, geoId, só_remoto, período). O período é
-  SEMANA ou MES (vagas de futebol são raras, então olham o mês todo)."""
+  """buscas: lista de (palavras, geoId, só_remoto, período[, páginas]). O
+  período é SEMANA ou MES (vagas de futebol são raras, então olham o mês
+  todo). Cada página traz 10 vagas; sem o 5º item, só a primeira."""
   vagas = {}
-  for palavras, geo, so_remoto, periodo in buscas:
-    parametros = {"keywords": palavras, "geoId": geo, "f_TPR": periodo}
-    if so_remoto:
-      parametros["f_WT"] = REMOTO
-    html = baixar(URL_BUSCA + urlencode(parametros), tentativas=2, pausa=PAUSA)
-    time.sleep(PAUSA)
-    if html is None:
-      print(f"   LinkedIn: '{palavras}' bloqueada ou falhou, pulando")
-      continue
-    encontradas = _ler_cards(html)
-    print(f"   LinkedIn: '{palavras}' -> {len(encontradas)} vagas")
-    for v in encontradas:
-      vagas.setdefault(v["link"], v)
+  for busca in buscas:
+    palavras, geo, so_remoto, periodo = busca[:4]
+    paginas = busca[4] if len(busca) > 4 else 1
+    total = 0
+    for pagina in range(paginas):
+      parametros = {"keywords": palavras, "geoId": geo, "f_TPR": periodo, "start": pagina * 10}
+      if so_remoto:
+        parametros["f_WT"] = REMOTO
+      html = baixar(URL_BUSCA + urlencode(parametros), tentativas=2, pausa=PAUSA)
+      time.sleep(PAUSA)
+      if html is None:
+        print(f"   LinkedIn: '{palavras}' bloqueada ou falhou, pulando")
+        break
+      encontradas = _ler_cards(html)
+      total += len(encontradas)
+      for v in encontradas:
+        vagas.setdefault(v["link"], v)
+      if len(encontradas) < 10:
+        break
+    print(f"   LinkedIn: '{palavras}' -> {total} vagas")
   return list(vagas.values())
 
 
