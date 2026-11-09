@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "memga"
-version = "1.2.0"
+version = "1.2.1"
 description = "Multiple Choice Method (MEM): select a set of alternatives that complement each other, by exhaustive search or a genetic algorithm"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,17 +14,28 @@ authors = [
     { name = "Sérgio Augusto Faria Salles", email = "safsalles@hotmail.com" },
     { name = "Henrique Rego Monteiro da Hora" },
 ]
-keywords = ["multicriteria", "decision-making", "genetic-algorithm", "selection", "mem"]
+keywords = ["multicriteria", "multi-criteria decision making", "MCDM", "decision-making", "genetic-algorithm", "operations research", "team selection", "portfolio selection", "complementarity", "set selection", "optimization", "mem"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
 ]
 dependencies = ["numpy>=2.0", "matplotlib>=3.8"]
 
 [project.urls]
 Homepage = "https://github.com/safsalles/portfolio-ds/tree/main/mem-ga"
+Repository = "https://github.com/safsalles/portfolio-ds"
+Citation = "https://doi.org/10.5281/zenodo.24062574"
 Issues = "https://github.com/safsalles/portfolio-ds/issues"
 
 [project.optional-dependencies]
