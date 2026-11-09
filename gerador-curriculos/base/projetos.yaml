@@ -12,9 +12,9 @@ projetos:
     link: github.com/safsalles/portfolio-ds
     fonte: portfolio-ds/mem-ga (README, CITATION.cff e commits até 2026-11-08)
     texto:
-      pt: "Pacote do método multicritério com algoritmo genético da minha dissertação. Publicado no PyPI (Python), no R-universe (R) e no File Exchange (MATLAB e Octave), com testes automatizados e DOI no Zenodo."
-      en: "Package for the multicriteria method with a genetic algorithm from my master's thesis. Published on PyPI (Python), R-universe (R) and File Exchange (MATLAB and Octave), with automated tests and a Zenodo DOI."
-      es: "Paquete del método multicriterio con algoritmo genético de mi tesis de maestría. Publicado en PyPI (Python), R-universe (R) y File Exchange (MATLAB y Octave), con DOI en Zenodo."
+      pt: "Pacote do método multicritério com algoritmo genético da minha dissertação. Disponível em Python (PyPI), R e MATLAB, com testes automatizados e DOI no Zenodo."
+      en: "Package for the multicriteria method with a genetic algorithm from my master's thesis. Available in Python (PyPI), R and MATLAB, with automated tests and a Zenodo DOI."
+      es: "Paquete del método multicriterio con algoritmo genético de mi tesis de maestría. Disponible en Python (PyPI), R y MATLAB, con pruebas automatizadas y DOI en Zenodo."
   - id: football-analytics
     nome: Football Analytics
     link: github.com/safsalles/portfolio-ds
