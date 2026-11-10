@@ -356,3 +356,23 @@ def test_bolsa_aceita_mais_dias_que_vaga_comum():
   assert not c.antiga(bolsa)
   assert c.antiga(comum)
   assert c.antiga(dict(bolsa, minutos=130 * 1440))
+
+
+def test_professor_superior_remoto_entra():
+  assert c.categoria_geral("Professor de Logística - EAD") == c.PROFESSOR
+  assert not c.titulo_excluido("Docente de Administração")
+  assert c.professor_superior("Professor de Estatística - Ensino Superior")
+  assert c.professor_superior("Professor de Logística", "Graduação em Administração, aulas EAD")
+  assert not c.professor_superior("Professor de Logística", "Escola técnica")
+  assert not c.professor_superior("Professor de Inglês - Faculdade")
+  assert not c.professor_superior("Professor de Matemática - Ensino Fundamental")
+
+
+def test_professor_so_passa_se_for_remoto():
+  def vaga(modelo, descricao):
+    return {"titulo": "Professor de Logística", "empresa": "Faculdade X", "local": "Brasil",
+            "descricao": descricao, "modelo": modelo, "minutos": 60, "link": "u"}
+  ok = c.classificar([vaga("", "Graduação em Logística, aulas 100% EAD")], [])
+  assert ok and ok[0]["categoria"] == c.PROFESSOR
+  assert not c.classificar([vaga("presencial", "Graduação em Logística, presencial")], [])
+  assert not c.classificar([vaga("remoto", "Escola de ensino médio")], [])

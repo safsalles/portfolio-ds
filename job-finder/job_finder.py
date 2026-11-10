@@ -52,6 +52,7 @@ TERMOS_REMOTAR = [
     "data entry", "data clerk", "engenheiro de produção",
     "engenheiro de planejamento", "futebol",
     "pricing", "analista de pricing", "data analyst", "analista de datos",
+    "professor", "docente", "professor ead",
 ]
 
 # Gupy: vagas brasileiras (remotas ou não; a classificação decide).
@@ -60,7 +61,13 @@ TERMOS_GUPY = [
     "assistente administrativo", "analista administrativo",
     "futebol", "analista de desempenho", "scout",
     "analista de pricing", "pricing", "analytics", "data analyst",
+    "professor ensino superior", "docente ead", "professor ead",
 ]
+
+# Docência no ensino superior, remota ou EAD (qualquer disciplina ligada a
+# engenharia de produção, administração, logística, estatística...).
+TERMOS_PROFESSOR = ["professor ensino superior", "professor ead", "docente ensino superior",
+                    "professor universitario", "docente graduacao"]
 
 # LinkedIn (busca pública): (palavras, região, só remoto, período).
 # "Só remoto" é um pedido ao LinkedIn, que nem sempre obedece; o modelo de
@@ -103,6 +110,13 @@ BUSCAS_LINKEDIN = [
     ("data entry remote", linkedin.MUNDO, True, linkedin.SEMANA),
     ("administrative assistant remote", linkedin.MUNDO, True, linkedin.SEMANA),
     ("soccer analyst", linkedin.MUNDO, True, linkedin.MES),
+    # Docência no ensino superior (remota/EAD).
+    ("professor ensino superior", linkedin.BRASIL, True, linkedin.MES),
+    ("professor ead", linkedin.BRASIL, True, linkedin.MES),
+    ("docente ensino superior", linkedin.BRASIL, True, linkedin.MES),
+    ("professor engenharia de producao", linkedin.BRASIL, True, linkedin.MES),
+    ("professor administracao ead", linkedin.BRASIL, True, linkedin.MES),
+    ("professor logistica ead", linkedin.BRASIL, True, linkedin.MES),
 ]
 
 TERMOS_JOBS_IN_FOOTBALL = ["analyst", "data", "scout", "analytics"]
@@ -126,11 +140,11 @@ TERMOS_GERAIS = [
     "assistente administrativo", "analista administrativo",
     "analista de pricing", "analytics", "data analyst",
 ]
-TERMOS_GLASSDOOR = TERMOS_GERAIS + ["futebol"]  # só remotas (filtro do site)
+TERMOS_GLASSDOOR = TERMOS_GERAIS + ["futebol"] + TERMOS_PROFESSOR  # só remotas (filtro do site)
 # "bolsista": bolsas remotas do Instituto Euvaldo Lodi, "Todo Brasil".
 TERMOS_INFOJOBS = TERMOS_GERAIS + ["futebol", "power bi", "bolsista dados", "bolsista sql",
-                                   "bolsista python"]
-TERMOS_VAGAS_COM = TERMOS_GERAIS + ["futebol", "analista de desempenho"]
+                                   "bolsista python"] + TERMOS_PROFESSOR[:2]
+TERMOS_VAGAS_COM = TERMOS_GERAIS + ["futebol", "analista de desempenho"] + TERMOS_PROFESSOR[:2]
 
 
 # Cada descrição do LinkedIn é um pedido a mais (com pausa); o limite evita

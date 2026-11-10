@@ -16,12 +16,31 @@ DADOS = "Análise de Dados"
 BI = "Analista de BI"
 ADMIN = "Analista/Assistente Administrativo"
 OUTRAS = "Outras (Engenharia de Produção/Planejamento)"
-ORDEM_CATEGORIAS = [FUTEBOL, DADOS, BI, ADMIN, OUTRAS]
+PROFESSOR = "Professor (Ensino Superior, remoto/EAD)"
+ORDEM_CATEGORIAS = [FUTEBOL, DADOS, BI, ADMIN, OUTRAS, PROFESSOR]
+
+# Docência: qualquer disciplina (o Sérgio dá aula de engenharia de produção,
+# administração, logística, estatística etc.), mas só no ensino superior e
+# remota/EAD. O nível é conferido por professor_superior().
+_TITULO_PROFESSOR = r"\b(professor|professora|docente|tutor)(a|es)?\b|\bprofessor\(a\)"
+# Sinais de ensino superior no título ou na descrição.
+SUPERIOR = re.compile(
+    r"ensino superior|educacao superior|graduacao|pos-?graduacao|\bmba\b|"
+    r"universit|faculdade|centro universitario|\bies\b|bacharelado|licenciatura|"
+    r"curso superior|tecnologo|higher education|university|college"
+)
+# Outros níveis/ensinos: o título entrega que não é faculdade.
+NAO_SUPERIOR = re.compile(
+    r"fundamental|ensino medio|infantil|educacao basica|alfabetizacao|"
+    r"idiomas|ingles|espanhol|\bcursinho|pre-?vestibular|concurso|"
+    r"musica|danca|educacao fisica|violao|auto ?escola"
+)
 
 # Padrões procurados no título (já sem acento e minúsculo).
 # A primeira categoria que casar vence, então BI vem antes de Dados:
 # "Analista de BI e Dados" é mais BI do que dados.
 PADROES_CATEGORIA = [
+    (PROFESSOR, _TITULO_PROFESSOR),
     (BI, r"\bbi\b|business intelligence|power ?bi|inteligencia de negocio"),
     (ADMIN, r"administrativ|administrative|data entry|data clerk"
             r"|assistente de escritorio|auxiliar de escritorio|data operator"
@@ -170,8 +189,16 @@ def _contem_algum(texto_norm, termos):
   return any(re.search(rf"(^|\W){re.escape(t)}($|\W)", texto_norm) for t in termos)
 
 
+def professor_superior(titulo, descricao=""):
+  """True se a vaga de docência é de faculdade (e não de escola, idiomas etc.)."""
+  t = normalizar(titulo)
+  if NAO_SUPERIOR.search(t):
+    return False
+  return bool(SUPERIOR.search(t) or SUPERIOR.search(normalizar(descricao)))
+
+
 def titulo_excluido(titulo):
-  if categoria_geral(titulo) == OUTRAS:
+  if categoria_geral(titulo) in (OUTRAS, PROFESSOR):
     return False
   return bool(EXCLUIR_NO_TITULO.search(normalizar(titulo)))
 
@@ -190,6 +217,7 @@ _PRESENCIAL = re.compile(
 _REMOTO = re.compile(
     r"100% remot|totalmente remot|trabalho remoto|modalidade:? remot|"
     r"modelo de trabalho:? remot|home ?office|fully remote|remote[- ]first|"
+    r"\bead\b|educacao a distancia|ensino a distancia|aulas? online|"
     r"\bremote (role|position|job|work|opportunity)|(role|position|job) is remote|"
     r"work from (home|anywhere)|\bremot[eo]\b"
 )
@@ -370,6 +398,9 @@ def classificar(vagas, empresas_grandes, avaliacoes=None):
 
     categoria = categoria_geral(vaga["titulo"])
     if categoria is None:
+      cortes["fora das categorias"] += 1
+      continue
+    if categoria == PROFESSOR and not professor_superior(vaga["titulo"], vaga["descricao"]):
       cortes["fora das categorias"] += 1
       continue
     if vaga["modelo"] != "remoto":

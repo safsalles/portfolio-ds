@@ -14,7 +14,7 @@ import json
 import os
 import re
 
-from classificacao import FUTEBOL
+from classificacao import FUTEBOL, PROFESSOR
 from util import normalizar
 
 CAMINHO = os.path.expanduser(r"~\Desktop\aux portfolio\job finder\fila_candidaturas.json")
@@ -55,6 +55,8 @@ def grupo(vaga, notas_empresas):
     return "voce", "pede CPF"
   if vaga.get("categoria") == FUTEBOL:
     return "voce", "vaga de futebol"
+  if vaga.get("categoria") == PROFESSOR:
+    return "voce", "docência: pede Lattes/diploma, currículo acadêmico"
   if vaga.get("modelo") != "remoto":
     return "voce", "modelo de trabalho não confirmado como remoto"
   return "auto", ""
