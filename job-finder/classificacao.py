@@ -29,7 +29,8 @@ PADROES_CATEGORIA = [
     # Bolsas do Instituto Euvaldo Lodi (InfoJobs): o título lista as tecnologias.
     (DADOS, r"bolsista.*(\bsql\b|python|pyspark|machine learning|estatistic)"),
     (DADOS, r"\bdados\b|\bdata\b|analytics|cientista|scientist|estatistic"
-            r"|insights?\b|analista de performance|performance analyst"),
+            r"|insights?\b|analista de performance|performance analyst"
+            r"|\bdatos\b|pricing|precificacao|analista de precios|revenue analyst"),
     (OUTRAS, r"engenheir[oa]\(?a?\)? de (producao|planejamento)"
              r"|production engineer|planning engineer|\bpcp\b"),
 ]
@@ -41,7 +42,8 @@ EXCLUIR_NO_TITULO = re.compile(
     r"estag|\bintern\b|\binternship\b|trainee|\bengineer|engenheir|"
     r"seguranca|arquitet|architect|infraestrutura|ux/ui|ui/ux|"
     r"recrutamento|selecao|fiscal|software|mobile|c\+\+|\bjava\b|devops|"
-    r"product manager|gerente de produto|banco de dados|database|bolsista doutor"
+    r"product manager|gerente de produto|banco de dados|database|bolsista doutor|"
+    r"\bgrowth\b|marketing|midia paga|trafego pago|\bads\b"
 )
 
 # --- CIÊNCIA E ENGENHARIA DE DADOS, E VAGAS AFIRMATIVAS ---

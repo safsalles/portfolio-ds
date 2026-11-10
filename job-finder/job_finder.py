@@ -21,13 +21,14 @@ import afinidade
 import classificacao
 import email_vagas
 import empresas
+import fila
 import memoria
 import perto_de_casa
 import respostas
 from classificacao import (MAX_DIAS, PADRAO_FUNCAO_FUTEBOL, categoria_geral, eh_futebol,
                            titulo_excluido, vale_abrir_descricao)
-from fontes import (empresas_futebol, glassdoor, gupy, infojobs,
-                    jobs_in_football, linkedin, remotar, vagas_com)
+from fontes import (empresas_futebol, geekhunter, glassdoor, gupy, infojobs,
+                    jobs_in_football, linkedin, remotar, solides, vagas_com)
 from util import normalizar
 
 # --- LEITURA SEGURA DAS CREDENCIAIS FORA DO GITHUB ---
@@ -45,6 +46,7 @@ TERMOS_REMOTAR = [
     "administrativo", "administrative assistant", "administrative analyst",
     "data entry", "data clerk", "engenheiro de produção",
     "engenheiro de planejamento", "futebol",
+    "pricing", "analista de pricing", "data analyst", "analista de datos",
 ]
 
 # Gupy: vagas brasileiras (remotas ou não; a classificação decide).
@@ -52,6 +54,7 @@ TERMOS_GUPY = [
     "analista de dados", "analista de bi", "business intelligence",
     "assistente administrativo", "analista administrativo",
     "futebol", "analista de desempenho", "scout",
+    "analista de pricing", "pricing", "analytics", "data analyst",
 ]
 
 # LinkedIn (busca pública): (palavras, região, só remoto, período).
@@ -69,6 +72,15 @@ BUSCAS_LINKEDIN = [
     ("analista de bi", linkedin.AMERICA_LATINA, True, linkedin.SEMANA, 2),
     ("power bi", linkedin.AMERICA_LATINA, True, linkedin.SEMANA, 2),
     ("business intelligence", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    # Pricing, analytics e versões em espanhol/inglês.
+    ("pricing analyst", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("pricing analyst", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    ("analista de pricing", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("analytics", linkedin.BRASIL, True, linkedin.SEMANA),
+    ("analytics", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    ("data analyst remote", linkedin.MUNDO, True, linkedin.SEMANA),
+    ("analista de datos", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
+    ("analista de precios", linkedin.AMERICA_LATINA, True, linkedin.SEMANA),
     ("assistente administrativo", linkedin.BRASIL, True, linkedin.SEMANA),
     ("futebol", linkedin.BRASIL, False, linkedin.MES),
     ("scout futebol", linkedin.BRASIL, False, linkedin.MES),
@@ -90,10 +102,24 @@ BUSCAS_LINKEDIN = [
 
 TERMOS_JOBS_IN_FOOTBALL = ["analyst", "data", "scout", "analytics"]
 
+# GeekHunter (lista pública, só remotas): o site é de tecnologia, então os
+# termos são de dados e BI.
+TERMOS_GEEKHUNTER = [
+    "analista de dados", "data analyst", "power bi", "bi", "business intelligence",
+    "analytics", "pricing", "analista de pricing",
+]
+
+# Sólides (lista pública, só remotas): termos no formato do endereço do site.
+TERMOS_SOLIDES = ["dados", "analista-de-dados", "power-bi", "bi", "analytics", "pricing"]
+# A lista da Sólides não traz a descrição: abre a página das vagas que passam
+# pelo filtro de cargo, até este limite por rodada.
+MAX_DESCRICOES_SOLIDES = 40
+
 # Termos das vagas gerais, usados no Glassdoor, InfoJobs e Vagas.com.
 TERMOS_GERAIS = [
     "analista de dados", "analista de bi", "business intelligence",
     "assistente administrativo", "analista administrativo",
+    "analista de pricing", "analytics", "data analyst",
 ]
 TERMOS_GLASSDOOR = TERMOS_GERAIS + ["futebol"]  # só remotas (filtro do site)
 # "bolsista": bolsas remotas do Instituto Euvaldo Lodi, "Todo Brasil".
@@ -158,6 +184,21 @@ def coletar_sem_navegador():
       print(f"   Vagas.com: o site recusou depois de {n} páginas, parando por hoje")
       break
   vagas += do_vagas_com
+
+  print("\n[4b/5] GeekHunter (lista pública, remotas)")
+  vagas += geekhunter.buscar(TERMOS_GEEKHUNTER)
+
+  print("\n[4c/5] Sólides (lista pública, remotas)")
+  da_solides = solides.buscar(TERMOS_SOLIDES)
+  para_abrir = [v for v in da_solides
+                if not eh_futebol(v) and categoria_geral(v["titulo"])
+                and not titulo_excluido(v["titulo"]) and v["minutos"] <= MAX_DIAS * 1440]
+  para_abrir = sorted(para_abrir, key=lambda v: v["minutos"])[:MAX_DESCRICOES_SOLIDES]
+  print(f"   Sólides: lendo a descrição de {len(para_abrir)} vagas")
+  for vaga in para_abrir:
+    if not solides.completar_descricao(vaga):
+      vaga["encerrada"] = True
+  vagas += [v for v in da_solides if not v.get("encerrada")]
   return vagas
 
 
@@ -254,6 +295,7 @@ def perto(args, config, avaliacoes, minhas, vistas, estado):
   if not enviado:
     return []
   respostas.lembrar(estado, aceitas, "perto")
+  fila.salvar(fila.montar(aceitas, estado, respostas.codigo))
   return aceitas
 
 
@@ -307,6 +349,7 @@ def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado):
   if not enviado:
     return []
   respostas.lembrar(estado, novas, "radar")
+  fila.salvar(fila.montar(novas, estado, respostas.codigo))
   return novas
 
 
