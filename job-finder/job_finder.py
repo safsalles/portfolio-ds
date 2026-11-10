@@ -5,6 +5,10 @@ Uso:
   python job_finder.py               busca, envia o e-mail e guarda as vagas enviadas
   python job_finder.py --sem-email   só busca e salva uma prévia do e-mail em HTML
   python job_finder.py --so-perto    só o e-mail Perto de casa (dá pra juntar com --sem-email)
+  python job_finder.py --coletar     busca e guarda as vagas, sem e-mail (monta a fila de candidaturas)
+  python job_finder.py --enviar      envia o e-mail com as vagas guardadas, sem as já candidatadas
+
+Com o assistente: --coletar, ele se candidata ("roda a fila"), depois --enviar.
 
 Cada rodada manda dois e-mails: o Radar de Vagas (remotas) e o Perto de
 casa (presenciais e híbridas em Campos dos Goytacazes, São João da Barra e
@@ -23,6 +27,7 @@ import email_vagas
 import empresas
 import fila
 import memoria
+import pendentes
 import perto_de_casa
 import respostas
 from classificacao import (MAX_DIAS, PADRAO_FUNCAO_FUTEBOL, categoria_geral, eh_futebol,
@@ -209,6 +214,11 @@ def main():
                       help="não envia e-mail nem guarda as vagas; salva uma prévia em HTML")
   parser.add_argument("--so-perto", action="store_true",
                       help="roda só o e-mail Perto de casa (Campos, SJB e Macaé)")
+  parser.add_argument("--coletar", action="store_true",
+                      help="busca e guarda as vagas, monta a fila de candidaturas, mas NÃO envia"
+                           " e-mail (o assistente se candidata antes do --enviar)")
+  parser.add_argument("--enviar", action="store_true",
+                      help="envia o e-mail com as vagas guardadas, sem as já candidatadas")
   args = parser.parse_args()
 
   config = carregar_config()
@@ -225,9 +235,17 @@ def main():
   respostas.evitar_empresas(estado, avaliacoes)
   enviadas = []
 
-  if not args.so_perto:
-    enviadas += radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado)
-  enviadas += perto(args, config, avaliacoes, minhas, vistas, estado)
+  if args.enviar:
+    for nome, enviar in (("radar", enviar_radar), ("perto", enviar_perto)):
+      vagas = pendentes.carregar(nome)
+      if vagas:
+        enviadas += enviar(config, vagas, estado)
+      else:
+        print(f"Nada guardado para o e-mail {nome} (rode --coletar antes).")
+  else:
+    if not args.so_perto:
+      enviadas += radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado)
+    enviadas += perto(args, config, avaliacoes, minhas, vistas, estado)
 
   if enviadas:
     memoria.salvar(enviadas, vistas)
@@ -284,18 +302,31 @@ def perto(args, config, avaliacoes, minhas, vistas, estado):
   print(f"   {len(aceitas)} vagas, {sum(v['nova'] for v in aceitas)} novas,"
         f" {len(para_avaliar)} empresas novas para avaliar")
 
-  ja = respostas.candidatadas(estado, "perto")
   if args.sem_email:
+    ja = respostas.candidatadas(estado, "perto")
     salvar_previa(PREVIA_PERTO_PATH, email_vagas.montar_html_perto(
         aceitas, para_avaliar, config.get("EMAIL_REMETENTE"), ja))
     return []
+  fila.salvar(fila.montar(aceitas, estado, respostas.codigo))
+  if args.coletar:
+    pendentes.salvar("perto", aceitas)
+    print(f"   {len(aceitas)} vagas guardadas para o envio (--enviar)")
+    return []
+  return enviar_perto(config, aceitas, estado)
+
+
+def enviar_perto(config, aceitas, estado):
+  """Manda o e-mail Perto de casa sem as vagas já candidatadas."""
+  aceitas = respostas.tirar_marcadas(aceitas, estado)
+  para_avaliar = empresas.empresas_para_avaliar(aceitas)
+  ja = respostas.candidatadas(estado, "perto")
   enviado = email_vagas.enviar_perto(
       aceitas, config.get("EMAIL_REMETENTE"), config.get("SENHA_APP"),
       config.get("MEU_EMAIL"), para_avaliar, ja)
   if not enviado:
     return []
   respostas.lembrar(estado, aceitas, "perto")
-  fila.salvar(fila.montar(aceitas, estado, respostas.codigo))
+  pendentes.apagar("perto")
   return aceitas
 
 
@@ -337,11 +368,24 @@ def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado):
     print(f"   {nome}: {sum(1 for v in novas if v['prioridade'] == prioridade)}")
   print(f"   empresas novas para avaliar: {len(para_avaliar)}")
 
-  ja = respostas.candidatadas(estado, "radar")
   if args.sem_email:
+    ja = respostas.candidatadas(estado, "radar")
     salvar_previa(PREVIA_PATH, email_vagas.montar_html(
         novas, MENSAGEM, para_avaliar, config.get("EMAIL_REMETENTE"), ja))
     return []
+  fila.salvar(fila.montar(novas, estado, respostas.codigo))
+  if args.coletar:
+    pendentes.salvar("radar", novas)
+    print(f"   {len(novas)} vagas guardadas para o envio (--enviar)")
+    return []
+  return enviar_radar(config, novas, estado)
+
+
+def enviar_radar(config, novas, estado):
+  """Manda o e-mail Radar sem as vagas já candidatadas."""
+  novas = respostas.tirar_marcadas(novas, estado)
+  para_avaliar = empresas.empresas_para_avaliar(novas)
+  ja = respostas.candidatadas(estado, "radar")
   enviado = email_vagas.enviar(
       novas, MENSAGEM, config.get("EMAIL_REMETENTE"), config.get("SENHA_APP"),
       config.get("MEU_EMAIL"), para_avaliar, ja,
@@ -349,7 +393,7 @@ def radar(args, config, empresas_grandes, avaliacoes, minhas, vistas, estado):
   if not enviado:
     return []
   respostas.lembrar(estado, novas, "radar")
-  fila.salvar(fila.montar(novas, estado, respostas.codigo))
+  pendentes.apagar("radar")
   return novas
 
 
