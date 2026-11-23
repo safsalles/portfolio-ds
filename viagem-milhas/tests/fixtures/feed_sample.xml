@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Blog de milhas (amostra)</title>
+    <link>https://exemplo.test/</link>
+    <description>Amostra para teste</description>
+    <item>
+      <title>Livelo oferece transferência para o Flying Blue com milheiro a R$ 29,50</title>
+      <link>https://exemplo.test/promo-flying-blue</link>
+      <description>Transfira e pague apenas R$ 29,50 o milheiro.</description>
+    </item>
+    <item>
+      <title>Passagens para Paris a partir de R$ 5.192</title>
+      <link>https://exemplo.test/passagens-paris</link>
+      <description>Sem relação com milheiro de programas.</description>
+    </item>
+  </channel>
+</rss>

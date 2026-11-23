@@ -1,0 +1,7 @@
+﻿.venv/
+data/
+.env
+.ledger.md
+__pycache__/
+.pytest_cache/
+*.pyc

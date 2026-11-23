@@ -1,0 +1,825 @@
+{
+  "search_metadata": {
+    "id": "6b046f215ae06127f9a0e96c",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/kG0gcfC-qAMFWgcUQqjYM4WDK_qej27qWzuLHIdwe44/6b046f215ae06127f9a0e96c.json",
+    "markdown_endpoint": "https://serpapi.com/searches/kG0gcfC-qAMFWgcUQqjYM4WDK_qej27qWzuLHIdwe44/6b046f215ae06127f9a0e96c.md",
+    "created_at": "2026-11-23 16:51:45 UTC",
+    "processed_at": "2026-11-23 16:51:45 UTC",
+    "google_flights_url": "https://www.google.com/travel/flights?hl=pt&gl=br&curr=BRL&tfs=CBwQAhoeEgoyMDI3LTA3LTEwagcIARIDR0lHcgcIARIDQlVEGh4SCjIwMjctMDctMjJqBwgBEgNCRVJyBwgBEgNHSUdAAUABSAFwAZgBAw&tfu=EgIIAQ",
+    "raw_html_file": "https://serpapi.com/searches/kG0gcfC-qAMFWgcUQqjYM4WDK_qej27qWzuLHIdwe44/6b046f215ae06127f9a0e96c.html",
+    "prettify_html_file": "https://serpapi.com/searches/kG0gcfC-qAMFWgcUQqjYM4WDK_qej27qWzuLHIdwe44/6b046f215ae06127f9a0e96c.prettify",
+    "total_time_taken": 13.45
+  },
+  "search_parameters": {
+    "engine": "google_flights",
+    "hl": "pt",
+    "gl": "br",
+    "type": "3",
+    "travel_class": 1,
+    "adults": 2,
+    "currency": "BRL",
+    "multi_city_json": "[{\"departure_id\": \"GIG\", \"arrival_id\": \"BUD\", \"date\": \"2027-07-10\"}, {\"departure_id\": \"BER\", \"arrival_id\": \"GIG\", \"date\": \"2027-07-22\"}]"
+  },
+  "best_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 21:55"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Amesterdão Schiphol",
+            "id": "AMS",
+            "time": "2027-07-11 14:20"
+          },
+          "duration": 685,
+          "airplane": "Boeing 777",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 706",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1217 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Amesterdão Schiphol",
+            "id": "AMS",
+            "time": "2027-07-11 21:20"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 23:15"
+          },
+          "duration": 115,
+          "airplane": "Boeing 737",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 1371",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 195 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 420,
+          "name": "Aeroporto de Amesterdão Schiphol",
+          "id": "AMS"
+        }
+      ],
+      "total_duration": 1220,
+      "carbon_emissions": {
+        "this_flight": 1413000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": 7
+      },
+      "price": 19400,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3hMVERjd05ueExUREV6TnpFYUN3akNzM1lRQWhvRFFsSk1PQnh3MGVrVCIsW1siR0lHIiwiMjAyNy0wNy0xMCIsIkFNUyIsbnVsbCwiS0wiLCI3MDYiXSxbIkFNUyIsIjIwMjctMDctMTEiLCJCVUQiLG51bGwsIktMIiwiMTM3MSJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 18:55"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Frankfurt",
+            "id": "FRA",
+            "time": "2027-07-11 11:15"
+          },
+          "duration": 680,
+          "airplane": "Boeing 787",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 501",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1025 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Frankfurt",
+            "id": "FRA",
+            "time": "2027-07-11 16:25"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 18:00"
+          },
+          "duration": 95,
+          "airplane": "Airbus A321neo",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 1338",
+          "legroom": "74 cm",
+          "extensions": [
+            "Below average legroom (74 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 150 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 310,
+          "name": "Aeroporto de Frankfurt",
+          "id": "FRA"
+        }
+      ],
+      "total_duration": 1085,
+      "carbon_emissions": {
+        "this_flight": 1175000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": -11
+      },
+      "price": 19763,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3hNU0RVd01YeE1TREV6TXpnYUN3aVd6M2dRQWhvRFFsSk1PQnh3a1prVSIsW1siR0lHIiwiMjAyNy0wNy0xMCIsIkZSQSIsbnVsbCwiTEgiLCI1MDEiXSxbIkZSQSIsIjIwMjctMDctMTEiLCJCVUQiLG51bGwsIkxIIiwiMTMzOCJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 22:00"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-11 14:15"
+          },
+          "duration": 675,
+          "airplane": "Airbus A350",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 443",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1000 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-11 15:40"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 17:50"
+          },
+          "duration": 130,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 1494",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 265 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 85,
+          "name": "Aeroporto de Paris-Charles de Gaulle",
+          "id": "CDG"
+        }
+      ],
+      "total_duration": 890,
+      "carbon_emissions": {
+        "this_flight": 1266000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": -4
+      },
+      "price": 22663,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3hCUmpRME0zeEJSakUwT1RRYURBandxSW9CRUFJYUEwSlNURGdjY01DVUZ3PT0iLFtbIkdJRyIsIjIwMjctMDctMTAiLCJDREciLG51bGwsIkFGIiwiNDQzIl0sWyJDREciLCIyMDI3LTA3LTExIiwiQlVEIixudWxsLCJBRiIsIjE0OTQiXV1d"
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 19:00"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Londres-Heathrow",
+            "id": "LHR",
+            "time": "2027-07-11 10:10"
+          },
+          "duration": 670,
+          "airplane": "Boeing 787",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 248",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 1116 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Londres-Heathrow",
+            "id": "LHR",
+            "time": "2027-07-11 12:45"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 16:20"
+          },
+          "duration": 155,
+          "airplane": "Airbus A319",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 866",
+          "legroom": "74 cm",
+          "extensions": [
+            "Below average legroom (74 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 290 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 155,
+          "name": "Aeroporto de Londres-Heathrow",
+          "id": "LHR"
+        }
+      ],
+      "total_duration": 980,
+      "carbon_emissions": {
+        "this_flight": 1407000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": 6
+      },
+      "price": 23007,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3RDUVRJME9IeENRVGcyTmhvTUNKcTJqQUVRQWhvRFFsSk1PQnh3ek1FWCIsW1siR0lHIiwiMjAyNy0wNy0xMCIsIkxIUiIsbnVsbCwiQkEiLCIyNDgiXSxbIkxIUiIsIjIwMjctMDctMTEiLCJCVUQiLG51bGwsIkJBIiwiODY2Il1dXQ=="
+    }
+  ],
+  "other_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 14:25"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional de Roma",
+            "id": "FCO",
+            "time": "2027-07-11 06:40"
+          },
+          "duration": 675,
+          "airplane": "Airbus A330-900neo",
+          "airline": "ITA",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AZ.png",
+          "travel_class": "Economy",
+          "flight_number": "AZ 673",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1043 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional de Roma",
+            "id": "FCO",
+            "time": "2027-07-11 21:00"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional de Belgrado",
+            "id": "BEG",
+            "time": "2027-07-11 22:35"
+          },
+          "duration": 95,
+          "airplane": "Airbus A319",
+          "airline": "Air Serbia",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/JU.png",
+          "travel_class": "Economy",
+          "flight_number": "JU 405",
+          "ticket_also_sold_by": [
+            "ITA"
+          ],
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "Carbon emissions estimate: 182 kg"
+          ],
+          "often_delayed_by_over_30_min": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional de Belgrado",
+            "id": "BEG",
+            "time": "2027-07-12 13:30"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-12 14:40"
+          },
+          "duration": 70,
+          "airplane": "ATR 72",
+          "airline": "Air Serbia",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/JU.png",
+          "travel_class": "Economy",
+          "flight_number": "JU 142",
+          "ticket_also_sold_by": [
+            "ITA"
+          ],
+          "legroom": "74 cm",
+          "extensions": [
+            "Below average legroom (74 cm)",
+            "Carbon emissions estimate: 76 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 860,
+          "name": "Aeroporto Internacional de Roma",
+          "id": "FCO"
+        },
+        {
+          "duration": 895,
+          "name": "Aeroporto Internacional de Belgrado",
+          "id": "BEG"
+        }
+      ],
+      "total_duration": 2595,
+      "carbon_emissions": {
+        "this_flight": 1303000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": -2
+      },
+      "price": 19734,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFaEZCV2pZM00zeEtWVFF3Tlh4S1ZURTBNaG9MQ0lpNWVCQUNHZ05DVWt3NEhIQzNsUlE9IixbWyJHSUciLCIyMDI3LTA3LTEwIiwiRkNPIixudWxsLCJBWiIsIjY3MyJdLFsiRkNPIiwiMjAyNy0wNy0xMSIsIkJFRyIsbnVsbCwiSlUiLCI0MDUiXSxbIkJFRyIsIjIwMjctMDctMTIiLCJCVUQiLG51bGwsIkpVIiwiMTQyIl1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 18:55"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Frankfurt",
+            "id": "FRA",
+            "time": "2027-07-11 11:15"
+          },
+          "duration": 680,
+          "airplane": "Boeing 787",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 501",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1025 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Frankfurt",
+            "id": "FRA",
+            "time": "2027-07-11 13:15"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Munique-Franz Josef Strauss",
+            "id": "MUC",
+            "time": "2027-07-11 14:10"
+          },
+          "duration": 55,
+          "airplane": "Airbus A319",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 108",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "Wi-Fi for a fee",
+            "Carbon emissions estimate: 114 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Munique-Franz Josef Strauss",
+            "id": "MUC",
+            "time": "2027-07-11 15:40"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 16:55"
+          },
+          "duration": 75,
+          "airplane": "Airbus A319",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 1678",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "Wi-Fi for a fee",
+            "Carbon emissions estimate: 157 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 120,
+          "name": "Aeroporto de Frankfurt",
+          "id": "FRA"
+        },
+        {
+          "duration": 90,
+          "name": "Aeroporto de Munique-Franz Josef Strauss",
+          "id": "MUC"
+        }
+      ],
+      "total_duration": 1020,
+      "carbon_emissions": {
+        "this_flight": 1298000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": -2
+      },
+      "price": 20933,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFaEpNU0RVd01YeE1TREV3T0h4TVNERTJOemdhQ3dpNjRYOFFBaG9EUWxKTU9CeHduTElWIixbWyJHSUciLCIyMDI3LTA3LTEwIiwiRlJBIixudWxsLCJMSCIsIjUwMSJdLFsiRlJBIiwiMjAyNy0wNy0xMSIsIk1VQyIsbnVsbCwiTEgiLCIxMDgiXSxbIk1VQyIsIjIwMjctMDctMTEiLCJCVUQiLG51bGwsIkxIIiwiMTY3OCJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 22:00"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-11 14:15"
+          },
+          "duration": 675,
+          "airplane": "Airbus A350",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 443",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1000 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-11 20:15"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 22:25"
+          },
+          "duration": 130,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 1694",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 265 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 360,
+          "name": "Aeroporto de Paris-Charles de Gaulle",
+          "id": "CDG"
+        }
+      ],
+      "total_duration": 1165,
+      "carbon_emissions": {
+        "this_flight": 1266000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": -4
+      },
+      "price": 21026,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3hCUmpRME0zeEJSakUyT1RRYURBanlxWUFCRUFJYUEwSlNURGdjY0t5K0ZRPT0iLFtbIkdJRyIsIjIwMjctMDctMTAiLCJDREciLG51bGwsIkFGIiwiNDQzIl0sWyJDREciLCIyMDI3LTA3LTExIiwiQlVEIixudWxsLCJBRiIsIjE2OTQiXV1d"
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 14:25"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional de Roma",
+            "id": "FCO",
+            "time": "2027-07-11 06:40"
+          },
+          "duration": 675,
+          "airplane": "Airbus A330-900neo",
+          "airline": "ITA",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AZ.png",
+          "travel_class": "Economy",
+          "flight_number": "AZ 673",
+          "ticket_also_sold_by": [
+            "Lufthansa"
+          ],
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1043 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional de Roma",
+            "id": "FCO",
+            "time": "2027-07-11 08:00"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Munique-Franz Josef Strauss",
+            "id": "MUC",
+            "time": "2027-07-11 09:35"
+          },
+          "duration": 95,
+          "airplane": "Airbus A320neo",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 1873",
+          "legroom": "74 cm",
+          "extensions": [
+            "Below average legroom (74 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 136 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Munique-Franz Josef Strauss",
+            "id": "MUC",
+            "time": "2027-07-11 11:20"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-11 12:35"
+          },
+          "duration": 75,
+          "airplane": "Airbus A321",
+          "airline": "Lufthansa",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/LH.png",
+          "travel_class": "Economy",
+          "flight_number": "LH 1676",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "Wi-Fi for a fee",
+            "Carbon emissions estimate: 147 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 80,
+          "name": "Aeroporto Internacional de Roma",
+          "id": "FCO"
+        },
+        {
+          "duration": 105,
+          "name": "Aeroporto de Munique-Franz Josef Strauss",
+          "id": "MUC"
+        }
+      ],
+      "total_duration": 1030,
+      "carbon_emissions": {
+        "this_flight": 1328000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": 0
+      },
+      "price": 21834,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFaE5CV2pZM00zeE1TREU0TnpOOFRFZ3hOamMyR2d3STVxR0ZBUkFDR2dOQ1VrdzRISENVcUJZPSIsW1siR0lHIiwiMjAyNy0wNy0xMCIsIkZDTyIsbnVsbCwiQVoiLCI2NzMiXSxbIkZDTyIsIjIwMjctMDctMTEiLCJNVUMiLG51bGwsIkxIIiwiMTg3MyJdLFsiTVVDIiwiMjAyNy0wNy0xMSIsIkJVRCIsbnVsbCwiTEgiLCIxNjc2Il1dXQ=="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-10 19:00"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Londres-Heathrow",
+            "id": "LHR",
+            "time": "2027-07-11 10:10"
+          },
+          "duration": 670,
+          "airplane": "Boeing 787",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 248",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat power & USB outlets",
+            "On-demand video",
+            "Carbon emissions estimate: 1116 kg"
+          ],
+          "overnight": true
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Londres-Heathrow",
+            "id": "LHR",
+            "time": "2027-07-11 20:40"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Budapeste Ferenc Liszt",
+            "id": "BUD",
+            "time": "2027-07-12 00:05"
+          },
+          "duration": 145,
+          "airplane": "Airbus A319",
+          "airline": "British Airways",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+          "travel_class": "Economy",
+          "flight_number": "BA 870",
+          "legroom": "74 cm",
+          "extensions": [
+            "Below average legroom (74 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 290 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 630,
+          "name": "Aeroporto de Londres-Heathrow",
+          "id": "LHR"
+        }
+      ],
+      "total_duration": 1445,
+      "carbon_emissions": {
+        "this_flight": 1407000,
+        "typical_for_this_route": 1324000,
+        "difference_percent": 6
+      },
+      "price": 22536,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/BA.png",
+      "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3RDUVRJME9IeENRVGczTUJvTUNKTEdpUUVRQWhvRFFsSk1PQnh3L0lNWCIsW1siR0lHIiwiMjAyNy0wNy0xMCIsIkxIUiIsbnVsbCwiQkEiLCIyNDgiXSxbIkxIUiIsIjIwMjctMDctMTEiLCJCVUQiLG51bGwsIkJBIiwiODcwIl1dXQ=="
+    }
+  ],
+  "airports": [
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "GIG",
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim"
+          },
+          "city": "Rio de Janeiro",
+          "country": "Brasil",
+          "country_code": "BR",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRDd6Ze9MtuIeTJBVWMwK9OotPAbvk-9a44rM24ml7yiZ_v6rwcAZxrUdq4f6mo1KXY0MlYhFX1seKzUQ",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTJH2VOE_wpSKiJHcyknpXIdTof6XBD0txz2n8GlfXvuRt2Fx4AU83INbZOx2vSTQWBAxkfG05Kog0XNA9ebOwWqKTfKFS0KGEzfeclVqQ"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "BUD",
+            "name": "Aeroporto de Budapeste Ferenc Liszt"
+          },
+          "city": "Budapeste",
+          "country": "Hungria",
+          "country_code": "HU",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQP77q3BrVyZRN5ZSUF9U5C6fVVdi5Xrj1rUre1GQGm-lDVvm7MYIkI2sXsr9H9jTZgRkRmDNOuqpmTGQ",
+          "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ3WwpxSKJb8lt8hmVeWh1QcK2TMUszzvy7-Z8bkLbNVOpleeOYPOt92plDtuKijWfGRKUT5f2R5kmWqeqP6GIqsV2kvpyLtd1NGYXQF4c"
+        }
+      ]
+    },
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "BER",
+            "name": "Aeroporto de Berlim-Brandemburgo"
+          },
+          "city": "Berlim",
+          "country": "Alemanha",
+          "country_code": "DE",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQt2sQ7Aqn9XDqztmoYElQwE26oMklrcGD7-ZuKOUPZVDpWlL-yn0uHraRpfjA9kXtiLrBxI-YW45Rn4g",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTWlCvQfTpTUuTsCeI1S4Yw2Y5H4T77pM--xjPOa8J2BBUf2IPwdlOWEEgXN-UK1iZEuid20zbzO_nW3qSbU4dk9KwrbnjlUxopo6ayjnY"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "GIG",
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim"
+          },
+          "city": "Rio de Janeiro",
+          "country": "Brasil",
+          "country_code": "BR",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRDd6Ze9MtuIeTJBVWMwK9OotPAbvk-9a44rM24ml7yiZ_v6rwcAZxrUdq4f6mo1KXY0MlYhFX1seKzUQ",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTJH2VOE_wpSKiJHcyknpXIdTof6XBD0txz2n8GlfXvuRt2Fx4AU83INbZOx2vSTQWBAxkfG05Kog0XNA9ebOwWqKTfKFS0KGEzfeclVqQ"
+        }
+      ]
+    }
+  ]
+}

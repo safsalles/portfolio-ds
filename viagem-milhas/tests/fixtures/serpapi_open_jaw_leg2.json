@@ -1,0 +1,367 @@
+{
+  "search_metadata": {
+    "id": "6b046f424e12bd92667c390f",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/bURVMmFnTiI72nrHssL25sjX3xgVhuHh0liLNiNN994/6b046f424e12bd92667c390f.json",
+    "markdown_endpoint": "https://serpapi.com/searches/bURVMmFnTiI72nrHssL25sjX3xgVhuHh0liLNiNN994/6b046f424e12bd92667c390f.md",
+    "created_at": "2026-11-23 16:52:18 UTC",
+    "processed_at": "2026-11-23 16:52:18 UTC",
+    "google_flights_url": "https://www.google.com/travel/flights?hl=pt&gl=br&curr=BRL&tfs=CBwQAhphEgoyMDI3LTA3LTEwIh8KA0dJRxIKMjAyNy0wNy0xMBoDQU1TKgJLTDIDNzA2IiAKA0FNUxIKMjAyNy0wNy0xMRoDQlVEKgJLTDIEMTM3MWoHCAESA0dJR3IHCAESA0JVRBoeEgoyMDI3LTA3LTIyagcIARIDQkVScgcIARIDR0lHQAFAAUgBcAGYAQM&tfu=EgIIAQ",
+    "raw_html_file": "https://serpapi.com/searches/bURVMmFnTiI72nrHssL25sjX3xgVhuHh0liLNiNN994/6b046f424e12bd92667c390f.html",
+    "prettify_html_file": "https://serpapi.com/searches/bURVMmFnTiI72nrHssL25sjX3xgVhuHh0liLNiNN994/6b046f424e12bd92667c390f.prettify",
+    "total_time_taken": 3.68
+  },
+  "search_parameters": {
+    "engine": "google_flights",
+    "hl": "pt",
+    "gl": "br",
+    "type": "3",
+    "travel_class": 1,
+    "adults": 2,
+    "departure_token": "WyJDalJJTlVnM1RXa3dMVlJ5YVhOQlpERjVNbWRDUnkwdExTMHRMUzB0TFc5NVkyZGtOVUZCUVVGQlIzTkZZbmxqUTFsNVNYbEJFZ3hMVERjd05ueExUREV6TnpFYUN3akNzM1lRQWhvRFFsSk1PQnh3MGVrVCIsW1siR0lHIiwiMjAyNy0wNy0xMCIsIkFNUyIsbnVsbCwiS0wiLCI3MDYiXSxbIkFNUyIsIjIwMjctMDctMTEiLCJCVUQiLG51bGwsIktMIiwiMTM3MSJdXV0=",
+    "currency": "BRL",
+    "multi_city_json": "[{\"departure_id\": \"GIG\", \"arrival_id\": \"BUD\", \"date\": \"2027-07-10\"}, {\"departure_id\": \"BER\", \"arrival_id\": \"GIG\", \"date\": \"2027-07-22\"}]"
+  },
+  "other_flights": [
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Berlim-Brandemburgo",
+            "id": "BER",
+            "time": "2027-07-22 09:05"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Amesterdão Schiphol",
+            "id": "AMS",
+            "time": "2027-07-22 10:30"
+          },
+          "duration": 85,
+          "airplane": "Airbus A321neo",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 1772",
+          "legroom": "74 cm",
+          "extensions": [
+            "Below average legroom (74 cm)",
+            "Free Wi-Fi",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 103 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Amesterdão Schiphol",
+            "id": "AMS",
+            "time": "2027-07-22 12:50"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-22 19:45"
+          },
+          "duration": 715,
+          "airplane": "Boeing 777",
+          "airline": "KLM",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+          "travel_class": "Economy",
+          "flight_number": "KL 705",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "Wi-Fi for a fee",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1218 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 140,
+          "name": "Aeroporto de Amesterdão Schiphol",
+          "id": "AMS"
+        }
+      ],
+      "total_duration": 940,
+      "carbon_emissions": {
+        "this_flight": 1322000,
+        "typical_for_this_route": 1205000,
+        "difference_percent": 10
+      },
+      "price": 19400,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/KL.png",
+      "booking_token": "WyJDalJJUWxWWGMwMW5kbGt6VGxsQlZWOUtiMmRDUnkwdExTMHRMUzB0ZG5kaWFHWXhNVUZCUVVGQlIzTkZZakJOUWxkaFpFOUJFZzVMVERFM056SjhTMHczTURVak1Sb0xDTUt6ZGhBQ0dnTkNVa3c0SEhEUjZSTT0iLFtbIkdJRyIsIjIwMjctMDctMTAiLCJBTVMiLG51bGwsIktMIiwiNzA2Il0sWyJBTVMiLCIyMDI3LTA3LTExIiwiQlVEIixudWxsLCJLTCIsIjEzNzEiXV0sW1siQkVSIiwiMjAyNy0wNy0yMiIsIkFNUyIsbnVsbCwiS0wiLCIxNzcyIl0sWyJBTVMiLCIyMDI3LTA3LTIyIiwiR0lHIixudWxsLCJLTCIsIjcwNSJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Berlim-Brandemburgo",
+            "id": "BER",
+            "time": "2027-07-22 18:25"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-22 20:15"
+          },
+          "duration": 110,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 1835",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 192 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-23 10:10"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-23 16:40"
+          },
+          "duration": 690,
+          "airplane": "Airbus A350",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 512",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1032 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 835,
+          "name": "Aeroporto de Paris-Charles de Gaulle",
+          "id": "CDG"
+        }
+      ],
+      "total_duration": 1635,
+      "carbon_emissions": {
+        "this_flight": 1225000,
+        "typical_for_this_route": 1205000,
+        "difference_percent": 2
+      },
+      "price": 21440,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+      "booking_token": "WyJDalJJUWxWWGMwMW5kbGt6VGxsQlZWOUtiMmRDUnkwdExTMHRMUzB0ZG5kaWFHWXhNVUZCUVVGQlIzTkZZakJOUWxkaFpFOUJFZzVCUmpFNE16VjhRVVkxTVRJak1Sb01DTmJ0Z2dFUUFob0RRbEpNT0J4d3lQUVYiLFtbIkdJRyIsIjIwMjctMDctMTAiLCJBTVMiLG51bGwsIktMIiwiNzA2Il0sWyJBTVMiLCIyMDI3LTA3LTExIiwiQlVEIixudWxsLCJLTCIsIjEzNzEiXV0sW1siQkVSIiwiMjAyNy0wNy0yMiIsIkNERyIsbnVsbCwiQUYiLCIxODM1Il0sWyJDREciLCIyMDI3LTA3LTIzIiwiR0lHIixudWxsLCJBRiIsIjUxMiJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Berlim-Brandemburgo",
+            "id": "BER",
+            "time": "2027-07-22 06:15"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-22 08:10"
+          },
+          "duration": 115,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 1135",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 192 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-22 10:10"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-22 16:40"
+          },
+          "duration": 690,
+          "airplane": "Airbus A350",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 512",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1032 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 120,
+          "name": "Aeroporto de Paris-Charles de Gaulle",
+          "id": "CDG"
+        }
+      ],
+      "total_duration": 925,
+      "carbon_emissions": {
+        "this_flight": 1225000,
+        "typical_for_this_route": 1205000,
+        "difference_percent": 2
+      },
+      "price": 24549,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+      "booking_token": "WyJDalJJUWxWWGMwMW5kbGt6VGxsQlZWOUtiMmRDUnkwdExTMHRMUzB0ZG5kaWFHWXhNVUZCUVVGQlIzTkZZakJOUWxkaFpFOUJFZzVCUmpFeE16VjhRVVkxTVRJak1Sb01DSjdxbFFFUUFob0RRbEpNT0J4d21Zc1oiLFtbIkdJRyIsIjIwMjctMDctMTAiLCJBTVMiLG51bGwsIktMIiwiNzA2Il0sWyJBTVMiLCIyMDI3LTA3LTExIiwiQlVEIixudWxsLCJLTCIsIjEzNzEiXV0sW1siQkVSIiwiMjAyNy0wNy0yMiIsIkNERyIsbnVsbCwiQUYiLCIxMTM1Il0sWyJDREciLCIyMDI3LTA3LTIyIiwiR0lHIixudWxsLCJBRiIsIjUxMiJdXV0="
+    },
+    {
+      "flights": [
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Berlim-Brandemburgo",
+            "id": "BER",
+            "time": "2027-07-22 09:50"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-22 11:40"
+          },
+          "duration": 110,
+          "airplane": "Airbus A220-300 Passenger",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 1435",
+          "legroom": "76 cm",
+          "extensions": [
+            "Average legroom (76 cm)",
+            "In-seat USB outlet",
+            "Carbon emissions estimate: 192 kg"
+          ]
+        },
+        {
+          "departure_airport": {
+            "name": "Aeroporto de Paris-Charles de Gaulle",
+            "id": "CDG",
+            "time": "2027-07-22 13:25"
+          },
+          "arrival_airport": {
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim",
+            "id": "GIG",
+            "time": "2027-07-22 19:45"
+          },
+          "duration": 680,
+          "airplane": "Airbus A350",
+          "airline": "Air France",
+          "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+          "travel_class": "Economy",
+          "flight_number": "AF 442",
+          "legroom": "79 cm",
+          "extensions": [
+            "Average legroom (79 cm)",
+            "In-seat USB outlet",
+            "On-demand video",
+            "Carbon emissions estimate: 1000 kg"
+          ]
+        }
+      ],
+      "layovers": [
+        {
+          "duration": 105,
+          "name": "Aeroporto de Paris-Charles de Gaulle",
+          "id": "CDG"
+        }
+      ],
+      "total_duration": 895,
+      "carbon_emissions": {
+        "this_flight": 1193000,
+        "typical_for_this_route": 1205000,
+        "difference_percent": -1
+      },
+      "price": 24549,
+      "type": "Multi-city",
+      "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AF.png",
+      "booking_token": "WyJDalJJUWxWWGMwMW5kbGt6VGxsQlZWOUtiMmRDUnkwdExTMHRMUzB0ZG5kaWFHWXhNVUZCUVVGQlIzTkZZakJOUWxkaFpFOUJFZzVCUmpFME16VjhRVVkwTkRJak1Sb01DSjdxbFFFUUFob0RRbEpNT0J4d21Zc1oiLFtbIkdJRyIsIjIwMjctMDctMTAiLCJBTVMiLG51bGwsIktMIiwiNzA2Il0sWyJBTVMiLCIyMDI3LTA3LTExIiwiQlVEIixudWxsLCJLTCIsIjEzNzEiXV0sW1siQkVSIiwiMjAyNy0wNy0yMiIsIkNERyIsbnVsbCwiQUYiLCIxNDM1Il0sWyJDREciLCIyMDI3LTA3LTIyIiwiR0lHIixudWxsLCJBRiIsIjQ0MiJdXV0="
+    }
+  ],
+  "airports": [
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "GIG",
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim"
+          },
+          "city": "Rio de Janeiro",
+          "country": "Brasil",
+          "country_code": "BR",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRDd6Ze9MtuIeTJBVWMwK9OotPAbvk-9a44rM24ml7yiZ_v6rwcAZxrUdq4f6mo1KXY0MlYhFX1seKzUQ",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTJH2VOE_wpSKiJHcyknpXIdTof6XBD0txz2n8GlfXvuRt2Fx4AU83INbZOx2vSTQWBAxkfG05Kog0XNA9ebOwWqKTfKFS0KGEzfeclVqQ"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "BUD",
+            "name": "Aeroporto de Budapeste Ferenc Liszt"
+          },
+          "city": "Budapeste",
+          "country": "Hungria",
+          "country_code": "HU",
+          "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQP77q3BrVyZRN5ZSUF9U5C6fVVdi5Xrj1rUre1GQGm-lDVvm7MYIkI2sXsr9H9jTZgRkRmDNOuqpmTGQ",
+          "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ3WwpxSKJb8lt8hmVeWh1QcK2TMUszzvy7-Z8bkLbNVOpleeOYPOt92plDtuKijWfGRKUT5f2R5kmWqeqP6GIqsV2kvpyLtd1NGYXQF4c"
+        }
+      ]
+    },
+    {
+      "departure": [
+        {
+          "airport": {
+            "id": "BER",
+            "name": "Aeroporto de Berlim-Brandemburgo"
+          },
+          "city": "Berlim",
+          "country": "Alemanha",
+          "country_code": "DE",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQt2sQ7Aqn9XDqztmoYElQwE26oMklrcGD7-ZuKOUPZVDpWlL-yn0uHraRpfjA9kXtiLrBxI-YW45Rn4g",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTWlCvQfTpTUuTsCeI1S4Yw2Y5H4T77pM--xjPOa8J2BBUf2IPwdlOWEEgXN-UK1iZEuid20zbzO_nW3qSbU4dk9KwrbnjlUxopo6ayjnY"
+        }
+      ],
+      "arrival": [
+        {
+          "airport": {
+            "id": "GIG",
+            "name": "Aeroporto Internacional do Rio de Janeiro - Galeão – Antonio Carlos Jobim"
+          },
+          "city": "Rio de Janeiro",
+          "country": "Brasil",
+          "country_code": "BR",
+          "image": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRDd6Ze9MtuIeTJBVWMwK9OotPAbvk-9a44rM24ml7yiZ_v6rwcAZxrUdq4f6mo1KXY0MlYhFX1seKzUQ",
+          "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTJH2VOE_wpSKiJHcyknpXIdTof6XBD0txz2n8GlfXvuRt2Fx4AU83INbZOx2vSTQWBAxkfG05Kog0XNA9ebOwWqKTfKFS0KGEzfeclVqQ"
+        }
+      ]
+    }
+  ]
+}
