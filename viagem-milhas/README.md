@@ -45,6 +45,8 @@ Prefere clicar a digitar? Instale o extra e abra a interface:
 powershell -File scripts\app.ps1
 ```
 
+No Windows, basta dar **clique duplo em `Abrir Verificador.bat`** (pode criar um atalho dele na área de trabalho). A página abre sozinha no navegador; para encerrar, feche a janela preta que ficou aberta.
+
 | Aba | O que faz |
 |---|---|
 | **Minha viagem** | Formulário com todos os campos (destinos, datas, passageiros, bagagem, escala mínima e máxima, avisos), com validação. Já abre preenchido com a sua configuração atual |

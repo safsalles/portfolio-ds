@@ -45,6 +45,8 @@ Prefer clicking to typing? Install the extra and open the interface:
 powershell -File scripts\app.ps1
 ```
 
+On Windows you can simply **double-click `Abrir Verificador.bat`** (you can pin a shortcut to it on the desktop). The page opens by itself in the browser; to quit, close the black window that stays open.
+
 | Tab | What it does |
 |---|---|
 | **Minha viagem** (My trip) | A form with every field (destinations, dates, passengers, baggage, minimum and maximum layover, alerts), with validation. It opens pre-filled with your current configuration |
