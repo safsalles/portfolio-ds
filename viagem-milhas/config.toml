@@ -1,0 +1,37 @@
+# Trajeto FIXO: a volta NAO sai de Budapeste, sai de Berlim.
+[trip]
+outbound = ["GIG", "BUD", "2027-07-10"]
+inbound = ["BER", "GIG", "2027-07-22"]
+adults = 2
+cabin = "economy"
+currency = "BRL"
+
+# Regra do Sergio: toda escala >= 4h (imigracao).
+# "Nenhuma escala no Brasil" NAO e regra dele (foi suposicao nossa) e foi removida.
+# Para voltar a proibir escalas no Brasil, liste aqui os aeroportos (ex.: ["GRU", "VCP"]).
+[rules]
+min_layover_minutes = 240
+brazil_airports = []
+
+[alerts]
+drop_pct = 5.0
+target_brl = 18000
+
+[promos]
+feeds = [
+  "https://passageirodeprimeira.com/feed/",
+  "https://pontospravoar.com/feed/",
+]
+keywords = ["flying blue", "smiles", "livelo", "tap", "milheiro", "bônus"]
+
+# Avisar so se o milheiro citado for MENOR que o limite do programa (R$).
+[promos.max_milheiro]
+"flying blue" = 35
+"tap" = 35
+"livelo" = 35
+"smiles" = 12
+
+[paths]
+history = "data/history.csv"
+seen_promos = "data/seen_promos.json"
+alerts_log = "data/alerts.log"
