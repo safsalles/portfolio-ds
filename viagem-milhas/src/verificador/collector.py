@@ -86,7 +86,7 @@ def fetch_offers(cfg: Config, api_key: str, max_expand: int = MAX_EXPAND, get=re
         (
             o
             for o in outbound_options
-            if o.departure_token and leg_is_compliant(o.leg, rules.min_layover_minutes, rules.avoid_airports)
+            if o.departure_token and leg_is_compliant(o.leg, rules.min_layover_minutes, rules.avoid_airports, rules.max_layover_minutes)
         ),
         key=lambda o: o.total_price_brl,
     )[:max_expand]

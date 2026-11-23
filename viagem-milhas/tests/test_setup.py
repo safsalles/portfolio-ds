@@ -5,8 +5,8 @@ TODAY = "2026-11-23"
 
 # ordem das perguntas: origem, destino, data ida, volta sai de, volta chega em, data volta,
 # adultos, classe, malas de mao, malas despachadas, preco da mala (so se despachadas > 0),
-# escala minima (h), aeroportos a evitar, moeda, queda %, valor-alvo
-BASE = ["gru", "lis", "2027-03-10", "", "", "2027-03-24", "2", "", "1", "1", "500", "4", "", "BRL", "", "18000"]
+# escala minima (h), escala maxima (h; 0 = sem limite), aeroportos a evitar, moeda, queda %, valor-alvo
+BASE = ["gru", "lis", "2027-03-10", "", "", "2027-03-24", "2", "", "1", "1", "500", "4", "", "", "BRL", "", "18000"]
 
 
 def run(answers, path, today=TODAY):
@@ -46,7 +46,7 @@ def test_wizard_open_jaw_return_from_another_city(tmp_path):
 
 def test_wizard_skips_fee_question_when_no_checked_bags(tmp_path):
     path = tmp_path / "config.toml"
-    answers = ["gru", "lis", "2027-03-10", "", "", "2027-03-24", "1", "", "0", "0", "6", "", "", "", ""]
+    answers = ["gru", "lis", "2027-03-10", "", "", "2027-03-24", "1", "", "0", "0", "6", "", "", "", "", ""]
     # sem pergunta de preco da mala; escala 6h; aeroportos vazio; moeda vazia (BRL); queda vazia; alvo vazio
 
     code, _ = run(answers, path)
@@ -86,7 +86,7 @@ def test_wizard_rejects_past_date_and_return_before_outbound(tmp_path):
 def test_wizard_parses_avoid_airports_list(tmp_path):
     path = tmp_path / "config.toml"
     answers = list(BASE)
-    answers[12] = "gru, vcp"
+    answers[13] = "gru, vcp"
 
     run(answers, path)
 
@@ -111,3 +111,34 @@ def test_wizard_overwrites_when_confirmed(tmp_path):
 
     assert code == 0
     assert load_config(str(path)).trip.outbound[1] == "LIS"
+
+
+def test_wizard_saves_the_maximum_layover(tmp_path):
+    path = tmp_path / "config.toml"
+    answers = list(BASE)
+    answers[12] = "10"  # escala maxima: 10 horas
+
+    run(answers, path)
+
+    assert load_config(str(path)).rules.max_layover_minutes == 600
+
+
+def test_wizard_no_maximum_by_default(tmp_path):
+    path = tmp_path / "config.toml"
+
+    run(BASE, path)
+
+    assert load_config(str(path)).rules.max_layover_minutes is None
+
+
+def test_wizard_rejects_a_maximum_below_the_minimum(tmp_path):
+    path = tmp_path / "config.toml"
+    answers = list(BASE)
+    answers[12] = "3"  # minimo e' 4h -> reprovado
+    answers.insert(13, "8")  # pergunta de novo
+
+    code, messages = run(answers, path)
+
+    assert code == 0
+    assert load_config(str(path)).rules.max_layover_minutes == 480
+    assert any("maior" in m for m in messages)

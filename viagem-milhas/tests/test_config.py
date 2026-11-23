@@ -56,3 +56,22 @@ def test_send_to_api_defaults_to_false_and_can_be_enabled(tmp_path):
     path.write_text(text, encoding="utf-8")
 
     assert load_config(str(path)).baggage.send_to_api is True
+
+
+def test_snapshots_path_has_a_default():
+    assert load_config(CONFIG).paths.snapshots == "data/snapshots"
+
+
+def test_max_layover_is_optional_and_none_by_default():
+    assert load_config(CONFIG).rules.max_layover_minutes is None
+
+
+def test_max_layover_is_read_from_config_and_zero_means_no_limit(tmp_path):
+    base = open(CONFIG, encoding="utf-8").read()
+    with_max = tmp_path / "max.toml"
+    with_max.write_text(base.replace("min_layover_minutes = 240", "min_layover_minutes = 240\nmax_layover_minutes = 480"), encoding="utf-8")
+    zero = tmp_path / "zero.toml"
+    zero.write_text(base.replace("min_layover_minutes = 240", "min_layover_minutes = 240\nmax_layover_minutes = 0"), encoding="utf-8")
+
+    assert load_config(str(with_max)).rules.max_layover_minutes == 480
+    assert load_config(str(zero)).rules.max_layover_minutes is None

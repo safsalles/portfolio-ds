@@ -64,6 +64,18 @@ def _number(lo, hi, default, integer=True):
     return parse
 
 
+def _max_hours(min_hours):
+    """Escala maxima em horas (0 ou em branco = sem limite); precisa ser maior que a minima."""
+
+    def parse(raw):
+        value = _number(0, 96, 0, integer=False)(raw)
+        if value > 0 and min_hours is not None and value <= min_hours:
+            raise ValueError("A escala máxima precisa ser maior que a mínima.")
+        return value
+
+    return parse
+
+
 def _cabin(raw):
     if raw == "":
         return "economy"
@@ -101,9 +113,10 @@ adults = {v["adults"]}
 cabin = {json.dumps(v["cabin"])}
 currency = {json.dumps(v["currency"])}
 
-# Escala minima em minutos; aeroportos onde voce NAO aceita escala (opcional).
+# Escala minima e maxima em minutos (maxima 0 = sem limite); aeroportos onde voce NAO aceita escala (opcional).
 [rules]
 min_layover_minutes = {v["min_layover_minutes"]}
+max_layover_minutes = {v["max_layover_minutes"]}
 avoid_airports = {_toml_list(v["avoid_airports"])}
 
 # Avisa se o preco cair drop_pct % ou mais, ou ficar abaixo de target_brl (0 = desligado).
@@ -134,6 +147,80 @@ send_to_api = false
 """
 
 
+def parse_form(raw: dict, today: date) -> tuple[dict | None, dict]:
+    """Valida o formulario da interface (texto de cada campo) com as MESMAS regras do assistente.
+
+    Devolve (valores, {}) se tudo estiver certo, ou (None, {campo: mensagem}) com todos os erros de uma vez.
+    """
+    errors: dict[str, str] = {}
+
+    def field(key, parser):
+        try:
+            return parser(str(raw.get(key, "")).strip())
+        except ValueError as exc:
+            errors[key] = str(exc)
+            return None
+
+    origin = field("origin", _iata())
+    dest = field("dest", _iata())
+    out_date = field("out_date", _iso_date(today))
+    # Em branco = padrao (volta invertida). Se o padrao nao existe porque a ida deu erro, nao acrescenta outro erro.
+    back_from = field("back_from", _iata(dest)) if dest or str(raw.get("back_from", "")).strip() else None
+    back_to = field("back_to", _iata(origin)) if origin or str(raw.get("back_to", "")).strip() else None
+    back_date = field("back_date", _iso_date(today, not_before=out_date))
+    adults = field("adults", _number(1, 9, 1))
+    cabin = field("cabin", _cabin)
+    carry_on = field("carry_on", _number(0, 5, 1))
+    checked = field("checked", _number(0, 5, 0))
+    fee = 0.0
+    if checked:  # o preco da mala so importa se houver mala despachada
+        fee = field("fee", _number(0, 100000, 0.0, integer=False))
+    hours = field("hours", _number(0, 48, 0, integer=False))
+    max_hours = field("max_hours", _max_hours(hours))
+    avoid = field("avoid", _airports)
+    currency = field("currency", _currency)
+    drop = field("drop", _number(0.1, 100, 5.0, integer=False))
+    target = field("target", _number(0, 10_000_000, 0.0, integer=False))
+    if errors:
+        return None, errors
+    return {
+        "outbound": [origin, dest, out_date.isoformat()],
+        "inbound": [back_from, back_to, back_date.isoformat()],
+        "adults": adults,
+        "cabin": cabin,
+        "currency": currency,
+        "min_layover_minutes": int(round(hours * 60)),
+        "max_layover_minutes": int(round(max_hours * 60)),
+        "avoid_airports": avoid,
+        "drop_pct": drop,
+        "target_brl": target,
+        "carry_on": carry_on,
+        "checked": checked,
+        "checked_bag_fee_brl": fee,
+    }, {}
+
+
+def form_defaults(cfg) -> dict:
+    """Valores iniciais do formulario: os da configuracao atual, ou padroes sensatos se nao houver."""
+    if cfg is None:
+        return {
+            "origin": "", "dest": "", "out_date": "", "back_from": "", "back_to": "", "back_date": "",
+            "adults": "1", "cabin": "economy", "carry_on": "1", "checked": "0", "fee": "0",
+            "hours": "0", "max_hours": "0", "avoid": "", "currency": "BRL", "drop": "5", "target": "0",
+        }
+    return {
+        "origin": cfg.trip.outbound[0], "dest": cfg.trip.outbound[1], "out_date": cfg.trip.outbound[2],
+        "back_from": cfg.trip.inbound[0], "back_to": cfg.trip.inbound[1], "back_date": cfg.trip.inbound[2],
+        "adults": str(cfg.trip.adults), "cabin": cfg.trip.cabin,
+        "carry_on": str(cfg.baggage.carry_on), "checked": str(cfg.baggage.checked),
+        "fee": f"{cfg.baggage.checked_bag_fee_brl:g}",
+        "hours": f"{cfg.rules.min_layover_minutes / 60:g}",
+        "max_hours": f"{(cfg.rules.max_layover_minutes or 0) / 60:g}",
+        "avoid": ", ".join(sorted(cfg.rules.avoid_airports)),
+        "currency": cfg.trip.currency, "drop": f"{cfg.alerts.drop_pct:g}", "target": f"{cfg.alerts.target_brl:g}",
+    }
+
+
 def run_wizard(ask=input, path: str = "config.toml", out=print, today: str | None = None) -> int:
     today_date = date.fromisoformat(today) if today else date.today()
     if os.path.exists(path):
@@ -157,6 +244,7 @@ def run_wizard(ask=input, path: str = "config.toml", out=print, today: str | Non
     if checked > 0:
         fee = _loop(ask, out, "Preço estimado de UMA mala despachada, por trecho, em R$ [0]: ", _number(0, 100000, 0.0, integer=False))
     hours = _loop(ask, out, "Escala mínima em horas (ex.: 4 se precisa passar pela imigração) [0]: ", _number(0, 48, 0, integer=False))
+    max_hours = _loop(ask, out, "Escala máxima em horas (0 = sem limite) [0]: ", _max_hours(hours))
     avoid = _loop(ask, out, "Aeroportos onde NÃO aceita escala, separados por vírgula (opcional): ", _airports)
     currency = _loop(ask, out, "Moeda [BRL]: ", _currency)
     drop = _loop(ask, out, "Avisar se o preço cair quantos % [5]: ", _number(0.1, 100, 5.0, integer=False))
@@ -169,6 +257,7 @@ def run_wizard(ask=input, path: str = "config.toml", out=print, today: str | Non
         "cabin": cabin,
         "currency": currency,
         "min_layover_minutes": int(round(hours * 60)),
+        "max_layover_minutes": int(round(max_hours * 60)),
         "avoid_airports": avoid,
         "drop_pct": drop,
         "target_brl": target,

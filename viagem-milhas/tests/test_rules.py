@@ -65,3 +65,33 @@ def test_leg_is_compliant_checks_only_that_leg():
     assert leg_is_compliant(leg_short, 240, BR) is False
     assert leg_is_compliant(leg_brazil, 240, BR) is False
 
+
+
+def test_rejects_layover_over_the_maximum():
+    assert is_compliant(make_offer(19152, [("AMS", 481)]), 240, BR, 480) is False
+    assert is_compliant(make_offer(19152, [("AMS", 480)]), 240, BR, 480) is True
+
+
+def test_no_maximum_means_no_limit():
+    assert is_compliant(make_offer(19152, [("AMS", 2000)]), 240, BR) is True
+    assert is_compliant(make_offer(19152, [("AMS", 2000)]), 240, BR, None) is True
+
+
+def test_maximum_applies_to_the_return_leg_too():
+    assert is_compliant(make_offer(19152, [("AMS", 420)], [("FRA", 900)]), 240, BR, 600) is False
+
+
+def test_cheapest_compliant_respects_the_maximum():
+    long_but_cheap = make_offer(17000, [("AMS", 900)])
+    ok = make_offer(19152, [("AMS", 420)])
+
+    offer, _ = cheapest_compliant([long_but_cheap, ok], 240, BR, 600)
+
+    assert offer == ok
+
+
+def test_leg_is_compliant_respects_the_maximum():
+    leg = Leg("GIG", "BUD", ("KLM",), (Layover("AMS", 700),))
+
+    assert leg_is_compliant(leg, 240, BR, 600) is False
+    assert leg_is_compliant(leg, 240, BR, 720) is True
