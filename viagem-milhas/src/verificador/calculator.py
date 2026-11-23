@@ -1,5 +1,7 @@
-import argparse
+﻿import argparse
 from dataclasses import dataclass
+
+from verificador.config import Baggage
 
 
 @dataclass(frozen=True)
@@ -27,6 +29,10 @@ def compare(cash_brl: float, miles: int, milheiro_brl: float, taxes_brl: float) 
     return Comparison(miles_cost, cash_brl, savings > 0, savings)
 
 
+def estimated_bag_cost(baggage: Baggage, legs: int = 2) -> float:
+    return baggage.checked * baggage.checked_bag_fee_brl * legs
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Compara dinheiro x milhas")
     parser.add_argument("--cash", type=float, required=True, help="preco em dinheiro (R$)")
@@ -48,3 +54,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

@@ -1,4 +1,4 @@
-import os
+﻿import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -58,7 +58,7 @@ def run(cfg: Config, api_key: str, today: str, fetch=fetch_offers, notify_fn=not
         notify_fn("Verificador: falha na coleta", str(exc), log)
         code = 1
     else:
-        best, discarded = cheapest_compliant(offers, cfg.rules.min_layover_minutes, cfg.rules.brazil_airports)
+        best, discarded = cheapest_compliant(offers, cfg.rules.min_layover_minutes, cfg.rules.avoid_airports)
         if best is None:
             if not has_ok_record(cfg.paths.history, today):
                 upsert_record(cfg.paths.history, HistoryRecord(today, None, "", "", None, "empty"))
@@ -85,9 +85,16 @@ def run(cfg: Config, api_key: str, today: str, fetch=fetch_offers, notify_fn=not
     return code
 
 
-def main(notify_fn=notify) -> int:
+def main(notify_fn=notify, config_path: str = "config.toml") -> int:
     os.chdir(Path(__file__).resolve().parents[2])  # raiz do projeto, para os caminhos relativos do config
-    cfg = load_config("config.toml")
+    if not os.path.exists(config_path):
+        notify_fn(
+            "Verificador: configuração ausente",
+            f"Não achei {config_path}. Rode:  python -m verificador.setup  para criar a configuração.",
+            "data/alerts.log",
+        )
+        return 1
+    cfg = load_config(config_path)
     api_key = os.environ.get("SERPAPI_KEY")
     if not api_key:
         notify_fn(

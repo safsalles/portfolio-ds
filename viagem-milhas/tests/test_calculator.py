@@ -26,3 +26,12 @@ def test_miles_zero_raises_valueerror():
         breakeven_milheiro(19152, 0, 3000)
     with pytest.raises(ValueError):
         compare(19152, 0, 30, 3000)
+
+
+def test_estimated_bag_cost_is_fee_times_bags_times_legs():
+    from verificador.calculator import estimated_bag_cost
+    from verificador.config import Baggage
+
+    assert estimated_bag_cost(Baggage(carry_on=2, checked=1, checked_bag_fee_brl=600.0)) == 1200.0
+    assert estimated_bag_cost(Baggage(carry_on=2, checked=2, checked_bag_fee_brl=500.0), legs=2) == 2000.0
+    assert estimated_bag_cost(Baggage(carry_on=2, checked=0, checked_bag_fee_brl=600.0)) == 0.0

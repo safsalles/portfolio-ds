@@ -1,4 +1,4 @@
-import csv
+﻿import csv
 from dataclasses import replace
 
 from verificador.collector import CollectorError
@@ -8,8 +8,11 @@ from verificador.models import Layover, Leg, Offer
 from verificador.run_daily import main, run
 
 
+CONFIG = "tests/fixtures/config_test.toml"
+
+
 def make_cfg(tmp_path):
-    cfg = load_config("config.toml")
+    cfg = load_config(CONFIG)
     paths = Paths(
         history=str(tmp_path / "history.csv"),
         seen_promos=str(tmp_path / "seen.json"),
@@ -144,7 +147,7 @@ def test_main_without_api_key_returns_1(monkeypatch):
     monkeypatch.delenv("SERPAPI_KEY", raising=False)
     notes = Notes()
 
-    assert main(notify_fn=notes) == 1
+    assert main(notify_fn=notes, config_path=CONFIG) == 1
     assert len(notes.calls) == 1 and "serpapi_key" in notes.calls[0][1].lower()
 
 
@@ -161,3 +164,15 @@ def test_failed_rerun_does_not_overwrite_good_record_of_the_day(tmp_path):
     only = rows(cfg)
     assert len(only) == 1 and only[0]["status"] == "ok" and only[0]["total_price_brl"] == "19152.0"
     assert "429" in notes.calls[-1][1]
+
+
+
+
+
+def test_main_without_config_file_points_to_setup(tmp_path):
+    notes = Notes()
+
+    code = main(notify_fn=notes, config_path=str(tmp_path / "nao_existe.toml"))
+
+    assert code == 1
+    assert len(notes.calls) == 1 and "verificador.setup" in notes.calls[0][1]

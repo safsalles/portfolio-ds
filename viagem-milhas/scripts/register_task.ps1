@@ -8,5 +8,5 @@ $action = New-ScheduledTaskAction -Execute "powershell.exe" `
 $trigger = New-ScheduledTaskTrigger -Daily -At 8:00am
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
 Register-ScheduledTask -TaskName "VerificadorPassagens" -Action $action -Trigger $trigger -Settings $settings `
-    -Description "Verificador de passagens e milhas (GIG-BUD / BER-GIG)" -Force | Out-Null
+    -Description "Verificador de voos: acompanha o preco da viagem configurada em config.toml" -Force | Out-Null
 Get-ScheduledTask -TaskName "VerificadorPassagens" | Select-Object TaskName, State

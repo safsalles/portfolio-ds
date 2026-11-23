@@ -32,3 +32,20 @@ def test_report_without_miles_has_no_breakeven(tmp_path):
 
     assert "Equilíbrio" not in text
     assert "18,900.00" in text
+
+
+def test_report_shows_estimated_total_with_checked_bags(tmp_path):
+    others = str(tmp_path / "outras.csv")
+    append_check(others, OtherCheck("2026-11-23", "kayak", 19152.0, None, None, "KLM Light"))
+
+    text = build_report(str(tmp_path / "h.csv"), others, bag_cost=1200.0)
+
+    assert "20,352.00" in text
+    assert "1,200.00" in text
+
+
+def test_report_without_bag_cost_has_no_bag_line(tmp_path):
+    others = str(tmp_path / "outras.csv")
+    append_check(others, OtherCheck("2026-11-23", "kayak", 19152.0, None, None, ""))
+
+    assert "bagagem" not in build_report(str(tmp_path / "h.csv"), others).lower()
