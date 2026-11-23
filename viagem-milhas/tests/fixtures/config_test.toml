@@ -1,4 +1,4 @@
-# Trajeto FIXO: a volta NAO sai de Budapeste, sai de Berlim.
+# Configuracao FIXA usada pelos testes (nao depende do config.toml de quem usa o projeto).
 [trip]
 outbound = ["GIG", "BUD", "2027-07-10"]
 inbound = ["BER", "GIG", "2027-07-22"]
@@ -6,25 +6,18 @@ adults = 2
 cabin = "economy"
 currency = "BRL"
 
-# Regra do Sergio: toda escala >= 4h (imigracao).
-# "Nenhuma escala no Brasil" NAO e regra dele (foi suposicao nossa) e foi removida.
-# Para voltar a proibir escalas no Brasil, liste aqui os aeroportos (ex.: ["GRU", "VCP"]).
 [rules]
 min_layover_minutes = 240
-brazil_airports = []
+avoid_airports = []
 
 [alerts]
 drop_pct = 5.0
 target_brl = 18000
 
 [promos]
-feeds = [
-  "https://passageirodeprimeira.com/feed/",
-  "https://pontospravoar.com/feed/",
-]
+feeds = ["https://exemplo.test/feed/"]
 keywords = ["flying blue", "smiles", "livelo", "tap", "milheiro", "bônus"]
 
-# Avisar so se o milheiro citado for MENOR que o limite do programa (R$).
 [promos.max_milheiro]
 "flying blue" = 35
 "tap" = 35
@@ -35,3 +28,8 @@ keywords = ["flying blue", "smiles", "livelo", "tap", "milheiro", "bônus"]
 history = "data/history.csv"
 seen_promos = "data/seen_promos.json"
 alerts_log = "data/alerts.log"
+
+[baggage]
+carry_on = 2
+checked = 1
+checked_bag_fee_brl = 600

@@ -1,13 +1,15 @@
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
 
 from verificador.collector import CollectorError, fetch_offers, parse_leg_options
-from verificador.config import load_config
+from verificador.config import Baggage, load_config
 from verificador.models import Layover
 
 FIXTURES = Path(__file__).parent / "fixtures"
+CONFIG = "tests/fixtures/config_test.toml"
 LEG1 = json.loads((FIXTURES / "serpapi_open_jaw.json").read_text(encoding="utf-8"))
 LEG2 = json.loads((FIXTURES / "serpapi_open_jaw_leg2.json").read_text(encoding="utf-8"))
 
@@ -67,7 +69,7 @@ def test_missing_layover_duration_becomes_none():
 
 
 def test_fetch_expands_only_cheapest_compliant_outbounds():
-    cfg = load_config("config.toml")
+    cfg = load_config(CONFIG)
     get, calls = make_get()
 
     offers = fetch_offers(cfg, "chave-falsa", max_expand=2, get=get)
@@ -83,7 +85,7 @@ def test_fetch_expands_only_cheapest_compliant_outbounds():
 
 
 def test_fetch_sends_trip_from_config_and_key_as_param():
-    cfg = load_config("config.toml")
+    cfg = load_config(CONFIG)
     get, calls = make_get()
 
     fetch_offers(cfg, "chave-falsa", max_expand=1, get=get)
@@ -97,7 +99,7 @@ def test_fetch_sends_trip_from_config_and_key_as_param():
 
 
 def test_fetch_raises_on_api_error_field():
-    cfg = load_config("config.toml")
+    cfg = load_config(CONFIG)
     get, _ = make_get(first={"error": "Your account has run out of searches."})
 
     with pytest.raises(CollectorError, match="run out of searches"):
@@ -105,7 +107,7 @@ def test_fetch_raises_on_api_error_field():
 
 
 def test_fetch_raises_on_http_error():
-    cfg = load_config("config.toml")
+    cfg = load_config(CONFIG)
     get, _ = make_get(first={}, status=429)
 
     with pytest.raises(CollectorError, match="429"):
@@ -113,7 +115,37 @@ def test_fetch_raises_on_http_error():
 
 
 def test_fetch_no_results_error_is_empty_list():
-    cfg = load_config("config.toml")
+    cfg = load_config(CONFIG)
     get, _ = make_get(first={"error": "Google Flights hasn't returned any results for this query."})
 
     assert fetch_offers(cfg, "chave-falsa", get=get) == []
+
+
+
+
+def test_fetch_sends_carry_on_bags_only_when_opted_in():
+    cfg = replace(load_config(CONFIG), baggage=Baggage(2, 1, 600.0, send_to_api=True))
+    get, calls = make_get()
+
+    fetch_offers(cfg, "chave-falsa", max_expand=1, get=get)
+
+    assert calls[0]["bags"] == "2"
+
+
+def test_fetch_does_not_send_bags_by_default():
+    # O filtro de malas da API esconde ofertas validas (testado ao vivo), entao fica desligado por padrao.
+    cfg = load_config(CONFIG)
+    get, calls = make_get()
+
+    fetch_offers(cfg, "chave-falsa", max_expand=1, get=get)
+
+    assert "bags" not in calls[0]
+
+
+def test_fetch_omits_bags_when_opted_in_but_no_carry_on():
+    cfg = replace(load_config(CONFIG), baggage=Baggage(0, 1, 600.0, send_to_api=True))
+    get, calls = make_get()
+
+    fetch_offers(cfg, "chave-falsa", max_expand=1, get=get)
+
+    assert "bags" not in calls[0]

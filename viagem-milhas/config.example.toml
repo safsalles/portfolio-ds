@@ -1,0 +1,45 @@
+# MODELO de configuracao. Copie para config.toml e ajuste,
+# ou gere o seu automaticamente com:  python -m verificador.setup
+#
+# Exemplo: Sao Paulo (GRU) -> Lisboa (LIS), volta de Lisboa, 2 adultos.
+
+[trip]
+# [origem, destino, data AAAA-MM-DD]. Use codigos IATA de 3 letras (aeroporto ou cidade).
+outbound = ["GRU", "LIS", "2027-03-10"]
+# A volta pode sair de OUTRA cidade (ex.: ["BER", "GIG", "2027-03-24"]); aqui e' o trecho invertido.
+inbound = ["LIS", "GRU", "2027-03-24"]
+adults = 2
+cabin = "economy"          # economy | premium_economy | business | first
+currency = "BRL"
+
+[rules]
+# Toda escala precisa durar pelo menos isso (em minutos). 240 = 4 horas (tempo para imigracao).
+min_layover_minutes = 240
+# Aeroportos onde voce NAO aceita fazer escala (opcional). Ex.: ["GRU", "VCP"]
+avoid_airports = []
+
+[alerts]
+drop_pct = 5.0             # avisa se o preco cair 5% ou mais desde o dia anterior
+target_brl = 0             # avisa se ficar abaixo deste valor (0 = desligado)
+
+[promos]
+# Vigia de promocoes de milhas nos blogs: avisa se o milheiro citado ficar abaixo do limite (R$).
+feeds = ["https://passageirodeprimeira.com/feed/", "https://pontospravoar.com/feed/"]
+keywords = ["flying blue", "smiles", "livelo", "tap", "milheiro", "bônus"]
+
+[promos.max_milheiro]
+"flying blue" = 35
+"tap" = 35
+"livelo" = 35
+"smiles" = 12
+
+[paths]
+history = "data/history.csv"
+seen_promos = "data/seen_promos.json"
+alerts_log = "data/alerts.log"
+
+[baggage]
+carry_on = 1               # malas de mao POR PESSOA
+checked = 1                # malas despachadas, por trecho
+checked_bag_fee_brl = 500  # preco estimado de UMA mala despachada, por trecho (so para o relatorio)
+send_to_api = false         # true envia a mala de mao ao Google Voos, mas isso FILTRA a busca e pode esconder ofertas validas

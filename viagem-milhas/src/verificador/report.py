@@ -1,11 +1,13 @@
-import argparse
+﻿import argparse
+import os
 
-from verificador.calculator import breakeven_milheiro
+from verificador.calculator import breakeven_milheiro, estimated_bag_cost
+from verificador.config import load_config
 from verificador.history import latest_ok
 from verificador.other_sources import DEFAULT_PATH, latest_by_source, load_checks
 
 
-def build_report(history_path: str, others_path: str) -> str:
+def build_report(history_path: str, others_path: str, bag_cost: float = 0.0) -> str:
     lines: list[str] = []
     cash: list[tuple[float, str]] = []
 
@@ -32,6 +34,10 @@ def build_report(history_path: str, others_path: str) -> str:
     if cash:
         best_price, best_source = min(cash)
         lines.append(f"Menor preço em dinheiro: R$ {best_price:,.2f} ({best_source})")
+        if bag_cost > 0:
+            lines.append(
+                f"Com bagagem despachada estimada (+R$ {bag_cost:,.2f}): R$ {best_price + bag_cost:,.2f}"
+            )
         for source, c in sorted(latest.items()):
             if c.miles:
                 be = breakeven_milheiro(best_price, c.miles, c.taxes_brl or 0.0)
@@ -45,9 +51,14 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Relatório: Google Voos + outras fontes")
     p.add_argument("--history", default="data/history.csv")
     p.add_argument("--others", default=DEFAULT_PATH)
+    p.add_argument("--config", default="config.toml")
     a = p.parse_args()
-    print(build_report(a.history, a.others))
+    bag_cost = 0.0
+    if os.path.exists(a.config):
+        bag_cost = estimated_bag_cost(load_config(a.config).baggage)
+    print(build_report(a.history, a.others, bag_cost))
 
 
 if __name__ == "__main__":
     main()
+

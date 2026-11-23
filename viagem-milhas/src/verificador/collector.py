@@ -78,13 +78,15 @@ def fetch_offers(cfg: Config, api_key: str, max_expand: int = MAX_EXPAND, get=re
         "travel_class": _TRAVEL_CLASS.get(cfg.trip.cabin, "1"),
         "api_key": api_key,
     }
+    if cfg.baggage.send_to_api and cfg.baggage.carry_on > 0:
+        params["bags"] = str(cfg.baggage.carry_on)
     outbound_options = parse_leg_options(_call(get, params))
     rules = cfg.rules
     candidates = sorted(
         (
             o
             for o in outbound_options
-            if o.departure_token and leg_is_compliant(o.leg, rules.min_layover_minutes, rules.brazil_airports)
+            if o.departure_token and leg_is_compliant(o.leg, rules.min_layover_minutes, rules.avoid_airports)
         ),
         key=lambda o: o.total_price_brl,
     )[:max_expand]
@@ -95,3 +97,5 @@ def fetch_offers(cfg: Config, api_key: str, max_expand: int = MAX_EXPAND, get=re
         for inbound in parse_leg_options(payload):
             offers.append(Offer(inbound.total_price_brl, outbound.leg, inbound.leg, None))
     return offers
+
+

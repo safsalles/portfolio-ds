@@ -14,7 +14,7 @@ class Trip:
 @dataclass(frozen=True)
 class Rules:
     min_layover_minutes: int
-    brazil_airports: frozenset[str]
+    avoid_airports: frozenset[str]  # aeroportos onde voce NAO aceita fazer escala (opcional)
 
 
 @dataclass(frozen=True)
@@ -38,18 +38,28 @@ class Paths:
 
 
 @dataclass(frozen=True)
+class Baggage:
+    carry_on: int  # malas de mao POR PESSOA
+    checked: int  # malas despachadas no total, por trecho
+    checked_bag_fee_brl: float  # preco estimado de UMA mala despachada, por trecho
+    send_to_api: bool = False  # enviar a mala de mao ao Google Voos (filtra ofertas; desligado por padrao)
+
+
+@dataclass(frozen=True)
 class Config:
     trip: Trip
     rules: Rules
     alerts: Alerts
     promos: Promos
     paths: Paths
+    baggage: Baggage = Baggage(0, 0, 0.0)
 
 
 def load_config(path: str = "config.toml") -> Config:
     with open(path, "rb") as f:
-        raw = tomllib.load(f)
+        raw = tomllib.loads(f.read().decode("utf-8-sig"))  # aceita UTF-8 com BOM (Bloco de Notas, PowerShell 5)
     t, r, a, p, d = raw["trip"], raw["rules"], raw["alerts"], raw["promos"], raw["paths"]
+    b = raw.get("baggage", {})
     return Config(
         trip=Trip(
             outbound=tuple(t["outbound"]),
@@ -60,7 +70,7 @@ def load_config(path: str = "config.toml") -> Config:
         ),
         rules=Rules(
             min_layover_minutes=r["min_layover_minutes"],
-            brazil_airports=frozenset(r["brazil_airports"]),
+            avoid_airports=frozenset(r.get("avoid_airports", [])),
         ),
         alerts=Alerts(drop_pct=float(a["drop_pct"]), target_brl=float(a["target_brl"])),
         promos=Promos(
@@ -69,4 +79,10 @@ def load_config(path: str = "config.toml") -> Config:
             max_milheiro={k: float(v) for k, v in p["max_milheiro"].items()},
         ),
         paths=Paths(history=d["history"], seen_promos=d["seen_promos"], alerts_log=d["alerts_log"]),
+        baggage=Baggage(
+            carry_on=int(b.get("carry_on", 0)),
+            checked=int(b.get("checked", 0)),
+            checked_bag_fee_brl=float(b.get("checked_bag_fee_brl", 0.0)),
+            send_to_api=bool(b.get("send_to_api", False)),
+        ),
     )
