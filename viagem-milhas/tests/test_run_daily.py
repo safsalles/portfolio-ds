@@ -1,4 +1,4 @@
-﻿import csv
+import csv
 from dataclasses import replace
 
 from verificador.collector import CollectorError
@@ -6,6 +6,7 @@ from verificador.config import Paths, load_config
 from verificador.history import HistoryRecord, upsert_record
 from verificador.models import Layover, Leg, Offer
 from verificador.run_daily import main, run
+from verificador.snapshots import list_snapshots
 
 
 CONFIG = "tests/fixtures/config_test.toml"
@@ -17,6 +18,7 @@ def make_cfg(tmp_path):
         history=str(tmp_path / "history.csv"),
         seen_promos=str(tmp_path / "seen.json"),
         alerts_log=str(tmp_path / "alerts.log"),
+        snapshots=str(tmp_path / "snaps"),
     )
     return replace(cfg, paths=paths)
 
@@ -176,3 +178,33 @@ def test_main_without_config_file_points_to_setup(tmp_path):
 
     assert code == 1
     assert len(notes.calls) == 1 and "verificador.setup" in notes.calls[0][1]
+
+
+def test_run_saves_snapshot_of_all_offers_even_when_none_pass(tmp_path):
+    cfg, notes = make_cfg(tmp_path), Notes()
+
+    run(cfg, "k", "2026-11-23", fetch=lambda c, k: [offer(17243, in_min=130)], notify_fn=notes, feed_fn=no_feeds)
+
+    metas = list_snapshots(cfg.paths.snapshots)
+    assert len(metas) == 1
+    assert metas[0].source == "agendada" and metas[0].n_offers == 1 and metas[0].best_total_brl is None
+
+
+def test_run_saves_snapshot_with_best_compliant_price(tmp_path):
+    cfg, notes = make_cfg(tmp_path), Notes()
+
+    run(cfg, "k", "2026-11-23", fetch=lambda c, k: [offer(19152), offer(20000)], notify_fn=notes, feed_fn=no_feeds)
+
+    metas = list_snapshots(cfg.paths.snapshots)
+    assert len(metas) == 1 and metas[0].best_total_brl == 19152.0 and metas[0].n_offers == 2
+
+
+def test_run_does_not_save_snapshot_when_fetch_fails(tmp_path):
+    cfg, notes = make_cfg(tmp_path), Notes()
+
+    def boom(c, k):
+        raise CollectorError("HTTP 429")
+
+    run(cfg, "k", "2026-11-23", fetch=boom, notify_fn=notes, feed_fn=no_feeds)
+
+    assert list_snapshots(cfg.paths.snapshots) == []

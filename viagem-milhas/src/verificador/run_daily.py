@@ -1,4 +1,4 @@
-﻿import os
+import os
 import sys
 from datetime import date
 from pathlib import Path
@@ -10,6 +10,7 @@ from verificador.history import HistoryRecord, has_ok_record, last_price, upsert
 from verificador.models import Offer
 from verificador.promos import fetch_feed, find_promos, load_seen, save_seen
 from verificador.rules import cheapest_compliant
+from verificador.snapshots import save_snapshot
 
 
 def _describe_layovers(offer: Offer) -> str:
@@ -47,7 +48,9 @@ def _check_promos(cfg: Config, notify_fn, feed_fn) -> None:
         save_seen(cfg.paths.seen_promos, seen)
 
 
-def run(cfg: Config, api_key: str, today: str, fetch=fetch_offers, notify_fn=notify, feed_fn=fetch_feed) -> int:
+def run(
+    cfg: Config, api_key: str, today: str, fetch=fetch_offers, notify_fn=notify, feed_fn=fetch_feed, source: str = "agendada"
+) -> int:
     log = cfg.paths.alerts_log
     code = 0
     try:
@@ -58,7 +61,11 @@ def run(cfg: Config, api_key: str, today: str, fetch=fetch_offers, notify_fn=not
         notify_fn("Verificador: falha na coleta", str(exc), log)
         code = 1
     else:
-        best, discarded = cheapest_compliant(offers, cfg.rules.min_layover_minutes, cfg.rules.avoid_airports)
+        if offers:
+            save_snapshot(cfg.paths.snapshots, cfg, offers, source)  # guarda a consulta inteira para rever depois
+        best, discarded = cheapest_compliant(
+            offers, cfg.rules.min_layover_minutes, cfg.rules.avoid_airports, cfg.rules.max_layover_minutes
+        )
         if best is None:
             if not has_ok_record(cfg.paths.history, today):
                 upsert_record(cfg.paths.history, HistoryRecord(today, None, "", "", None, "empty"))

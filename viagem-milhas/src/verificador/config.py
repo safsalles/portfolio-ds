@@ -15,6 +15,7 @@ class Trip:
 class Rules:
     min_layover_minutes: int
     avoid_airports: frozenset[str]  # aeroportos onde voce NAO aceita fazer escala (opcional)
+    max_layover_minutes: int | None = None  # escala maxima aceita; None = sem limite
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,7 @@ class Paths:
     history: str
     seen_promos: str
     alerts_log: str
+    snapshots: str = "data/snapshots"  # consultas salvas (todas as ofertas de cada consulta)
 
 
 @dataclass(frozen=True)
@@ -71,6 +73,7 @@ def load_config(path: str = "config.toml") -> Config:
         rules=Rules(
             min_layover_minutes=r["min_layover_minutes"],
             avoid_airports=frozenset(r.get("avoid_airports", [])),
+            max_layover_minutes=int(r.get("max_layover_minutes", 0)) or None,  # 0 ou ausente = sem limite
         ),
         alerts=Alerts(drop_pct=float(a["drop_pct"]), target_brl=float(a["target_brl"])),
         promos=Promos(
@@ -78,7 +81,12 @@ def load_config(path: str = "config.toml") -> Config:
             keywords=tuple(p["keywords"]),
             max_milheiro={k: float(v) for k, v in p["max_milheiro"].items()},
         ),
-        paths=Paths(history=d["history"], seen_promos=d["seen_promos"], alerts_log=d["alerts_log"]),
+        paths=Paths(
+            history=d["history"],
+            seen_promos=d["seen_promos"],
+            alerts_log=d["alerts_log"],
+            snapshots=d.get("snapshots", "data/snapshots"),
+        ),
         baggage=Baggage(
             carry_on=int(b.get("carry_on", 0)),
             checked=int(b.get("checked", 0)),
