@@ -1,3 +1,5 @@
-﻿requests
+requests
 feedparser
 pytest
+airportsdata
+babel

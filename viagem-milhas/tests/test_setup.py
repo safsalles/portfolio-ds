@@ -142,3 +142,50 @@ def test_wizard_rejects_a_maximum_below_the_minimum(tmp_path):
     assert code == 0
     assert load_config(str(path)).rules.max_layover_minutes == 480
     assert any("maior" in m for m in messages)
+
+
+def test_wizard_accepts_city_names_and_lets_you_pick_when_ambiguous(tmp_path):
+    path = tmp_path / "config.toml"
+    # origem "rio de janeiro" -> um unico resultado, escolhido sozinho; destino "lisboa" -> 2 opcoes -> escolhe a 1a
+    answers = ["rio de janeiro", "lisboa", "1"] + BASE[2:]
+
+    code, messages = run(answers, path)
+
+    assert code == 0
+    cfg = load_config(str(path))
+    assert cfg.trip.outbound[:2] == ("GIG,SDU", "LIS")
+    assert cfg.trip.inbound[:2] == ("LIS", "GIG,SDU")
+    assert any("Encontrei" in m for m in messages)
+
+
+def test_wizard_unknown_place_asks_again(tmp_path):
+    path = tmp_path / "config.toml"
+
+    code, messages = run(["atlantida"] + BASE, path)
+
+    assert code == 0
+    assert load_config(str(path)).trip.outbound[0] == "GRU"
+    assert any("Não achei esse lugar" in m for m in messages)
+
+
+def test_wizard_enter_at_the_option_list_retypes_the_place(tmp_path):
+    path = tmp_path / "config.toml"
+    answers = ["lisboa", "", "gru"] + BASE[1:]  # 1o lugar: lista -> Enter -> digita de novo
+
+    code, _ = run(answers, path)
+
+    assert code == 0
+    assert load_config(str(path)).trip.outbound[0] == "GRU"
+
+
+def test_wizard_overwrite_keeps_paths_and_promos_of_the_old_config(tmp_path):
+    old = open("tests/fixtures/config_test.toml", encoding="utf-8").read()
+    path = tmp_path / "config.toml"
+    path.write_text(old.replace('history = "data/history.csv"', 'history = "meu/hist.csv"').replace('"smiles" = 12', '"smiles" = 9'), encoding="utf-8")
+
+    code, _ = run(["s"] + BASE, path)
+
+    cfg = load_config(str(path))
+    assert code == 0
+    assert cfg.trip.outbound[1] == "LIS"  # a viagem nova
+    assert cfg.paths.history == "meu/hist.csv" and cfg.promos.max_milheiro["smiles"] == 9.0  # o resto foi mantido
