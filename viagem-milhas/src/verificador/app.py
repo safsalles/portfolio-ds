@@ -4,6 +4,7 @@ Abrir:  powershell -File scripts\\app.ps1
 """
 import os
 import sys
+from dataclasses import replace
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -16,13 +17,14 @@ import streamlit as st  # noqa: E402
 
 from verificador import collector  # noqa: E402
 from verificador import promos
-from verificador.calculator import breakeven_milheiro, estimated_bag_cost  # noqa: E402
+from verificador.programas import ProgramInput, evaluate, load_inputs, max_miles_worth, save_inputs
+from verificador.calculator import estimated_bag_cost  # noqa: E402
 from verificador.config import load_config  # noqa: E402
 from verificador.places import describe_codes, looks_like_codes, search_places  # noqa: E402
 from verificador.report import build_report  # noqa: E402
 from verificador.setup import CABINS, build_config_toml, form_defaults, merge_existing, parse_form  # noqa: E402
 from verificador.snapshots import compare_best, list_snapshots, load_snapshot, offer_rows, save_snapshot  # noqa: E402
-from verificador.ui_helpers import delta_text, format_brl, promo_verdict, snapshot_label  # noqa: E402
+from verificador.ui_helpers import delta_text, format_brl, snapshot_label  # noqa: E402
 
 CONFIG_PATH = os.environ.get("VERIFICADOR_CONFIG", "config.toml")
 LABELS = {
@@ -240,48 +242,148 @@ with tab_hist:
             st.code("".join(f.readlines()[-10:]), language=None)
 
 # ------------------------------------------------------------------------ Milhas
+@st.cache_data(ttl=3600, show_spinner=False)
+def scan_feeds(feeds: tuple, keywords: tuple, limits: tuple):
+    entries = []
+    for url in feeds:
+        try:
+            entries += promos.fetch_feed(url)
+        except Exception:
+            pass
+    return promos.scan_promos(entries, list(keywords), dict(limits))
+
+
 with tab_miles:
     if cfg is None:
         st.info("Salve a viagem na aba **Minha viagem** primeiro.")
     else:
-        st.write("Promoções de compra de milhas nos blogs configurados, comparadas com o **preço em dinheiro** da sua viagem.")
         metas_m = list_snapshots(cfg.paths.snapshots)
-        best_cash = load_snapshot(metas_m[0].path)["best_total_brl"] if metas_m else None
-        c1, c2, c3 = st.columns(3)
-        cash = c1.number_input("Preço em dinheiro da viagem (R$)", 0.0, 10_000_000.0, float(best_cash or 0.0), 100.0,
-                               key="m_cash", help="Começa com o melhor preço da última consulta salva.")
-        miles = c2.number_input("Milhas necessárias (viagem toda)", 0, 10_000_000, 0, 1000, key="m_miles",
-                                help="Veja no site do programa. Com 0, o veredito usa só o seu limite por programa.")
-        taxes = c3.number_input("Taxas em dinheiro (R$)", 0.0, 1_000_000.0, 0.0, 50.0, key="m_taxes")
-        breakeven = breakeven_milheiro(cash, int(miles), taxes) if cash > 0 and miles > 0 and cash > taxes else None
-        if breakeven is not None:
-            st.metric("Milheiro máximo que ainda compensa", f"R$ {breakeven:,.2f}")
-        if st.button("Buscar promoções agora", type="primary", key="m_fetch"):
-            entries, failed = [], []
-            with st.spinner("Lendo os feeds de promoções..."):
-                for url in cfg.promos.feeds:
-                    try:
-                        entries += promos.fetch_feed(url)
-                    except Exception:
-                        failed.append(url)
-            st.session_state["m_found"] = promos.scan_promos(entries, cfg.promos.keywords, cfg.promos.max_milheiro)
-            if failed:
-                st.warning(f"Não consegui ler {len(failed)} feed(s).")
-        found = st.session_state.get("m_found")
-        if found is not None:
-            if not found:
-                st.info("Nenhuma promoção de compra de milhas com preço de milheiro encontrada agora.")
-            else:
+        best_cash, fallback = None, False
+        if metas_m:
+            snap_m = load_snapshot(metas_m[0].path)
+            best_cash = snap_m["best_total_brl"]
+            if best_cash is None and snap_m["offers"]:  # nenhuma passa nas regras: usa a mais barata e avisa
+                best_cash, fallback = min(o["total_price_brl"] for o in snap_m["offers"]), True
+        if best_cash is None:
+            st.info("Faça uma consulta (aba **Consultar agora**) para eu comparar as milhas com o preço em dinheiro da sua viagem.")
+        else:
+            bag = estimated_bag_cost(cfg.baggage)
+            cash = best_cash + bag
+            if fallback:
+                st.warning("Nenhuma oferta da última consulta passa nas suas regras de escala; estou usando a mais barata de todas como referência.")
+            st.write(f"Viagem **{cfg.trip.outbound[0]} → {cfg.trip.outbound[1]}** · melhor preço em dinheiro da última consulta "
+                     f"({metas_m[0].saved_at.strftime('%d/%m/%Y %H:%M')}): **{format_brl(best_cash)}**"
+                     + (f" + malas estimadas {format_brl(bag)} = **{format_brl(cash)}**" if bag else ""))
+            with st.expander("Ajustar taxas das milhas (opcional)"):
+                taxes = st.number_input("Taxas em dinheiro da passagem de milhas (R$)", 0.0, 1_000_000.0, 0.0, 50.0, key="m_taxes",
+                                        help="As passagens de milhas também cobram taxas. Deixe 0 se não souber.")
+            found = scan_feeds(tuple(cfg.promos.feeds), tuple(cfg.promos.keywords), tuple(cfg.promos.max_milheiro.items()))
+            best_promo = {}
+            for f in found:
+                if f.program not in best_promo or f.milheiro_brl < best_promo[f.program]:
+                    best_promo[f.program] = f.milheiro_brl
+            progs_path = os.path.join(os.path.dirname(cfg.paths.history) or "data", "milhas_programas.csv")
+            today_iso = date.today().isoformat()
+            base = load_inputs(progs_path, list(cfg.promos.max_milheiro))
+            origins = {}
+            for i in base:
+                if i.program in best_promo:
+                    origins[i.program] = "promoção achada hoje"
+                elif i.milheiro_brl > 0:
+                    origins[i.program] = f"anotado em {i.price_date[8:]}/{i.price_date[5:7]}" if i.price_date else "anotado por você"
+                else:
+                    origins[i.program] = "sem preço: anote"
+            BUY_PAGES = {
+                "smiles": "https://www.smiles.com.br/comprar-milhas",
+                "livelo": "https://www.livelo.com.br/compre-pontos",
+                "tap": "https://www.flytap.com/pt-br/milesandgo",
+                "flying blue": "https://www.flyingblue.com/pt/earn/buy-miles",
+            }
+            with st.expander("Como atualizar o preço de compra de cada programa (precisa de login)", expanded=False):
+                st.markdown(
+                    "Os sites dos programas só mostram o preço do milheiro **depois do login**, e o login é sempre seu "
+                    "(o programa e o Claude nunca digitam sua senha).\n\n"
+                    "1. Clique nos botões abaixo e **entre na sua conta** em cada site, no Chrome.\n"
+                    "2. **Deixe as abas abertas.**\n"
+                    "3. Volte aqui e peça ao Claude: *\"leia o preço do milheiro nas abas abertas e anote no painel\"*. "
+                    "Ele só lê o preço, não compra nada.\n"
+                    "4. Ou anote você mesmo na tabela abaixo e clique em **Salvar saldos e preços**.")
+                cols = st.columns(max(1, len(cfg.promos.max_milheiro)))
+                for col, name in zip(cols, cfg.promos.max_milheiro):
+                    if name in BUY_PAGES:
+                        col.link_button(f"Abrir {name}", BUY_PAGES[name])
+            st.subheader("Suas milhas e o preço de compra de cada programa")
+            st.caption("O preço do milheiro é atualizado sozinho quando um blog publica promoção; senão vale o último que você anotou. "
+                       "Preencha o saldo que você já tem e, se souber, as milhas que a passagem pede.")
+            edited = st.data_editor(
+                pd.DataFrame([{
+                    "Programa": i.program, "Saldo de milhas": i.balance,
+                    "Preço atual do milheiro (R$)": best_promo.get(i.program, i.milheiro_brl),
+                    "Bônus de transferência (%)": i.bonus_pct, "Milhas que a passagem pede": i.miles,
+                } for i in base]),
+                hide_index=True, disabled=["Programa"], key="m_editor",
+                column_config={"Saldo de milhas": st.column_config.NumberColumn(min_value=0, step=1000),
+                               "Preço atual do milheiro (R$)": st.column_config.NumberColumn(format="R$ %.2f", min_value=0.0),
+                               "Bônus de transferência (%)": st.column_config.NumberColumn(min_value=0.0),
+                               "Milhas que a passagem pede": st.column_config.NumberColumn(min_value=0, step=1000)})
+            by_name = {i.program: i for i in base}
+            inputs = []
+            for _, r in edited.iterrows():
+                old = by_name[r["Programa"]]
+                price = float(r["Preço atual do milheiro (R$)"])
+                changed = price != old.milheiro_brl
+                inputs.append(ProgramInput(r["Programa"], price, float(r["Bônus de transferência (%)"]),
+                                           int(r["Milhas que a passagem pede"]), taxes, int(r["Saldo de milhas"]),
+                                           today_iso if changed else old.price_date))
+            rows = []
+            for i in inputs:
+                res = evaluate(i, cash)
+                limit_miles = max_miles_worth(cash, taxes, res.effective_milheiro) if res.effective_milheiro else (
+                    max_miles_worth(cash, taxes, i.milheiro_brl / (1 + i.bonus_pct / 100)) if i.milheiro_brl > 0 else None)
+                rows.append({
+                    "Programa": i.program,
+                    "Saldo": f"{i.balance:,}".replace(",", "."),
+                    "Preço atual do milheiro": format_brl(i.milheiro_brl) if i.milheiro_brl > 0 else "—",
+                    "Origem do preço": origins[i.program],
+                    "Compensa se a passagem pedir até": f"{limit_miles:,} milhas".replace(",", ".") if limit_miles else "—",
+                    "Comprando só o que falta": format_brl(res.miles_cost_brl) if res.miles_cost_brl else "—",
+                    "Resultado": "—" if res.saving_brl is None else (
+                        f"Milhas ganham ({format_brl(res.saving_brl)} de economia)" if res.miles_win
+                        else f"Dinheiro ganha ({format_brl(-res.saving_brl)} a menos)"),
+                })
+            st.dataframe(pd.DataFrame(rows), hide_index=True)
+            st.subheader("Simulador: e se eu comprar milhas a este preço?")
+            st.caption("Os sites dos programas não mostram o preço do milheiro sem login (a página da Smiles, por exemplo, só mostra o bônus). "
+                       "Digite o preço que você viu e veja como a viagem ficaria; preencha acima as milhas que a passagem pede.")
+            sim_price = st.number_input("Preço do milheiro para simular (R$)", 0.0, 1000.0, 25.0, 0.5, key="m_sim_price")
+            sim_rows = []
+            for i in inputs:
+                if i.miles <= 0:
+                    sim_rows.append({"Programa": i.program, "Custo da viagem em milhas": "informe as milhas da passagem", "Resultado": "—"})
+                    continue
+                res = evaluate(replace(i, milheiro_brl=sim_price), cash)
+                sim_rows.append({
+                    "Programa": i.program, "Custo da viagem em milhas": format_brl(res.miles_cost_brl),
+                    "Resultado": "—" if res.saving_brl is None else (
+                        f"Milhas ganham ({format_brl(res.saving_brl)} de economia)" if res.miles_win
+                        else f"Dinheiro ganha ({format_brl(-res.saving_brl)} a menos)")})
+            st.dataframe(pd.DataFrame(sim_rows), hide_index=True)
+            with_miles = [i for i in inputs if i.miles > 0]
+            if with_miles:
+                prices = [10, 15, 20, 25, 30, 35, 40]
+                st.caption("Custo da viagem em milhas conforme o preço do milheiro:")
+                st.dataframe(pd.DataFrame([{"Programa": i.program, **{f"R$ {p}": format_brl(evaluate(replace(i, milheiro_brl=float(p)), cash).miles_cost_brl)
+                                                                      for p in prices}} for i in with_miles]), hide_index=True)
+            if st.button("Salvar saldos e preços", key="m_save_panel"):
+                save_inputs(progs_path, inputs)
+                st.success("Salvo. Da próxima vez que abrir, está tudo aqui.")
+            if found:
+                st.subheader("Promoções achadas agora")
                 st.dataframe(
-                    pd.DataFrame([{
-                        "Programa": f.program, "Milheiro (R$)": f.milheiro_brl,
-                        "Veredito": promo_verdict(f.milheiro_brl, cfg.promos.max_milheiro[f.program], breakeven),
-                        "Título": f.title, "Link": f.link} for f in sorted(found, key=lambda f: f.milheiro_brl)]),
+                    pd.DataFrame([{"Programa": f.program, "Milheiro (R$)": f.milheiro_brl, "Título": f.title, "Link": f.link}
+                                  for f in sorted(found, key=lambda f: f.milheiro_brl)]),
                     hide_index=True,
                     column_config={"Milheiro (R$)": st.column_config.NumberColumn(format="R$ %.2f"),
                                    "Link": st.column_config.LinkColumn("Link")})
-        st.subheader("Viu um preço em outro site?")
-        c1, c2 = st.columns(2)
-        seen_price = c1.number_input("Preço do milheiro visto (R$)", 0.0, 1000.0, 0.0, 0.5, key="m_seen")
-        if seen_price > 0:
-            c2.write(f"**{promo_verdict(seen_price, 0.0, breakeven) if breakeven is not None else 'Informe as milhas necessárias acima para comparar com a viagem.'}**")
+            else:
+                st.caption("Nenhuma promoção com preço de milheiro nos blogs agora.")
