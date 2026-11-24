@@ -33,18 +33,14 @@ def _programs_in(text: str, programs: list[str]) -> list[str]:
     return [p for p in programs if re.search(rf"\b{re.escape(p)}\b", lowered)]
 
 
-def find_promos(
-    entries: list[dict],
-    keywords: list[str],
-    max_milheiro: dict[str, float],
-    seen: set[str],
-) -> list[Promo]:
+def scan_promos(entries: list[dict], keywords: list[str], max_milheiro: dict[str, float]) -> list[Promo]:
+    """Todas as promocoes de milhas encontradas, baratas ou nao (a aba Milhas decide o veredito)."""
     promos: list[Promo] = []
     programs = list(max_milheiro)
     for e in entries:
         title, summary, link = e.get("title", ""), e.get("summary", ""), e.get("link", "")
         text = f"{title}. {summary}"
-        if link in seen or not any(k in text.lower() for k in keywords):
+        if not any(k in text.lower() for k in keywords):
             continue
         milheiro = extract_milheiro(text)
         if milheiro is None:
@@ -52,10 +48,20 @@ def find_promos(
         found = _programs_in(title, programs) or _programs_in(summary, programs)
         if not found:
             continue
-        strictest = min(found, key=lambda p: max_milheiro[p])
-        if milheiro < max_milheiro[strictest]:
-            promos.append(Promo(strictest, title, link, milheiro))
+        promos.append(Promo(min(found, key=lambda p: max_milheiro[p]), title, link, milheiro))
     return promos
+
+
+def find_promos(
+    entries: list[dict],
+    keywords: list[str],
+    max_milheiro: dict[str, float],
+    seen: set[str],
+) -> list[Promo]:
+    return [
+        p for p in scan_promos(entries, keywords, max_milheiro)
+        if p.link not in seen and p.milheiro_brl < max_milheiro[p.program]
+    ]
 
 
 def fetch_feed(url: str) -> list[dict]:

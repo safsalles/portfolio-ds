@@ -15,13 +15,14 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from verificador import collector  # noqa: E402
-from verificador.calculator import estimated_bag_cost  # noqa: E402
+from verificador import promos
+from verificador.calculator import breakeven_milheiro, estimated_bag_cost  # noqa: E402
 from verificador.config import load_config  # noqa: E402
 from verificador.places import describe_codes, looks_like_codes, search_places  # noqa: E402
 from verificador.report import build_report  # noqa: E402
 from verificador.setup import CABINS, build_config_toml, form_defaults, merge_existing, parse_form  # noqa: E402
 from verificador.snapshots import compare_best, list_snapshots, load_snapshot, offer_rows, save_snapshot  # noqa: E402
-from verificador.ui_helpers import delta_text, format_brl, snapshot_label  # noqa: E402
+from verificador.ui_helpers import delta_text, format_brl, promo_verdict, snapshot_label  # noqa: E402
 
 CONFIG_PATH = os.environ.get("VERIFICADOR_CONFIG", "config.toml")
 LABELS = {
@@ -110,7 +111,8 @@ def show_last_consult(cfg, prefix: str) -> None:
 
 
 cfg = load_cfg()
-tab_trip, tab_now, tab_saved, tab_hist = st.tabs(["Minha viagem", "Consultar agora", "Consultas salvas", "Histórico"])
+tab_trip, tab_now, tab_saved, tab_hist, tab_miles = st.tabs(
+    ["Minha viagem", "Consultar agora", "Consultas salvas", "Histórico", "Milhas"])
 
 # ---------------------------------------------------------------- Minha viagem
 with tab_trip:
@@ -236,3 +238,50 @@ with tab_hist:
         st.subheader("Avisos recentes")
         with open(alerts_log, encoding="utf-8", errors="replace") as f:
             st.code("".join(f.readlines()[-10:]), language=None)
+
+# ------------------------------------------------------------------------ Milhas
+with tab_miles:
+    if cfg is None:
+        st.info("Salve a viagem na aba **Minha viagem** primeiro.")
+    else:
+        st.write("Promoções de compra de milhas nos blogs configurados, comparadas com o **preço em dinheiro** da sua viagem.")
+        metas_m = list_snapshots(cfg.paths.snapshots)
+        best_cash = load_snapshot(metas_m[0].path)["best_total_brl"] if metas_m else None
+        c1, c2, c3 = st.columns(3)
+        cash = c1.number_input("Preço em dinheiro da viagem (R$)", 0.0, 10_000_000.0, float(best_cash or 0.0), 100.0,
+                               key="m_cash", help="Começa com o melhor preço da última consulta salva.")
+        miles = c2.number_input("Milhas necessárias (viagem toda)", 0, 10_000_000, 0, 1000, key="m_miles",
+                                help="Veja no site do programa. Com 0, o veredito usa só o seu limite por programa.")
+        taxes = c3.number_input("Taxas em dinheiro (R$)", 0.0, 1_000_000.0, 0.0, 50.0, key="m_taxes")
+        breakeven = breakeven_milheiro(cash, int(miles), taxes) if cash > 0 and miles > 0 and cash > taxes else None
+        if breakeven is not None:
+            st.metric("Milheiro máximo que ainda compensa", f"R$ {breakeven:,.2f}")
+        if st.button("Buscar promoções agora", type="primary", key="m_fetch"):
+            entries, failed = [], []
+            with st.spinner("Lendo os feeds de promoções..."):
+                for url in cfg.promos.feeds:
+                    try:
+                        entries += promos.fetch_feed(url)
+                    except Exception:
+                        failed.append(url)
+            st.session_state["m_found"] = promos.scan_promos(entries, cfg.promos.keywords, cfg.promos.max_milheiro)
+            if failed:
+                st.warning(f"Não consegui ler {len(failed)} feed(s).")
+        found = st.session_state.get("m_found")
+        if found is not None:
+            if not found:
+                st.info("Nenhuma promoção de compra de milhas com preço de milheiro encontrada agora.")
+            else:
+                st.dataframe(
+                    pd.DataFrame([{
+                        "Programa": f.program, "Milheiro (R$)": f.milheiro_brl,
+                        "Veredito": promo_verdict(f.milheiro_brl, cfg.promos.max_milheiro[f.program], breakeven),
+                        "Título": f.title, "Link": f.link} for f in sorted(found, key=lambda f: f.milheiro_brl)]),
+                    hide_index=True,
+                    column_config={"Milheiro (R$)": st.column_config.NumberColumn(format="R$ %.2f"),
+                                   "Link": st.column_config.LinkColumn("Link")})
+        st.subheader("Viu um preço em outro site?")
+        c1, c2 = st.columns(2)
+        seen_price = c1.number_input("Preço do milheiro visto (R$)", 0.0, 1000.0, 0.0, 0.5, key="m_seen")
+        if seen_price > 0:
+            c2.write(f"**{promo_verdict(seen_price, 0.0, breakeven) if breakeven is not None else 'Informe as milhas necessárias acima para comparar com a viagem.'}**")
