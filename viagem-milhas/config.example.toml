@@ -4,7 +4,8 @@
 # Exemplo: Sao Paulo (GRU) -> Lisboa (LIS), volta de Lisboa, 2 adultos.
 
 [trip]
-# [origem, destino, data AAAA-MM-DD]. Use codigos IATA de 3 letras (aeroporto ou cidade).
+# [origem, destino, data AAAA-MM-DD]. Codigos IATA de 3 letras; varios aeroportos da mesma cidade separados por virgula
+# (ex.: "LHR,LGW"). O assistente (python -m verificador.setup) aceita o NOME da cidade e acha o codigo.
 outbound = ["GRU", "LIS", "2027-03-10"]
 # A volta pode sair de OUTRA cidade (ex.: ["BER", "GIG", "2027-03-24"]); aqui e' o trecho invertido.
 inbound = ["LIS", "GRU", "2027-03-24"]

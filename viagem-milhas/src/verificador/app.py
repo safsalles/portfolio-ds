@@ -17,8 +17,9 @@ import streamlit as st  # noqa: E402
 from verificador import collector  # noqa: E402
 from verificador.calculator import estimated_bag_cost  # noqa: E402
 from verificador.config import load_config  # noqa: E402
+from verificador.places import describe_codes, looks_like_codes, search_places  # noqa: E402
 from verificador.report import build_report  # noqa: E402
-from verificador.setup import CABINS, build_config_toml, form_defaults, parse_form  # noqa: E402
+from verificador.setup import CABINS, build_config_toml, form_defaults, merge_existing, parse_form  # noqa: E402
 from verificador.snapshots import compare_best, list_snapshots, load_snapshot, offer_rows, save_snapshot  # noqa: E402
 from verificador.ui_helpers import delta_text, format_brl, snapshot_label  # noqa: E402
 
@@ -60,6 +61,54 @@ def show_result(snap: dict, older, prefix: str, cfg) -> None:
     )
 
 
+def place_field(label: str, key: str, default: str, help_text: str = "") -> str:
+    """Campo de lugar: aceita o codigo (GRU) ou o nome (Lisboa) e mostra as opcoes encontradas."""
+    text = st.text_input(label, default, key=f"f_{key}", help=help_text,
+                         placeholder="Cidade ou código (ex.: Lisboa ou LIS)").strip()
+    codes = ""
+    if text:
+        if looks_like_codes(text):
+            codes = ",".join(c.strip().upper() for c in text.split(","))
+        else:
+            results = search_places(text)
+            if results:
+                labels = {r.codes: r.label for r in results}
+                codes = st.selectbox("Escolha o lugar", list(labels), format_func=labels.get, key=f"f_{key}_pick")
+            else:
+                st.caption("❌ Não achei esse lugar. Tente o nome da cidade ou o código do aeroporto.")
+    if codes:
+        st.caption("✔ " + describe_codes(codes))
+    return codes or text
+
+
+def run_consultation(cfg) -> None:
+    """Faz a consulta, salva todas as ofertas e guarda o resultado na sessao (veja show_last_consult)."""
+    api_key = os.environ.get("SERPAPI_KEY")
+    if not api_key:
+        st.error("A variável de ambiente SERPAPI_KEY não está definida. Veja o aviso na aba Minha viagem.")
+        return
+    try:
+        with st.spinner("Consultando o Google Voos..."):
+            offers = collector.fetch_offers(cfg, api_key)
+    except collector.CollectorError as exc:
+        st.error(f"A consulta falhou: {exc}")
+        return
+    if not offers:
+        st.warning("A busca não devolveu nenhuma oferta.")
+        return
+    previous = list_snapshots(cfg.paths.snapshots)
+    path = save_snapshot(cfg.paths.snapshots, cfg, offers, "manual")
+    st.session_state["last_consult"] = {"path": path, "older": previous[0].path if previous else None}
+
+
+def show_last_consult(cfg, prefix: str) -> None:
+    last = st.session_state.get("last_consult")
+    if last and os.path.exists(last["path"]):
+        st.success("Consulta salva.")
+        older = next((m for m in list_snapshots(cfg.paths.snapshots) if m.path == last["older"]), None)
+        show_result(load_snapshot(last["path"]), older, prefix, cfg)
+
+
 cfg = load_cfg()
 tab_trip, tab_now, tab_saved, tab_hist = st.tabs(["Minha viagem", "Consultar agora", "Consultas salvas", "Histórico"])
 
@@ -78,40 +127,44 @@ with tab_trip:
     def d_or(text: str, offset_days: int) -> date:
         return date.fromisoformat(text) if text else today + timedelta(days=offset_days)
 
-    with st.form("viagem"):
-        st.subheader("Ida")
-        c1, c2, c3 = st.columns(3)
-        origin = c1.text_input("Origem (3 letras, ex.: GRU)", d["origin"], key="f_origin")
-        dest = c2.text_input("Destino (ex.: LIS)", d["dest"], key="f_dest")
-        out_date = c3.date_input("Data da ida", d_or(d["out_date"], 60), key="f_out_date", format="DD/MM/YYYY")
-        st.subheader("Volta")
-        c1, c2, c3 = st.columns(3)
-        back_from = c1.text_input("Sai de (em branco = destino da ida)", d["back_from"], key="f_back_from")
-        back_to = c2.text_input("Chega em (em branco = origem da ida)", d["back_to"], key="f_back_to")
-        back_date = c3.date_input("Data da volta", d_or(d["back_date"], 74), key="f_back_date", format="DD/MM/YYYY")
-        st.subheader("Passageiros e bagagem")
-        c1, c2, c3, c4 = st.columns(4)
-        adults = c1.number_input("Passageiros adultos", 1, 9, int(d["adults"]), 1, key="f_adults")
-        cabin = c2.selectbox("Classe", CABINS, index=CABINS.index(d["cabin"]) if d["cabin"] in CABINS else 0, key="f_cabin")
-        carry_on = c3.number_input("Malas de mão (por pessoa)", 0, 5, int(d["carry_on"]), 1, key="f_carry_on")
-        checked = c4.number_input("Malas despachadas (por trecho)", 0, 5, int(d["checked"]), 1, key="f_checked")
-        fee = st.number_input("Preço estimado de UMA mala despachada, por trecho (R$)", 0.0, 100000.0,
-                              float(d["fee"]), 50.0, key="f_fee")
-        st.subheader("Regras e avisos")
-        c1, c2, c3, c4 = st.columns(4)
-        hours = c1.number_input("Escala mínima (horas)", 0.0, 48.0, float(d["hours"]), 0.5, key="f_hours",
-                                help="Use 4 se precisa passar pela imigração. 0 = sem mínimo.")
-        max_hours = c2.number_input("Escala máxima (horas)", 0.0, 96.0, float(d["max_hours"]), 0.5, key="f_max_hours",
-                                    help="Quanto tempo você aceita ficar parado numa conexão. 0 = sem limite.")
-        avoid = c3.text_input("Aeroportos onde NÃO aceita escala (opcional)", d["avoid"], key="f_avoid")
-        currency = c4.text_input("Moeda", d["currency"], key="f_currency")
-        c1, c2 = st.columns(2)
-        drop = c1.number_input("Avisar se o preço cair (%)", 0.1, 100.0, float(d["drop"]), 0.5, key="f_drop")
-        target = c2.number_input("Avisar se ficar abaixo de (0 = desligado)", 0.0, 10_000_000.0,
-                                 float(d["target"]), 100.0, key="f_target")
-        submitted = st.form_submit_button("Salvar viagem")
+    st.subheader("Ida")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        origin = place_field("Origem (cidade ou código)", "origin", d["origin"], "Ex.: Rio de Janeiro, São Paulo ou GRU")
+    with c2:
+        dest = place_field("Destino (cidade ou código)", "dest", d["dest"], "Ex.: Lisboa, Londres, Nova York ou LIS")
+    out_date = c3.date_input("Data da ida", d_or(d["out_date"], 60), key="f_out_date", format="DD/MM/YYYY")
+    st.subheader("Volta")
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        back_from = place_field("Sai de (em branco = destino da ida)", "back_from", d["back_from"])
+    with c2:
+        back_to = place_field("Chega em (em branco = origem da ida)", "back_to", d["back_to"])
+    back_date = c3.date_input("Data da volta", d_or(d["back_date"], 74), key="f_back_date", format="DD/MM/YYYY")
+    st.subheader("Passageiros e bagagem")
+    c1, c2, c3, c4 = st.columns(4)
+    adults = c1.number_input("Passageiros adultos", 1, 9, int(d["adults"]), 1, key="f_adults")
+    cabin = c2.selectbox("Classe", CABINS, index=CABINS.index(d["cabin"]) if d["cabin"] in CABINS else 0, key="f_cabin")
+    carry_on = c3.number_input("Malas de mão (por pessoa)", 0, 5, int(d["carry_on"]), 1, key="f_carry_on")
+    checked = c4.number_input("Malas despachadas (por trecho)", 0, 5, int(d["checked"]), 1, key="f_checked")
+    fee = st.number_input("Preço estimado de UMA mala despachada, por trecho (R$)", 0.0, 100000.0,
+                          float(d["fee"]), 50.0, key="f_fee")
+    st.subheader("Regras e avisos")
+    c1, c2, c3, c4 = st.columns(4)
+    hours = c1.number_input("Escala mínima (horas)", 0.0, 48.0, float(d["hours"]), 0.5, key="f_hours",
+                            help="Use 4 se precisa passar pela imigração. 0 = sem mínimo.")
+    max_hours = c2.number_input("Escala máxima (horas)", 0.0, 96.0, float(d["max_hours"]), 0.5, key="f_max_hours",
+                                help="Quanto tempo você aceita ficar parado numa conexão. 0 = sem limite.")
+    avoid = c3.text_input("Aeroportos onde NÃO aceita escala (opcional)", d["avoid"], key="f_avoid")
+    currency = c4.text_input("Moeda", d["currency"], key="f_currency")
+    c1, c2 = st.columns(2)
+    drop = c1.number_input("Avisar se o preço cair (%)", 0.1, 100.0, float(d["drop"]), 0.5, key="f_drop")
+    target = c2.number_input("Avisar se ficar abaixo de (0 = desligado)", 0.0, 10_000_000.0,
+                             float(d["target"]), 100.0, key="f_target")
+    save_clicked = st.button("Salvar viagem")
+    consult_clicked = st.button("Salvar e consultar agora", type="primary")
 
-    if submitted:
+    if save_clicked or consult_clicked:
         raw = {
             "origin": origin, "dest": dest, "out_date": out_date.isoformat(),
             "back_from": back_from, "back_to": back_to, "back_date": back_date.isoformat(),
@@ -124,11 +177,16 @@ with tab_trip:
             for key, message in errors.items():
                 st.error(f"**{LABELS.get(key, key)}:** {message}")
         else:
+            if cfg is not None:  # mantem feeds, limites de promocao, caminhos e envio da mala de mao ao salvar
+                values = merge_existing(values, cfg)
             os.makedirs(os.path.dirname(CONFIG_PATH) or ".", exist_ok=True)
             with open(CONFIG_PATH, "w", encoding="utf-8") as f:
                 f.write(build_config_toml(values))
             cfg = load_cfg()
-            st.success(f"Viagem salva em {CONFIG_PATH}. Já pode consultar na aba **Consultar agora**.")
+            st.success(f"Viagem salva em {CONFIG_PATH}.")
+            if consult_clicked:
+                run_consultation(cfg)
+                show_last_consult(cfg, "trip")
 
 # ------------------------------------------------------------ Consultar agora
 with tab_now:
@@ -141,30 +199,8 @@ with tab_now:
         st.caption("Cada consulta usa até 4 das 250 consultas gratuitas do mês na SerpApi e fica guardada em "
                    "**Consultas salvas**, para você rever depois.")
         if st.button("Consultar agora", type="primary"):
-            api_key = os.environ.get("SERPAPI_KEY")
-            if not api_key:
-                st.error("A variável de ambiente SERPAPI_KEY não está definida. Veja o aviso na aba Minha viagem.")
-            else:
-                try:
-                    with st.spinner("Consultando o Google Voos..."):
-                        offers = collector.fetch_offers(cfg, api_key)
-                except collector.CollectorError as exc:
-                    st.error(f"A consulta falhou: {exc}")
-                else:
-                    if not offers:
-                        st.warning("A busca não devolveu nenhuma oferta.")
-                    else:
-                        previous = list_snapshots(cfg.paths.snapshots)
-                        path = save_snapshot(cfg.paths.snapshots, cfg, offers, "manual")
-                        st.session_state["last_consult"] = {
-                            "path": path,
-                            "older": previous[0].path if previous else None,
-                        }
-        last = st.session_state.get("last_consult")
-        if last and os.path.exists(last["path"]):
-            st.success("Consulta salva.")
-            older = next((m for m in list_snapshots(cfg.paths.snapshots) if m.path == last["older"]), None)
-            show_result(load_snapshot(last["path"]), older, "now", cfg)
+            run_consultation(cfg)
+        show_last_consult(cfg, "now")
 
 # ------------------------------------------------------------ Consultas salvas
 with tab_saved:

@@ -25,14 +25,16 @@ The wizard (`scripts\setup.ps1`) asks, and everything is saved in `config.toml` 
 
 | Question | Key in `config.toml` |
 |---|---|
-| Origin, destination and outbound date | `[trip] outbound` |
-| Where the return leaves from, where it lands and its date | `[trip] inbound` (can be another city) |
+| Origin and destination (**you can type the city name**, e.g. Lisbon) and outbound date | `[trip] outbound` |
+| Where the return leaves from, where it lands and its date | `[trip] inbound` (can be another city; blank = the reversed leg) |
 | Adult passengers and cabin | `[trip] adults`, `cabin` |
 | Carry-on bags (per person) and checked bags per leg (and the price of one bag) | `[baggage] carry_on`, `checked`, `checked_bag_fee_brl` |
 | Minimum layover (hours) | `[rules] min_layover_minutes` |
 | Maximum layover you accept (hours; 0 = no limit) | `[rules] max_layover_minutes` |
 | Airports where you won't accept a layover (optional) | `[rules] avoid_airports` |
 | How much the price must drop, or a target price, to alert | `[alerts] drop_pct`, `target_brl` |
+
+**You don't need to know airport codes.** In the wizard and in the interface, type the name (Lisbon, London, New York, Rio de Janeiro...) and the program finds the code and shows the options, working offline. Cities with several airports are included with all of them (London = LHR, LGW, STN, LTN, LCY). Typing the code (GRU) or several separated by commas (`GIG,SDU`) also works.
 
 You can edit the file by hand at any time (UTF-8 with or without BOM is accepted, as Notepad saves it).
 
@@ -49,7 +51,7 @@ On Windows you can simply **double-click `Abrir Verificador.bat`** (you can pin 
 
 | Tab | What it does |
 |---|---|
-| **Minha viagem** (My trip) | A form with every field (destinations, dates, passengers, baggage, minimum and maximum layover, alerts), with validation. It opens pre-filled with your current configuration |
+| **Minha viagem** (My trip) | A form with every field (origin and destination by city name, with the options on screen; **Salvar viagem** and **Salvar e consultar agora** buttons) (destinations, dates, passengers, baggage, minimum and maximum layover, alerts), with validation. It opens pre-filled with your current configuration |
 | **Consultar agora** (Search now) | Runs the search right away, shows the best price, the difference from the previous consultation and every offer, and **saves the consultation** |
 | **Consultas salvas** (Saved consultations) | Reopens any earlier consultation (the daily one or manual ones) and compares it with the previous one |
 | **Histórico** (History) | Chart of the lowest price per day, the report (with the estimated bag cost) and the latest alerts |

@@ -25,14 +25,16 @@ O assistente (`scripts\setup.ps1`) pergunta, e tudo fica no `config.toml` (model
 
 | Pergunta | Chave no `config.toml` |
 |---|---|
-| Origem, destino e data da ida | `[trip] outbound` |
-| De onde a volta sai, onde chega e a data | `[trip] inbound` (pode ser outra cidade) |
+| Origem e destino (**pode digitar o nome da cidade**, ex.: Lisboa) e data da ida | `[trip] outbound` |
+| De onde a volta sai, onde chega e a data | `[trip] inbound` (pode ser outra cidade; em branco = o trecho invertido) |
 | Passageiros adultos e classe | `[trip] adults`, `cabin` |
 | Malas de mão (por pessoa) e despachadas por trecho (e o preço de uma mala) | `[baggage] carry_on`, `checked`, `checked_bag_fee_brl` |
 | Escala mínima (horas) | `[rules] min_layover_minutes` |
 | Escala máxima que aceita (horas; 0 = sem limite) | `[rules] max_layover_minutes` |
 | Aeroportos onde não aceita escala (opcional) | `[rules] avoid_airports` |
 | Quanto o preço precisa cair, ou valor-alvo, para avisar | `[alerts] drop_pct`, `target_brl` |
+
+**Você não precisa saber o código do aeroporto.** No assistente e na interface, digite o nome (Lisboa, Londres, Nova York, Rio de Janeiro...) e o programa acha o código e mostra as opções, funcionando sem internet. Cidades com mais de um aeroporto entram com todos (Londres = LHR, LGW, STN, LTN, LCY). Também vale digitar o código (GRU) ou vários separados por vírgula (`GIG,SDU`).
 
 Dá para editar o arquivo à mão a qualquer momento (o programa aceita UTF-8 com ou sem BOM, como o Bloco de Notas grava).
 
@@ -49,7 +51,7 @@ No Windows, basta dar **clique duplo em `Abrir Verificador.bat`** (pode criar um
 
 | Aba | O que faz |
 |---|---|
-| **Minha viagem** | Formulário com todos os campos (destinos, datas, passageiros, bagagem, escala mínima e máxima, avisos), com validação. Já abre preenchido com a sua configuração atual |
+| **Minha viagem** | Formulário com todos os campos (origem e destino por nome de cidade, com as opções na tela; botões **Salvar viagem** e **Salvar e consultar agora**) (destinos, datas, passageiros, bagagem, escala mínima e máxima, avisos), com validação. Já abre preenchido com a sua configuração atual |
 | **Consultar agora** | Faz a consulta na hora, mostra o melhor preço, a diferença para a consulta anterior e todas as ofertas, e **salva a consulta** |
 | **Consultas salvas** | Reabre qualquer consulta anterior (a da rotina diária ou as feitas à mão) e compara com a anterior |
 | **Histórico** | Gráfico do menor preço por dia, relatório (com a mala estimada) e os últimos avisos |

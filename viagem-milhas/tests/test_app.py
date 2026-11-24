@@ -129,3 +129,77 @@ def test_app_saves_the_maximum_layover_from_the_form(monkeypatch, tmp_path):
     assert not at.exception
     rules = load_config(str(path)).rules
     assert rules.min_layover_minutes == 240 and rules.max_layover_minutes == 480
+
+
+def test_typing_a_city_name_offers_the_matching_places(monkeypatch, tmp_path):
+    at = run_app(monkeypatch, tmp_path / "nova.toml")
+
+    at.text_input(key="f_dest").set_value("Lisboa")
+    at.run()
+
+    assert not at.exception
+    assert at.selectbox(key="f_dest_pick").value == "LIS"  # a primeira opcao e' Lisboa
+    assert any("Lisboa" in c.value for c in at.caption)
+
+
+def test_unknown_place_says_it_was_not_found(monkeypatch, tmp_path):
+    at = run_app(monkeypatch, tmp_path / "nova.toml")
+
+    at.text_input(key="f_dest").set_value("Atlantida")
+    at.run()
+
+    assert not at.exception
+    assert any("Não achei esse lugar" in c.value for c in at.caption)
+
+
+def test_app_saves_a_trip_typed_with_city_names(monkeypatch, tmp_path):
+    path = tmp_path / "nova.toml"
+    at = run_app(monkeypatch, path)
+    soon = date.today() + timedelta(days=60)
+    at.text_input(key="f_origin").set_value("Rio de Janeiro")
+    at.text_input(key="f_dest").set_value("Lisboa")
+    at.date_input(key="f_out_date").set_value(soon)
+    at.date_input(key="f_back_date").set_value(soon + timedelta(days=14))
+    at.run()  # recarrega para os seletores de lugar aparecerem
+
+    next(b for b in at.button if b.label == "Salvar viagem").click()
+    at.run()
+
+    assert not at.exception
+    trip = load_config(str(path)).trip
+    assert trip.outbound[:2] == ("GIG,SDU", "LIS")  # cidade com 2 aeroportos entra com os dois
+    assert trip.inbound[:2] == ("LIS", "GIG,SDU")
+
+
+def test_save_and_consult_saves_the_trip_and_runs_the_search(monkeypatch, tmp_path):
+    config = make_config(tmp_path)
+    offers = [
+        Offer(19152.0, Leg("GIG", "BUD", ("KLM",), (Layover("AMS", 420),)), Leg("BER", "GIG", ("KLM",), (Layover("AMS", 325),)), None),
+    ]
+    monkeypatch.setattr("verificador.collector.fetch_offers", lambda cfg, key: offers)
+    monkeypatch.setenv("SERPAPI_KEY", "chave-falsa")
+    at = run_app(monkeypatch, config)
+    at.number_input(key="f_adults").set_value(3)
+
+    next(b for b in at.button if b.label == "Salvar e consultar agora").click()
+    at.run()
+
+    assert not at.exception
+    assert load_config(str(config)).trip.adults == 3
+    metas = list_snapshots(str(tmp_path / "snaps"))
+    assert len(metas) == 1 and metas[0].source == "manual" and metas[0].best_total_brl == 19152.0
+
+
+def test_save_and_consult_without_api_key_saves_the_trip_but_explains(monkeypatch, tmp_path):
+    config = make_config(tmp_path)
+    monkeypatch.delenv("SERPAPI_KEY", raising=False)
+    at = run_app(monkeypatch, config)
+    at.number_input(key="f_adults").set_value(3)
+
+    next(b for b in at.button if b.label == "Salvar e consultar agora").click()
+    at.run()
+
+    assert not at.exception
+    assert load_config(str(config)).trip.adults == 3
+    assert any("SERPAPI_KEY" in e.value for e in at.error)
+    assert list_snapshots(str(tmp_path / "snaps")) == []

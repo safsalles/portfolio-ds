@@ -1,7 +1,7 @@
 from datetime import date
 
 from verificador.config import load_config
-from verificador.setup import build_config_toml, form_defaults, parse_form
+from verificador.setup import build_config_toml, form_defaults, merge_existing, parse_form
 
 TODAY = date(2026, 11, 23)
 CONFIG = "tests/fixtures/config_test.toml"
@@ -96,3 +96,52 @@ def test_build_config_toml_writes_the_maximum(tmp_path):
     path.write_text(build_config_toml(values), encoding="utf-8")
 
     assert load_config(str(path)).rules.max_layover_minutes == 480
+
+
+def test_parse_form_accepts_several_airports_of_the_same_city():
+    values, errors = parse_form(dict(VALID, origin="gig, sdu", dest="lhr,lgw"), TODAY)
+
+    assert errors == {}
+    assert values["outbound"][:2] == ["GIG,SDU", "LHR,LGW"]
+    assert values["inbound"][:2] == ["LHR,LGW", "GIG,SDU"]  # a volta inverte as listas inteiras
+
+
+def test_parse_form_unknown_place_explains_how_to_fix_it():
+    values, errors = parse_form(dict(VALID, origin="Atlantida"), TODAY)
+
+    assert values is None
+    assert "Não achei esse lugar" in errors["origin"] and "3 letras" in errors["origin"]
+
+
+def _custom_config(tmp_path):
+    text = open(CONFIG, encoding="utf-8").read()
+    text = text.replace('history = "data/history.csv"', 'history = "meu/hist.csv"\nsnapshots = "meu/consultas"')
+    text = text.replace('"smiles" = 12', '"smiles" = 9').replace("checked_bag_fee_brl = 600", "checked_bag_fee_brl = 600\nsend_to_api = true")
+    path = tmp_path / "personalizada.toml"
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def test_saving_keeps_paths_promos_and_send_to_api_from_the_existing_config(tmp_path):
+    existing = load_config(str(_custom_config(tmp_path)))
+    values, _ = parse_form(VALID, TODAY)
+
+    out = tmp_path / "salva.toml"
+    out.write_text(build_config_toml(merge_existing(values, existing)), encoding="utf-8")
+    saved = load_config(str(out))
+
+    assert saved.trip.outbound[0] == "GRU"  # o que veio do formulario vale
+    assert saved.paths.history == "meu/hist.csv" and saved.paths.snapshots == "meu/consultas"
+    assert saved.promos.max_milheiro["smiles"] == 9.0
+    assert saved.promos.feeds == ("https://exemplo.test/feed/",)
+    assert saved.baggage.send_to_api is True
+
+
+def test_without_an_existing_config_the_defaults_are_written(tmp_path):
+    values, _ = parse_form(VALID, TODAY)
+    out = tmp_path / "nova.toml"
+    out.write_text(build_config_toml(values), encoding="utf-8")
+    saved = load_config(str(out))
+
+    assert saved.paths.history == "data/history.csv" and saved.paths.snapshots == "data/snapshots"
+    assert saved.promos.max_milheiro["smiles"] == 12.0 and saved.baggage.send_to_api is False

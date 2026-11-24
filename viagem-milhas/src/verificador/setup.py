@@ -8,6 +8,9 @@ import re
 import sys
 from datetime import date
 
+from verificador.config import load_config
+from verificador.places import looks_like_codes, search_places
+
 CABINS = ("economy", "premium_economy", "business", "first")
 DEFAULT_FEEDS = ("https://passageirodeprimeira.com/feed/", "https://pontospravoar.com/feed/")
 DEFAULT_KEYWORDS = ("flying blue", "smiles", "livelo", "tap", "milheiro", "bônus")
@@ -23,15 +26,47 @@ def _loop(ask, out, prompt, parse):
             out(f"  -> {exc}")
 
 
+_NOT_FOUND = "Não achei esse lugar. Digite o nome de uma cidade (ex.: Lisboa) ou o código de 3 letras do aeroporto (ex.: LIS)."
+
+
+def _codes(raw: str) -> str:
+    return ",".join(c.strip().upper() for c in raw.split(","))
+
+
 def _iata(default=None):
+    """Um ou mais codigos de aeroporto (ex.: GRU ou LHR,LGW). Nomes de cidade sao resolvidos antes, em _ask_place."""
+
     def parse(raw):
         if raw == "" and default:
             return default
-        if not _IATA.match(raw):
-            raise ValueError("Use o código do aeroporto ou da cidade com 3 letras (ex.: GRU).")
-        return raw.upper()
+        if not looks_like_codes(raw):
+            raise ValueError(_NOT_FOUND)
+        return _codes(raw)
 
     return parse
+
+
+def _ask_place(ask, out, prompt, default=None):
+    """Pergunta um lugar: aceita o codigo (GRU) ou o nome (Lisboa) e mostra opcoes quando houver mais de uma."""
+    while True:
+        raw = ask(prompt).strip()
+        if raw == "" and default:
+            return default
+        if looks_like_codes(raw):
+            return _codes(raw)
+        results = search_places(raw)
+        if not results:
+            out("  -> " + _NOT_FOUND)
+            continue
+        if len(results) == 1:
+            out(f"  -> {results[0].label}")
+            return results[0].codes
+        out("  Encontrei:")
+        for i, place in enumerate(results, 1):
+            out(f"   {i}) {place.label}")
+        choice = ask("  Digite o número da opção (ou Enter para digitar de novo): ").strip()
+        if choice.isdigit() and 1 <= int(choice) <= len(results):
+            return results[int(choice) - 1].codes
 
 
 def _iso_date(today: date, not_before: date | None = None):
@@ -99,12 +134,39 @@ def _currency(raw):
     return raw.upper()
 
 
+DEFAULT_PATHS = {
+    "history": "data/history.csv",
+    "seen_promos": "data/seen_promos.json",
+    "alerts_log": "data/alerts.log",
+    "snapshots": "data/snapshots",
+}
+
+
+def merge_existing(values: dict, cfg) -> dict:
+    """Junta o que veio do formulario/assistente com o que ja existia e NAO e' perguntado
+    (feeds e limites de promocao, caminhos dos dados, envio da mala de mao a API), para nao perder nada ao salvar."""
+    return {
+        **values,
+        "feeds": list(cfg.promos.feeds),
+        "keywords": list(cfg.promos.keywords),
+        "max_milheiro": dict(cfg.promos.max_milheiro),
+        "paths": {
+            "history": cfg.paths.history,
+            "seen_promos": cfg.paths.seen_promos,
+            "alerts_log": cfg.paths.alerts_log,
+            "snapshots": cfg.paths.snapshots,
+        },
+        "send_to_api": cfg.baggage.send_to_api,
+    }
+
+
 def _toml_list(items) -> str:
     return "[" + ", ".join(json.dumps(i, ensure_ascii=False) for i in items) + "]"
 
 
 def build_config_toml(v: dict) -> str:
-    milheiro = "\n".join(f'"{k}" = {val}' for k, val in DEFAULT_MILHEIRO.items())
+    milheiro = "\n".join(f'"{k}" = {val:g}' for k, val in v.get("max_milheiro", DEFAULT_MILHEIRO).items())
+    paths = {**DEFAULT_PATHS, **v.get("paths", {})}
     return f"""# Gerado por: python -m verificador.setup  (pode editar a mao)
 [trip]
 outbound = {_toml_list(v["outbound"])}
@@ -126,16 +188,17 @@ target_brl = {v["target_brl"]:g}
 
 # Vigia de promocoes de milhas: avisa se o milheiro citado ficar abaixo do limite (R$).
 [promos]
-feeds = {_toml_list(DEFAULT_FEEDS)}
-keywords = {_toml_list(DEFAULT_KEYWORDS)}
+feeds = {_toml_list(v.get("feeds", DEFAULT_FEEDS))}
+keywords = {_toml_list(v.get("keywords", DEFAULT_KEYWORDS))}
 
 [promos.max_milheiro]
 {milheiro}
 
 [paths]
-history = "data/history.csv"
-seen_promos = "data/seen_promos.json"
-alerts_log = "data/alerts.log"
+history = {json.dumps(paths["history"])}
+seen_promos = {json.dumps(paths["seen_promos"])}
+alerts_log = {json.dumps(paths["alerts_log"])}
+snapshots = {json.dumps(paths["snapshots"])}
 
 # carry_on: malas de mao POR PESSOA; checked: malas despachadas por trecho; checked_bag_fee_brl: preco de UMA mala por trecho.
 # send_to_api: enviar a mala de mao ao Google Voos. ATENCAO: filtra a busca e pode esconder ofertas validas; deixe false.
@@ -143,7 +206,7 @@ alerts_log = "data/alerts.log"
 carry_on = {v["carry_on"]}
 checked = {v["checked"]}
 checked_bag_fee_brl = {v["checked_bag_fee_brl"]:g}
-send_to_api = false
+send_to_api = {"true" if v.get("send_to_api") else "false"}
 """
 
 
@@ -230,11 +293,11 @@ def run_wizard(ask=input, path: str = "config.toml", out=print, today: str | Non
             return 1
 
     out("Vamos configurar a sua viagem (Enter aceita o valor entre colchetes).")
-    origin = _loop(ask, out, "Ida: aeroporto/cidade de origem (ex.: GRU): ", _iata())
-    dest = _loop(ask, out, "Ida: destino (ex.: LIS): ", _iata())
+    origin = _ask_place(ask, out, "Ida: de onde você sai (cidade ou código, ex.: Rio de Janeiro ou GIG): ")
+    dest = _ask_place(ask, out, "Ida: para onde você vai (cidade ou código, ex.: Lisboa ou LIS): ")
     out_date = _loop(ask, out, "Data da ida (AAAA-MM-DD): ", _iso_date(today_date))
-    back_from = _loop(ask, out, f"Volta sai de [{dest}]: ", _iata(dest))
-    back_to = _loop(ask, out, f"Volta chega em [{origin}]: ", _iata(origin))
+    back_from = _ask_place(ask, out, f"Volta sai de [{dest}]: ", dest)
+    back_to = _ask_place(ask, out, f"Volta chega em [{origin}]: ", origin)
     back_date = _loop(ask, out, "Data da volta (AAAA-MM-DD): ", _iso_date(today_date, not_before=out_date))
     adults = _loop(ask, out, "Passageiros adultos [1]: ", _number(1, 9, 1))
     cabin = _loop(ask, out, "Classe (economy, premium_economy, business, first) [economy]: ", _cabin)
@@ -265,6 +328,11 @@ def run_wizard(ask=input, path: str = "config.toml", out=print, today: str | Non
         "checked": checked,
         "checked_bag_fee_brl": fee,
     }
+    if os.path.exists(path):  # sobrescrevendo: mantem o que o assistente nao pergunta
+        try:
+            values = merge_existing(values, load_config(path))
+        except Exception:
+            pass  # arquivo antigo ilegivel: grava so o novo
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         f.write(build_config_toml(values))
