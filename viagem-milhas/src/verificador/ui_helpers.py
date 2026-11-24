@@ -27,3 +27,10 @@ def delta_text(delta: tuple[float, float] | None) -> str:
     if value < 0:
         return f"{amount} mais barato (−{pct_text}%)"
     return f"{amount} mais caro (+{pct_text}%)"
+
+
+def promo_verdict(milheiro: float, limit: float, breakeven: float | None) -> str:
+    """Se o milheiro compensa: contra o equilibrio da viagem (quando as milhas sao conhecidas) ou contra o limite configurado."""
+    if breakeven is not None:
+        return "Compensa nesta viagem" if milheiro < breakeven else "Não compensa nesta viagem"
+    return "Abaixo do seu limite" if milheiro < limit else "Acima do seu limite"

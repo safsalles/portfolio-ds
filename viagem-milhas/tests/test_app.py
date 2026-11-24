@@ -203,3 +203,15 @@ def test_save_and_consult_without_api_key_saves_the_trip_but_explains(monkeypatc
     assert load_config(str(config)).trip.adults == 3
     assert any("SERPAPI_KEY" in e.value for e in at.error)
     assert list_snapshots(str(tmp_path / "snaps")) == []
+
+
+def test_miles_tab_shows_the_breakeven_and_verdict_for_a_manual_price(monkeypatch, tmp_path):
+    at = run_app(monkeypatch, make_config(tmp_path))
+    at.number_input(key="m_cash").set_value(20000.0)
+    at.number_input(key="m_miles").set_value(100000)
+    at.number_input(key="m_seen").set_value(15.0)
+    at.run()
+
+    assert not at.exception
+    assert any("200,00" in m.value or "200.00" in m.value for m in at.metric)  # 20000/100 = R$ 200 por milheiro
+    assert any("Compensa nesta viagem" in m.value for m in at.markdown)
