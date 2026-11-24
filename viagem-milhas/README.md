@@ -81,6 +81,10 @@ $env:PYTHONPATH="src"
 
 O relatório mostra o Google Voos (série automática), a leitura mais recente de cada fonte, o menor preço em dinheiro, o **total com a bagagem despachada estimada** e o **milheiro de equilíbrio** (preço abaixo do qual as milhas ganham do dinheiro).
 
+### Preço de compra das milhas (precisa de login)
+
+Smiles, Livelo, TAP e Flying Blue só mostram o preço do milheiro **depois do login**. Na aba **Milhas** da interface há o passo a passo: (1) abra cada site pelos botões e entre na sua conta no Chrome; (2) deixe as abas abertas; (3) peça a um assistente com acesso ao Chrome para ler o preço nas abas abertas e anotar no painel, ou digite você mesmo na tabela e clique em **Salvar saldos e preços**. O login é sempre seu: nem o programa nem o assistente digitam senhas, e nada é comprado.
+
 ## Comandos
 
 | O que | Comando |

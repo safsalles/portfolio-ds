@@ -81,6 +81,10 @@ $env:PYTHONPATH="src"
 
 The report shows Google Flights (the automatic series), the latest reading of each source, the lowest cash price, the **total with the estimated checked-bag cost** and the **break-even price per thousand miles** (the price below which miles beat cash).
 
+### Miles purchase price (login required)
+
+Smiles, Livelo, TAP and Flying Blue only show the price per thousand miles **after you log in**. The **Milhas** tab has the steps: (1) open each site from the buttons and sign in to your account in Chrome; (2) keep the tabs open; (3) ask an assistant with Chrome access to read the price from the open tabs and record it in the panel, or type it yourself in the table and click **Salvar saldos e preços**. The login is always yours: neither the program nor the assistant types passwords, and nothing is purchased.
+
 ## Commands
 
 | What | Command |
