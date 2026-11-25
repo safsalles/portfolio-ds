@@ -4,7 +4,7 @@
 
 **The question:** how many people are needed, hour by hour, to answer within a target waiting time, and what happens when you hire or lose someone?
 
-**What the project shows:** PySpark, time series forecasting, Erlang C, distribution fitting, queue simulation, a Streamlit app, alerts and automated tests.
+**What the project shows:** PySpark and Databricks, time series forecasting, Erlang C, distribution fitting, queue simulation, a Streamlit app, alerts and automated tests.
 
 > **Notice:** the team, handling time, shrinkage and service targets in this project are **fictional**. It is a teaching Workforce Management (WFM) scenario. NYC 311 only supplies call arrivals; no real staffing, cost or handling-time data was used.
 
@@ -218,12 +218,24 @@ The app opens with the default scenario already simulated: NYC 311 arrivals and 
 - **From the command line:** `python -m src.scenario config/cenario_exemplo.yaml` runs a scenario described in YAML.
 - **Sources and terms:** `data/exemplos/FONTES.md`. The Technion data is free to use, provided the source is cited and Professor Avi Mandelbaum is notified; the notice was sent on 25/11/2026 (no reply recorded so far).
 
+## Run on Databricks
+
+The pipeline was **run on Databricks Free Edition** (serverless compute) on 25/11/2026; **only the pipeline**: forecast, Erlang C, simulation and app remain local. The raw CSV was uploaded to a Volume, `src/databricks_entry.py` called the same `clean_and_aggregate` function used locally, wrote the table `workspace.default.wfm_hourly_calls`, and the totals were checked in SQL.
+
+| Check | Local | Databricks |
+|---|---:|---:|
+| Rows read | 2,037,631 | 2,037,631 |
+| Hours in the table | 17,544 | 17,544 |
+| Calls summed | 2,037,631 | 2,037,631 |
+
+![Databricks run](docs/databricks_execucao.png)
+
 ## Limits and honesty
 
 - The ticket opening time is treated as the contact arrival time. It is an approximation.
 - Erlang C assumes Poisson arrivals, exponential handling times and no abandonment.
 - Spark only writes the aggregated result; Parquet is written by pandas because Spark on Windows would need an external binary (`winutils.exe`).
-- **Databricks:** `src/databricks_entry.py` is **prepared, not executed**. It must only be cited as run on Databricks after someone runs it there.
+- **Databricks:** only the pipeline ran there (see above). There is no scheduled job, no persisted intermediate layer and no cluster tuning.
 - The simulator does not model queue abandonment. In the real bank part of the customers hang up, and the simulation does not reproduce the bank's real waiting time (see the validation above); breaks and after-call work are also left out, and the reason for the gap has not been established.
 - No Datadog or Salesforce integration.
 

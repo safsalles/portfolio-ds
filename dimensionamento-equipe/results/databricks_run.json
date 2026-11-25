@@ -1,0 +1,14 @@
+{
+  "origem": "Transcrito da tela da execução no Databricks (docs/databricks_execucao.png)",
+  "ambiente": "Databricks Free Edition, compute serverless",
+  "data": "2026-11-25",
+  "etapa": "somente o pipeline (limpeza e agregação por hora)",
+  "rows_in": 2037631,
+  "null_ts": 0,
+  "duplicates": 0,
+  "other_channel": 0,
+  "horas": 17544,
+  "chamadas": 2037631,
+  "inicio_utc": "2024-01-01T05:00:00+00:00",
+  "fim_utc": "2026-01-01T04:00:00+00:00"
+}

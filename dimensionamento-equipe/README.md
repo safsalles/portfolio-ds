@@ -4,7 +4,7 @@
 
 **A pergunta:** quantas pessoas são necessárias, hora a hora, para atender dentro de um tempo de espera alvo, e o que acontece quando se contrata ou se perde alguém?
 
-**O que o projeto demonstra:** PySpark, previsão de séries temporais, Erlang C, ajuste de distribuições, simulação de filas, app em Streamlit, alertas e testes automatizados.
+**O que o projeto demonstra:** PySpark e Databricks, previsão de séries temporais, Erlang C, ajuste de distribuições, simulação de filas, app em Streamlit, alertas e testes automatizados.
 
 > **Aviso:** a equipe, o tempo de atendimento, a folga e as metas de serviço deste projeto são **fictícios**. É um cenário didático de Workforce Management (WFM). O NYC 311 fornece só as chegadas de chamadas; nenhum dado real de pessoal, custo ou tempo de atendimento foi usado.
 
@@ -218,12 +218,24 @@ O app abre com o cenário padrão já simulado: chegadas do NYC 311 e atendiment
 - **Por linha de comando:** `python -m src.scenario config/cenario_exemplo.yaml` roda um cenário descrito em YAML.
 - **Fontes e termos:** `data/exemplos/FONTES.md`. A base do Technion é de uso livre, mediante citar a fonte e avisar o professor Avi Mandelbaum; o aviso foi enviado em 25/11/2026 (sem resposta registrada até aqui).
 
+## Execução no Databricks
+
+O pipeline foi **executado no Databricks Free Edition** (compute serverless) em 25/11/2026; **só o pipeline**: previsão, Erlang C, simulação e app continuam locais. O CSV bruto foi enviado a um Volume, `src/databricks_entry.py` chamou a mesma função `clean_and_aggregate` da execução local, gravou a tabela `workspace.default.wfm_hourly_calls` e os totais foram conferidos em SQL.
+
+| Conferência | Local | Databricks |
+|---|---:|---:|
+| Linhas lidas | 2.037.631 | 2.037.631 |
+| Horas na tabela | 17.544 | 17.544 |
+| Chamadas somadas | 2.037.631 | 2.037.631 |
+
+![execução no Databricks](docs/databricks_execucao.png)
+
 ## Limites e honestidade
 
 - A hora de abertura do chamado é tratada como a hora de chegada do contato. É uma aproximação.
 - O Erlang C assume chegadas de Poisson, atendimento exponencial e ninguém desistindo da fila.
 - O Spark grava só o resultado agregado; a gravação do Parquet é feita pelo pandas porque o Spark no Windows exigiria um binário externo (`winutils.exe`).
-- **Databricks:** `src/databricks_entry.py` está **preparado, não executado**. Só deve ser citado como rodado no Databricks depois de alguém executá-lo lá.
+- **Databricks:** só o pipeline rodou lá (ver acima). Não há job agendado, camada intermediária gravada nem ajuste de cluster.
 - O simulador não modela abandono de fila. No banco real parte dos clientes desiste, e a simulação não reproduz a espera real do banco (ver a validação acima); pausas e pós-atendimento também ficam de fora, e o motivo da diferença não está demonstrado.
 - Nenhuma integração com Datadog ou Salesforce.
 

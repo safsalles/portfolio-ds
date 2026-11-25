@@ -1,4 +1,4 @@
-﻿import json
+import json
 import sys
 from pathlib import Path
 
@@ -25,10 +25,25 @@ def test_readme_declares_fictional_team():
     assert "fictional" in FILES["en"].read_text(encoding="utf-8").lower()
 
 
-def test_readme_databricks_not_executed():
-    assert "preparado, não executado" in FILES["pt"].read_text(encoding="utf-8")
-    assert "prepared, not executed" in FILES["en"].read_text(encoding="utf-8")
+def test_readme_documents_databricks_execution_and_its_limit():
+    pt = FILES["pt"].read_text(encoding="utf-8")
+    en = FILES["en"].read_text(encoding="utf-8")
+    assert "executado no Databricks Free Edition" in pt and "só o pipeline" in pt
+    assert "run on Databricks Free Edition" in en and "only the pipeline" in en
+    assert "preparado, não executado" not in pt and "prepared, not executed" not in en
+    for text in (pt, en):
+        assert "docs/databricks_execucao.png" in text
+    assert (ROOT / "docs" / "databricks_execucao.png").stat().st_size > 10_000
 
+
+def test_databricks_numbers_match_local_run():
+    db = json.loads((ROOT / "results" / "databricks_run.json").read_text(encoding="utf-8"))
+    local = RESULTS["data"]
+    assert db["rows_in"] == local["rows_in"]
+    assert db["chamadas"] == local["total_calls"]
+    assert db["horas"] == local["n_hours"]
+    pt = FILES["pt"].read_text(encoding="utf-8")
+    assert f"{db['chamadas']:,}".replace(",", ".") in pt and f"{db['horas']:,}".replace(",", ".") in pt
 
 def test_render_reports_model_not_beating_baseline_honestly():
     f = RESULTS["forecast"]["reajuste_mensal"]
