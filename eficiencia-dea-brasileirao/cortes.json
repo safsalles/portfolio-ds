@@ -1,0 +1,65 @@
+{
+ "Atacante": [],
+ "Ponta": [
+  [
+   "chances_created",
+   "accurate_crosses",
+   0.62
+  ]
+ ],
+ "Meia atacante": [
+  [
+   "chances_created",
+   "big_chance_created_team_title",
+   0.66
+  ],
+  [
+   "big_chance_missed_title",
+   "goals",
+   0.61
+  ]
+ ],
+ "Volante": [
+  [
+   "duel_won",
+   "aerials_won",
+   0.69
+  ],
+  [
+   "clearances",
+   "aerials_won",
+   0.6
+  ]
+ ],
+ "Lateral": [
+  [
+   "chances_created",
+   "accurate_crosses",
+   0.84
+  ],
+  [
+   "duel_won",
+   "matchstats.headers.tackles",
+   0.68
+  ]
+ ],
+ "Zagueiro": [
+  [
+   "duel_won",
+   "matchstats.headers.tackles",
+   0.67
+  ],
+  [
+   "line_breaking_passes",
+   "accurate_passes",
+   0.63
+  ]
+ ],
+ "Goleiro": [
+  [
+   "line_breaking_passes",
+   "long_balls_accurate",
+   0.9
+  ]
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "descricao": "AHP com comparações incompletas (Harker, 1987): quantas vezes a referência pesa mais que cada outra categoria. Respondente: Sérgio.",
+ "Atacante": {
+  "referencia": "Gols",
+  "razoes": {
+   "Assistências": 5,
+   "Criação": 7,
+   "Defesa": 9,
+   "Erros": 9
+  }
+ },
+ "Ponta": {
+  "referencia": "Gols",
+  "razoes": {
+   "Assistências": 5,
+   "Criação": 5,
+   "Defesa": 7,
+   "Erros": 9
+  }
+ },
+ "Meia atacante": {
+  "referencia": "Gols",
+  "razoes": {
+   "Assistências": 1,
+   "Criação": 2,
+   "Defesa": 5,
+   "Erros": 9
+  }
+ },
+ "Volante": {
+  "referencia": "Defesa",
+  "razoes": {
+   "Passe": 2,
+   "Assistências": 3,
+   "Erros": 1
+  },
+  "nota": "Jogo aéreo incorporado à Defesa (decisão posterior): sozinho pesava 26% e um jogador atípico dominava o grupo."
+ },
+ "Lateral": {
+  "referencia": "Defesa",
+  "razoes": {
+   "Apoio": 1,
+   "Assistências": 3,
+   "Erros": 1
+  }
+ },
+ "Zagueiro": {
+  "referencia": "Defesa no chão",
+  "razoes": {
+   "Área": 1,
+   "Jogo aéreo": 1,
+   "Saída de bola": 4,
+   "Erros": 1
+  }
+ },
+ "Goleiro": {
+  "referencia": "Defesas",
+  "razoes": {
+   "Domínio da área": 9,
+   "Passe": 9
+  }
+ }
+}
