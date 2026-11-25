@@ -1,0 +1,11 @@
+﻿# Cenário de exemplo (premissas FICTÍCIAS). Edite à vontade e rode:
+#   python -m src.scenario config/cenario_exemplo.yaml
+name: "Exemplo: atendimento lognormal"
+calls_per_hour: 100        # taxa de chegada (usada quando 'arrival' é null: chegadas de Poisson)
+agents: 10                 # pessoas atendendo ao mesmo tempo
+wait_seconds: 20           # meta: atender em até X segundos
+sl_target: 0.80            # ... em pelo menos esta fração das chamadas
+service:                   # distribuição do tempo de atendimento (segundos)
+  dist: lognormal          # expon | lognormal | gamma | weibull | erlang | normal | triangular | uniform | beta
+  params: {mean: 360, cv: 1.0}
+arrival: null              # ou, por exemplo: {dist: gamma, params: {mean: 36, cv: 0.5}} (intervalo entre chegadas, s)

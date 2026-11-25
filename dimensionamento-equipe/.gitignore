@@ -1,0 +1,8 @@
+﻿data/*
+!data/exemplos/
+.venv/
+__pycache__/
+.pytest_cache/
+results/*.parquet
+.pytest_tmp/
+
