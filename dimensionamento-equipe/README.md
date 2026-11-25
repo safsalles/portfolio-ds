@@ -1,6 +1,10 @@
-﻿# Dimensionamento de equipe a partir da previsão de demanda por hora
+# Dimensionamento de equipe a partir da previsão de demanda por hora
 
 [English version](README.en.md)
+
+**A pergunta:** quantas pessoas são necessárias, hora a hora, para atender dentro de um tempo de espera alvo, e o que acontece quando se contrata ou se perde alguém?
+
+**O que o projeto demonstra:** PySpark, previsão de séries temporais, Erlang C, ajuste de distribuições, simulação de filas, app em Streamlit, alertas e testes automatizados.
 
 > **Aviso:** a equipe, o tempo de atendimento, a folga e as metas de serviço deste projeto são **fictícios**. É um cenário didático de Workforce Management (WFM). O NYC 311 fornece só as chegadas de chamadas; nenhum dado real de pessoal, custo ou tempo de atendimento foi usado.
 

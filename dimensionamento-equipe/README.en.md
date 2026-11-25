@@ -1,6 +1,10 @@
-﻿# Staffing from hourly demand forecasts
+# Staffing from hourly demand forecasts
 
 [Versão em português](README.md)
+
+**The question:** how many people are needed, hour by hour, to answer within a target waiting time, and what happens when you hire or lose someone?
+
+**What the project shows:** PySpark, time series forecasting, Erlang C, distribution fitting, queue simulation, a Streamlit app, alerts and automated tests.
 
 > **Notice:** the team, handling time, shrinkage and service targets in this project are **fictional**. It is a teaching Workforce Management (WFM) scenario. NYC 311 only supplies call arrivals; no real staffing, cost or handling-time data was used.
 
