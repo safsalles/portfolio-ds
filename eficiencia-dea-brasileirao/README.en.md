@@ -17,7 +17,182 @@ Data collected on 22 November 2026, with the season still in progress.
 - **Market value says little about efficiency** (r = 0.08), as in 2018.
 - **Neither does age** (r = 0.06), as in 2018.
 
+## Who is efficient, by position
+
+A DEA score stops at 1. To show how far each efficient player goes beyond the others, the frontier is recalculated without that player: 1.60 means reaching 60% further than the frontier formed by the rest of the group. Each line also shows the deciding category, explained in the next section. Click a position to open its chart.
+
+<details>
+<summary><b>Striker</b>: 4 efficient, led by Martin Braithwaite (Grêmio), 1.60</summary>
+
+![Striker](figuras/fronteira_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Winger</b>: 11 efficient, led by Adson (Vasco da Gama), 1.44</summary>
+
+![Winger](figuras/fronteira_ponta.png)
+
+</details>
+
+<details>
+<summary><b>Attacking midfielder</b>: 12 efficient, led by Juninho (Novorizontino), 1.57</summary>
+
+![Attacking midfielder](figuras/fronteira_meia_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Defensive/central midfielder</b>: 12 efficient, led by Zé Vitor (Vitória), 1.45</summary>
+
+![Defensive/central midfielder](figuras/fronteira_volante.png)
+
+</details>
+
+<details>
+<summary><b>Full-back</b>: 27 efficient, led by José Rodríguez (Vasco da Gama), 1.41</summary>
+
+![Full-back](figuras/fronteira_lateral.png)
+
+</details>
+
+<details>
+<summary><b>Centre-back</b>: 24 efficient, led by João Victor (Mirassol), 1.24</summary>
+
+![Centre-back](figuras/fronteira_zagueiro.png)
+
+</details>
+
+<details>
+<summary><b>Goalkeeper</b>: 12 efficient, led by Pedro Morisco (Coritiba), 1.20</summary>
+
+![Goalkeeper](figuras/fronteira_goleiro.png)
+
+</details>
+
+## What makes each one efficient
+
+### Deciding category
+
+The model is run again without one category at a time; the one whose removal lowers a player's score the most is the deciding one. 22 of the 102 efficient players stay efficient without any single category.
+
+| Position | Efficient | Most frequent deciding category | Lose efficiency without it |
+| --- | --- | --- | --- |
+| Striker | 4 | goals (2) | 1 |
+| Winger | 11 | goals (5) | 4 |
+| Attacking midfielder | 12 | creation (5) | 5 |
+| Defensive/central midfielder | 12 | defence (6) | 7 |
+| Full-back | 27 | defence (14) | 16 |
+| Centre-back | 24 | ground defending (11) | 16 |
+| Goalkeeper | 12 | saves (8) | 6 |
+
+### Decision trees
+
+The trees are **not** the model. They summarise which statistics separate efficient players from the rest. “Describes” is the share of players the tree shown classifies correctly; “unseen” is measured leaving one player out at a time. Because efficient players are rare, answering “nobody is efficient” would already score high (last column), and on unseen players no tree beats that. Read them as a description of this sample, not as a prediction rule. The charts are in Portuguese.
+
+| Position | Describes | Efficient captured | Unseen: accuracy | Unseen: efficient found | “Nobody” |
+| --- | --- | --- | --- | --- | --- |
+| Striker | 89% | 4 of 4 | 82% | 2 of 4 | 94% |
+| Winger | 87% | 11 of 11 | 80% | 5 of 11 | 91% |
+| Attacking midfielder | 85% | 12 of 12 | 69% | 9 of 12 | 81% |
+| Defensive/central midfielder | 86% | 12 of 12 | 74% | 4 of 12 | 92% |
+| Full-back | 90% | 24 of 27 | 69% | 10 of 27 | 80% |
+| Centre-back | 83% | 24 of 24 | 74% | 16 of 24 | 84% |
+| Goalkeeper | 85% | 12 of 12 | 78% | 8 of 12 | 78% |
+
+<details>
+<summary><b>Striker</b>: describes 89% of cases</summary>
+
+![Striker](figuras/arvore_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Winger</b>: describes 87% of cases</summary>
+
+![Winger](figuras/arvore_ponta.png)
+
+</details>
+
+<details>
+<summary><b>Attacking midfielder</b>: describes 85% of cases</summary>
+
+![Attacking midfielder](figuras/arvore_meia_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Defensive/central midfielder</b>: describes 86% of cases</summary>
+
+![Defensive/central midfielder](figuras/arvore_volante.png)
+
+</details>
+
+<details>
+<summary><b>Full-back</b>: describes 90% of cases</summary>
+
+![Full-back](figuras/arvore_lateral.png)
+
+</details>
+
+<details>
+<summary><b>Centre-back</b>: describes 83% of cases</summary>
+
+![Centre-back](figuras/arvore_zagueiro.png)
+
+</details>
+
+<details>
+<summary><b>Goalkeeper</b>: describes 85% of cases</summary>
+
+![Goalkeeper](figuras/arvore_goleiro.png)
+
+</details>
+
+## Clubs
+
 ![Clubs](figuras/clubes_nota_pontos.png)
+
+## Efficient and low-priced
+
+Efficient players with a market value **below the median of their own group**, up to three per group, ordered by cross-efficiency. “Low-priced” is therefore relative: the same value can be cheap in one group and not in another, and some are far below the median while others are close to it. Market values are estimates published by the source.
+
+| Position | Player (club) | Age | Market value (€ million) | Group median | % of median |
+| --- | --- | --- | --- | --- | --- |
+| Goalkeeper | Jandrei (Juventude) | 33 | 0.33 | 0.57 | 58% |
+| Goalkeeper | Alex Alves (São Bernardo) | 40 | 0.15 | 0.57 | 26% |
+| Goalkeeper | Paulo Vítor (Atlético-GO) | 37 | 0.27 | 0.57 | 48% |
+| Right-back | Tinga (Coritiba) | 33 | 0.29 | 0.76 | 38% |
+| Right-back | Warley (Atlético-GO) | 27 | 0.35 | 0.76 | 46% |
+| Right-back | Fágner (Cruzeiro) | 37 | 0.37 | 0.76 | 48% |
+| Left-back | Gabriel Feliciano (Operário-PR) | 25 | 0.52 | 0.80 | 65% |
+| Left-back | Jamerson (Vitória) | 28 | 0.43 | 0.80 | 54% |
+| Left-back | Reinaldo (Mirassol) | 37 | 0.56 | 0.80 | 71% |
+| Right centre-back | César (Criciúma) | 33 | 0.19 | 0.58 | 34% |
+| Right centre-back | Junior Barreto (Atlético-GO) | 28 | 0.35 | 0.58 | 60% |
+| Right centre-back | Rodrigo (Criciúma) | 39 | 0.27 | 0.58 | 48% |
+| Left centre-back | Lyncon (CRB) | 21 | 0.55 | 0.65 | 84% |
+| Left centre-back | Luizão (Ceará) | 34 | 0.30 | 0.65 | 46% |
+| Left centre-back | Wallace (Botafogo SP) | 32 | 0.21 | 0.65 | 32% |
+| Defensive/central midfielder | Gabriel Pires (Juventude) | 33 | 0.21 | 0.90 | 24% |
+| Defensive/central midfielder | Éverton Ribeiro (Bahia) | 37 | 0.67 | 0.90 | 75% |
+| Defensive/central midfielder | Biel (Sport Recife) | 24 | 0.54 | 0.90 | 60% |
+| Attacking midfielder | Crystopher (CRB) | 28 | 0.27 | 0.94 | 29% |
+| Attacking midfielder | Marrony (Atlético-GO) | 27 | 0.33 | 0.94 | 35% |
+| Attacking midfielder | Everton Morelli (Botafogo SP) | 29 | 0.91 | 0.94 | 96% |
+| Right winger | Vinícius (Náutico) | 33 | 0.20 | 1.74 | 12% |
+| Left winger | Bernard (Atlético-MG) | 34 | 0.66 | 0.77 | 86% |
+| Striker | Martin Braithwaite (Grêmio) | 35 | 0.78 | 1.01 | 77% |
+
+![Value and efficiency](figuras/valor_vs_eficiencia.png)
+
+72 of the 739 players have no market value at the source and are left out of this chart and the list.
+
+## DEA against a single measure
+
+![DEA and xG](figuras/dea_vs_xg.png)
+
+For strikers and wingers the score closely follows goals minus xG (Spearman from 0.76 to 0.86). This is largely a consequence of the design: goals weigh more than 60% and xG is an input. For attacking midfielders, where assists weigh as much as goals, the correlation drops to 0.37.
 
 ## Data
 
@@ -89,33 +264,6 @@ The paper keeps the half with the most minutes. Running the main model again wit
 
 The conclusions hold. The share of efficient players rises with higher cut-offs because the groups get smaller (the smallest goes from 55 to 31 players at 1,500 minutes). In the shortlist below, only Jandrei and Wallace stop being efficient, from 1,200 minutes on. At these higher cut-offs the winger groups fall below the usual minimum size for DEA (three players per variable): the left side at 1,200 minutes and both sides at 1,500.
 
-## DEA against a single measure
-
-![DEA and xG](figuras/dea_vs_xg.png)
-
-For strikers and wingers the score closely follows goals minus xG (Spearman from 0.76 to 0.86). This is largely a consequence of the design: goals weigh more than 60% and xG is an input. For attacking midfielders, where assists weigh as much as goals, the correlation drops to 0.37.
-
-## Efficient and low-priced
-
-Efficient players with a market value below their group's median, up to three per position, ordered by cross-efficiency:
-
-| Position | Players (club) |
-| --- | --- |
-| Goalkeeper | Jandrei (Juventude), Alex Alves (São Bernardo), Paulo Vítor (Atlético-GO) |
-| Right-back | Tinga (Coritiba), Warley (Atlético-GO), Fágner (Cruzeiro) |
-| Left-back | Gabriel Feliciano (Operário-PR), Jamerson (Vitória), Reinaldo (Mirassol) |
-| Right centre-back | César (Criciúma), Junior Barreto (Atlético-GO), Rodrigo (Criciúma) |
-| Left centre-back | Lyncon (CRB), Luizão (Ceará), Wallace (Botafogo-SP) |
-| Defensive/central midfielder | Gabriel Pires (Juventude), Éverton Ribeiro (Bahia), Biel (Sport) |
-| Attacking midfielder | Crystopher (CRB), Marrony (Atlético-GO), Everton Morelli (Botafogo-SP) |
-| Right winger | Vinícius (Náutico) |
-| Left winger | Bernard (Atlético-MG) |
-| Striker | Martin Braithwaite (Grêmio) |
-
-![Value and efficiency](figuras/valor_vs_eficiencia.png)
-
-72 of the 739 players have no market value at the source and are left out of this chart and the list.
-
 ## Limitations
 
 - **Efficient does not mean best.** The score compares output with minutes, club and, in attack, chance quality, only among players in the same group.
@@ -139,5 +287,6 @@ The scripts run from this folder and expect a dataset in `../../dados-fotmob`, w
 | `04_analises.py` | Methods, xG, hypotheses, clubs and shortlist |
 | `05_graficos.py` | Charts in this README |
 | `06_sensibilidade_minutos.py` | Runs the model again with other minute cut-offs |
+| `07_explicacao.py` | Distance beyond the frontier, deciding category and decision trees |
 
 The models are in [dea.py](dea.py) and the weights in [ahp.py](ahp.py) and [ahp_respostas.json](ahp_respostas.json).

@@ -17,7 +17,182 @@ Dados coletados em 22/11/2026, com a temporada ainda em andamento.
 - **Valor de mercado quase não indica eficiência** (r = 0,08), como em 2018.
 - **Idade também não** (r = 0,06), como em 2018.
 
+## Quem é eficiente, por posição
+
+A nota do DEA para em 1. Para mostrar quanto cada eficiente vai além dos demais, a fronteira é recalculada sem ele: 1,60 quer dizer alcançar 60% além da fronteira formada pelo resto do grupo. Cada linha mostra também o critério decisivo, explicado na seção seguinte. Clique na posição para abrir o gráfico.
+
+<details>
+<summary><b>Atacante</b>: 4 eficientes, à frente Martin Braithwaite (Grêmio), 1,60</summary>
+
+![Atacante](figuras/fronteira_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Ponta</b>: 11 eficientes, à frente Adson (Vasco da Gama), 1,44</summary>
+
+![Ponta](figuras/fronteira_ponta.png)
+
+</details>
+
+<details>
+<summary><b>Meia atacante</b>: 12 eficientes, à frente Juninho (Novorizontino), 1,57</summary>
+
+![Meia atacante](figuras/fronteira_meia_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Volante</b>: 12 eficientes, à frente Zé Vitor (Vitória), 1,45</summary>
+
+![Volante](figuras/fronteira_volante.png)
+
+</details>
+
+<details>
+<summary><b>Lateral</b>: 27 eficientes, à frente José Rodríguez (Vasco da Gama), 1,41</summary>
+
+![Lateral](figuras/fronteira_lateral.png)
+
+</details>
+
+<details>
+<summary><b>Zagueiro</b>: 24 eficientes, à frente João Victor (Mirassol), 1,24</summary>
+
+![Zagueiro](figuras/fronteira_zagueiro.png)
+
+</details>
+
+<details>
+<summary><b>Goleiro</b>: 12 eficientes, à frente Pedro Morisco (Coritiba), 1,20</summary>
+
+![Goleiro](figuras/fronteira_goleiro.png)
+
+</details>
+
+## O que torna cada um eficiente
+
+### Critério decisivo
+
+O modelo é refeito sem uma categoria por vez; a que mais derruba a nota do jogador é a decisiva. 22 dos 102 eficientes continuam eficientes sem qualquer uma das categorias.
+
+| Posição | Eficientes | Critério decisivo mais frequente | Deixam de ser eficientes sem ele |
+| --- | --- | --- | --- |
+| Atacante | 4 | gols (2) | 1 |
+| Ponta | 11 | gols (5) | 4 |
+| Meia atacante | 12 | criação (5) | 5 |
+| Volante | 12 | defesa (6) | 7 |
+| Lateral | 27 | defesa (14) | 16 |
+| Zagueiro | 24 | defesa no chão (11) | 16 |
+| Goleiro | 12 | defesas (8) | 6 |
+
+### Árvores de decisão
+
+As árvores **não** são o modelo. Elas resumem quais estatísticas separam os eficientes dos demais. “Descreve” é a parcela dos jogadores que a árvore mostrada classifica corretamente; “não vistos” é medido deixando um jogador de fora por vez. Como eficientes são raros, responder “ninguém é eficiente” já acertaria muito (última coluna), e em jogadores não vistos nenhuma árvore passa disso. Leia como descrição desta amostra, não como regra de previsão.
+
+| Posição | Descreve | Eficientes incluídos | Não vistos: acerto | Não vistos: eficientes achados | “Ninguém” |
+| --- | --- | --- | --- | --- | --- |
+| Atacante | 89% | 4 de 4 | 82% | 2 de 4 | 94% |
+| Ponta | 87% | 11 de 11 | 80% | 5 de 11 | 91% |
+| Meia atacante | 85% | 12 de 12 | 69% | 9 de 12 | 81% |
+| Volante | 86% | 12 de 12 | 74% | 4 de 12 | 92% |
+| Lateral | 90% | 24 de 27 | 69% | 10 de 27 | 80% |
+| Zagueiro | 83% | 24 de 24 | 74% | 16 de 24 | 84% |
+| Goleiro | 85% | 12 de 12 | 78% | 8 de 12 | 78% |
+
+<details>
+<summary><b>Atacante</b>: descreve 89% dos casos</summary>
+
+![Atacante](figuras/arvore_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Ponta</b>: descreve 87% dos casos</summary>
+
+![Ponta](figuras/arvore_ponta.png)
+
+</details>
+
+<details>
+<summary><b>Meia atacante</b>: descreve 85% dos casos</summary>
+
+![Meia atacante](figuras/arvore_meia_atacante.png)
+
+</details>
+
+<details>
+<summary><b>Volante</b>: descreve 86% dos casos</summary>
+
+![Volante](figuras/arvore_volante.png)
+
+</details>
+
+<details>
+<summary><b>Lateral</b>: descreve 90% dos casos</summary>
+
+![Lateral](figuras/arvore_lateral.png)
+
+</details>
+
+<details>
+<summary><b>Zagueiro</b>: descreve 83% dos casos</summary>
+
+![Zagueiro](figuras/arvore_zagueiro.png)
+
+</details>
+
+<details>
+<summary><b>Goleiro</b>: descreve 85% dos casos</summary>
+
+![Goleiro](figuras/arvore_goleiro.png)
+
+</details>
+
+## Clubes
+
 ![Clubes](figuras/clubes_nota_pontos.png)
+
+## Eficientes e baratos
+
+Eficientes com valor de mercado **abaixo da mediana do próprio grupo**, até três por grupo, em ordem de eficiência cruzada. “Barato”, portanto, é relativo: o mesmo valor pode ser barato num grupo e não em outro, e uns estão muito abaixo da mediana enquanto outros ficam perto dela. Os valores de mercado são estimativas publicadas pela fonte.
+
+| Posição | Jogador (clube) | Idade | Valor de mercado (€ milhões) | Mediana do grupo | % da mediana |
+| --- | --- | --- | --- | --- | --- |
+| Goleiro | Jandrei (Juventude) | 33 | 0,33 | 0,57 | 58% |
+| Goleiro | Alex Alves (São Bernardo) | 40 | 0,15 | 0,57 | 26% |
+| Goleiro | Paulo Vítor (Atlético-GO) | 37 | 0,27 | 0,57 | 48% |
+| Lateral D | Tinga (Coritiba) | 33 | 0,29 | 0,76 | 38% |
+| Lateral D | Warley (Atlético-GO) | 27 | 0,35 | 0,76 | 46% |
+| Lateral D | Fágner (Cruzeiro) | 37 | 0,37 | 0,76 | 48% |
+| Lateral E | Gabriel Feliciano (Operário-PR) | 25 | 0,52 | 0,80 | 65% |
+| Lateral E | Jamerson (Vitória) | 28 | 0,43 | 0,80 | 54% |
+| Lateral E | Reinaldo (Mirassol) | 37 | 0,56 | 0,80 | 71% |
+| Zagueiro D | César (Criciúma) | 33 | 0,19 | 0,58 | 34% |
+| Zagueiro D | Junior Barreto (Atlético-GO) | 28 | 0,35 | 0,58 | 60% |
+| Zagueiro D | Rodrigo (Criciúma) | 39 | 0,27 | 0,58 | 48% |
+| Zagueiro E | Lyncon (CRB) | 21 | 0,55 | 0,65 | 84% |
+| Zagueiro E | Luizão (Ceará) | 34 | 0,30 | 0,65 | 46% |
+| Zagueiro E | Wallace (Botafogo SP) | 32 | 0,21 | 0,65 | 32% |
+| Volante | Gabriel Pires (Juventude) | 33 | 0,21 | 0,90 | 24% |
+| Volante | Éverton Ribeiro (Bahia) | 37 | 0,67 | 0,90 | 75% |
+| Volante | Biel (Sport Recife) | 24 | 0,54 | 0,90 | 60% |
+| Meia atacante | Crystopher (CRB) | 28 | 0,27 | 0,94 | 29% |
+| Meia atacante | Marrony (Atlético-GO) | 27 | 0,33 | 0,94 | 35% |
+| Meia atacante | Everton Morelli (Botafogo SP) | 29 | 0,91 | 0,94 | 96% |
+| Ponta D | Vinícius (Náutico) | 33 | 0,20 | 1,74 | 12% |
+| Ponta E | Bernard (Atlético-MG) | 34 | 0,66 | 0,77 | 86% |
+| Atacante | Martin Braithwaite (Grêmio) | 35 | 0,78 | 1,01 | 77% |
+
+![Valor e eficiência](figuras/valor_vs_eficiencia.png)
+
+72 dos 739 jogadores não têm valor de mercado na fonte e ficam fora desse gráfico e da lista.
+
+## DEA contra uma medida só
+
+![DEA e xG](figuras/dea_vs_xg.png)
+
+Em atacantes e pontas, a nota acompanha de perto o saldo de gols menos xG (Spearman de 0,76 a 0,86). Isso é, em boa parte, consequência do desenho: gols pesam mais de 60% e o xG é uma entrada. No meia atacante, em que assistências pesam tanto quanto gols, a relação cai para 0,37.
 
 ## Dados
 
@@ -89,33 +264,6 @@ O artigo usa a metade com mais minutos. Repetindo o modelo principal com outros 
 
 As conclusões se mantêm. O percentual de eficientes sobe com cortes mais altos porque os grupos ficam menores (o menor passa de 55 para 31 jogadores em 1.500 minutos). Da lista de oportunidades, só Jandrei e Wallace deixam de ser eficientes, a partir de 1.200 minutos. Com esses cortes mais altos, os pontas ficam abaixo do tamanho mínimo usual para o DEA (três jogadores por variável): a ponta esquerda em 1.200 minutos e as duas em 1.500.
 
-## DEA contra uma medida só
-
-![DEA e xG](figuras/dea_vs_xg.png)
-
-Em atacantes e pontas, a nota acompanha de perto o saldo de gols menos xG (Spearman de 0,76 a 0,86). Isso é, em boa parte, consequência do desenho: gols pesam mais de 60% e o xG é uma entrada. No meia atacante, em que assistências pesam tanto quanto gols, a relação cai para 0,37.
-
-## Eficientes e baratos
-
-Jogadores eficientes com valor de mercado abaixo da mediana do grupo, até três por posição, em ordem de eficiência cruzada:
-
-| Posição | Jogadores (clube) |
-| --- | --- |
-| Goleiro | Jandrei (Juventude), Alex Alves (São Bernardo), Paulo Vítor (Atlético-GO) |
-| Lateral direito | Tinga (Coritiba), Warley (Atlético-GO), Fágner (Cruzeiro) |
-| Lateral esquerdo | Gabriel Feliciano (Operário-PR), Jamerson (Vitória), Reinaldo (Mirassol) |
-| Zagueiro direito | César (Criciúma), Junior Barreto (Atlético-GO), Rodrigo (Criciúma) |
-| Zagueiro esquerdo | Lyncon (CRB), Luizão (Ceará), Wallace (Botafogo-SP) |
-| Volante | Gabriel Pires (Juventude), Éverton Ribeiro (Bahia), Biel (Sport) |
-| Meia atacante | Crystopher (CRB), Marrony (Atlético-GO), Everton Morelli (Botafogo-SP) |
-| Ponta direita | Vinícius (Náutico) |
-| Ponta esquerda | Bernard (Atlético-MG) |
-| Atacante | Martin Braithwaite (Grêmio) |
-
-![Valor e eficiência](figuras/valor_vs_eficiencia.png)
-
-72 dos 739 jogadores não têm valor de mercado na fonte e ficam fora desse gráfico e da lista.
-
 ## Limitações
 
 - **Eficiente não é o mesmo que melhor.** A nota compara a produção com minutos, clube e, no ataque, qualidade das chances, só entre jogadores do mesmo grupo.
@@ -139,5 +287,6 @@ Os scripts rodam nesta pasta e esperam uma base em `../../dados-fotmob`, que nã
 | `04_analises.py` | Métodos, xG, hipóteses, clubes e oportunidades |
 | `05_graficos.py` | Gráficos deste README |
 | `06_sensibilidade_minutos.py` | Repete o modelo com outros cortes de minutos |
+| `07_explicacao.py` | Quanto cada um passa da fronteira, critério decisivo e árvores de decisão |
 
 Os modelos estão em [dea.py](dea.py) e os pesos em [ahp.py](ahp.py) e [ahp_respostas.json](ahp_respostas.json).

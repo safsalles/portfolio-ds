@@ -97,6 +97,30 @@ def ccr_restrito(X, Y, grupos, fracao=1.0):
     return np.minimum(ef, 1.0), lam
 
 
+def supereficiencia_restrita(X, Y, grupos, quais, fracao=1.0):
+    """Nota do ccr_restrito com a própria DMU fora da fronteira, só para os índices em "quais".
+
+    Acima de 1 = a DMU alcança mais do que a fronteira das demais. inf quando não há limite.
+    """
+    X, Y = _escala(X), _escala(Y)
+    n, m = X.shape
+    s = Y.shape[1]
+    media = Y.mean(axis=0)
+    R = np.zeros((len(grupos), s + m))
+    for i, (idx, w) in enumerate(grupos):
+        R[i, :s] = fracao * w * media
+        R[i, idx] -= media[idx]
+    A = np.hstack([Y, -X])
+    out = np.zeros(len(quais))
+    for p, k in enumerate(quais):
+        Ak = np.vstack([np.delete(A, k, axis=0), R])
+        r = linprog(np.concatenate([-Y[k], np.zeros(m)]), A_ub=Ak, b_ub=np.zeros(len(Ak)),
+                    A_eq=np.concatenate([np.zeros(s), X[k]])[None, :], b_eq=[1.0],
+                    bounds=[(0, None)] * (s + m), method="highs")
+        out[p] = -r.fun if r.status == 0 else np.inf
+    return out
+
+
 def supereficiencia(X, Y):
     X, Y = _escala(X), _escala(Y)
     n, m = X.shape
