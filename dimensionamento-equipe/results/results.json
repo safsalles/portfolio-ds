@@ -1,0 +1,768 @@
+{
+  "data": {
+    "fonte": "NYC 311 Service Requests (NYC Open Data), canal PHONE",
+    "treino": 2024,
+    "teste": 2025,
+    "rows_in": 2037631,
+    "null_ts": 0,
+    "duplicates": 0,
+    "other_channel": 0,
+    "n_hours": 17544,
+    "total_calls": 2037631,
+    "horas_na_serie": 17544,
+    "chamadas_na_serie": 2037631
+  },
+  "forecast": {
+    "ajuste_unico": {
+      "wape_model": 0.25710891441194594,
+      "wape_baseline": 0.20018761706727398,
+      "mape_model": 0.3724473548784318,
+      "mape_baseline": 0.2707706102134509,
+      "mape_ignored_hours": 2,
+      "n_hours": 8760,
+      "gain_wape_rel": -0.28433975177167575
+    },
+    "reajuste_mensal": {
+      "wape_model": 0.19807883090752518,
+      "wape_baseline": 0.20018761706727398,
+      "mape_model": 0.28327691644931435,
+      "mape_baseline": 0.2707706102134509,
+      "mape_ignored_hours": 2,
+      "n_hours": 8760,
+      "gain_wape_rel": 0.010534048961880252,
+      "refits": 12
+    }
+  },
+  "staffing": [
+    {
+      "scenario": "80/20",
+      "agent_hours_present": 135685,
+      "agent_hours_scheduled": 197442,
+      "peak_present": 35,
+      "peak_scheduled": 50
+    },
+    {
+      "scenario": "90/30",
+      "agent_hours_present": 144638,
+      "agent_hours_scheduled": 210309,
+      "peak_present": 36,
+      "peak_scheduled": 52
+    }
+  ],
+  "simulation": {
+    "tolerancia": 0.02,
+    "cv_lognormal": 1.5,
+    "casos": [
+      {
+        "hora": "pico",
+        "instante_utc": "2025-01-27 15:00:00+00:00",
+        "chamadas_hora_prevista": 290.3,
+        "cenario": "80/20",
+        "agentes_presentes": 35,
+        "erlang": 0.8509458106957949,
+        "sim_exp": 0.8507222222222224,
+        "sim_exp_ic": [
+          0.8415111279806023,
+          0.8599333164638424
+        ],
+        "diff_exp": 0.00022358847357251133,
+        "sim_lognormal": 0.8435138888888887,
+        "diff_lognormal": 0.0074319218069062165
+      },
+      {
+        "hora": "pico",
+        "instante_utc": "2025-01-27 15:00:00+00:00",
+        "chamadas_hora_prevista": 290.3,
+        "cenario": "90/30",
+        "agentes_presentes": 36,
+        "erlang": 0.9153793602278196,
+        "sim_exp": 0.9162361111111113,
+        "sim_exp_ic": [
+          0.9097501159543031,
+          0.9227221062679194
+        ],
+        "diff_exp": 0.0008567508832916237,
+        "sim_lognormal": 0.9069527777777777,
+        "diff_lognormal": 0.008426582450041908
+      },
+      {
+        "hora": "mediana",
+        "instante_utc": "2025-07-21 04:00:00+00:00",
+        "chamadas_hora_prevista": 99.0,
+        "cenario": "80/20",
+        "agentes_presentes": 14,
+        "erlang": 0.869803395531351,
+        "sim_exp": 0.8702055555555555,
+        "sim_exp_ic": [
+          0.8655881550956487,
+          0.8748229560154622
+        ],
+        "diff_exp": 0.0004021600242044565,
+        "sim_lognormal": 0.8659250000000001,
+        "diff_lognormal": 0.003878395531350942
+      },
+      {
+        "hora": "mediana",
+        "instante_utc": "2025-07-21 04:00:00+00:00",
+        "chamadas_hora_prevista": 99.0,
+        "cenario": "90/30",
+        "agentes_presentes": 15,
+        "erlang": 0.9378375039290113,
+        "sim_exp": 0.9384750000000001,
+        "sim_exp_ic": [
+          0.9352873012083802,
+          0.9416626987916199
+        ],
+        "diff_exp": 0.0006374960709887301,
+        "sim_lognormal": 0.935125,
+        "diff_lognormal": 0.002712503929011345
+      },
+      {
+        "hora": "vale",
+        "instante_utc": "2025-08-21 06:00:00+00:00",
+        "chamadas_hora_prevista": 38.1,
+        "cenario": "80/20",
+        "agentes_presentes": 7,
+        "erlang": 0.9075259187583699,
+        "sim_exp": 0.9076416666666667,
+        "sim_exp_ic": [
+          0.9048664390209806,
+          0.9104168943123527
+        ],
+        "diff_exp": 0.00011574790829682602,
+        "sim_lognormal": 0.906125,
+        "diff_lognormal": 0.0014009187583698957
+      },
+      {
+        "hora": "vale",
+        "instante_utc": "2025-08-21 06:00:00+00:00",
+        "chamadas_hora_prevista": 38.1,
+        "cenario": "90/30",
+        "agentes_presentes": 7,
+        "erlang": 0.9153623624857776,
+        "sim_exp": 0.9152361111111113,
+        "sim_exp_ic": [
+          0.9125468366093769,
+          0.9179253856128456
+        ],
+        "diff_exp": 0.00012625137466637515,
+        "sim_lognormal": 0.9141444444444445,
+        "diff_lognormal": 0.0012179180413330881
+      }
+    ]
+  },
+  "monitor": {
+    "limite_desvio": 0.3,
+    "horas_comparadas": 8760,
+    "horas_em_alerta": 2051,
+    "dia_com_mais_alertas": "2025-11-11",
+    "replay_dia": {
+      "alerts": 22,
+      "sent": 0
+    },
+    "webhook_configurado": false
+  },
+  "premissas_ficticias": {
+    "aht_seconds": 360,
+    "shrinkage": 0.3,
+    "cenarios": [
+      [
+        "80/20",
+        0.8,
+        20
+      ],
+      [
+        "90/30",
+        0.9,
+        30
+      ]
+    ]
+  },
+  "analisador": {
+    "atendimento_technion": {
+      "n_total": 351893,
+      "n_usado": 100000,
+      "ranking": [
+        {
+          "name": "weibull",
+          "rank": 1,
+          "aic": 1251181.1245860432,
+          "bic": 1251200.1504369732,
+          "ks_stat": 0.06811157820235114,
+          "sq_error": 8.198712184527484e-05,
+          "params": {
+            "shape": 0.9374335116363259,
+            "scale": 186.14441129307096
+          }
+        },
+        {
+          "name": "gamma",
+          "rank": 2,
+          "aic": 1251957.0816640952,
+          "bic": 1251976.1075150252,
+          "ks_stat": 0.06613885688670396,
+          "sq_error": 0.00010004108132563183,
+          "params": {
+            "mean": 192.49278,
+            "cv": 1.0150885875379398
+          }
+        },
+        {
+          "name": "expon",
+          "rank": 3,
+          "aic": 1252013.7293061893,
+          "bic": 1252023.2422316542,
+          "ks_stat": 0.06852119185580119,
+          "sq_error": 0.00010168966890916521,
+          "params": {
+            "mean": 192.49278
+          }
+        },
+        {
+          "name": "erlang",
+          "rank": 4,
+          "aic": 1252015.7293061893,
+          "bic": 1252034.7551571194,
+          "ks_stat": 0.06852119185580108,
+          "sq_error": 0.00010168966890916521,
+          "params": {
+            "k": 1.0,
+            "mean": 192.49278
+          }
+        },
+        {
+          "name": "beta",
+          "rank": 5,
+          "aic": 1253909.7470637413,
+          "bic": 1253947.7987656011,
+          "ks_stat": 0.07029106694758214,
+          "sq_error": 0.0001156243783132618,
+          "params": {
+            "low": 0.0,
+            "high": 15731.75,
+            "a": 0.9468631731771991,
+            "b": 75.65405451726868
+          }
+        },
+        {
+          "name": "lognormal",
+          "rank": 6,
+          "aic": 1255886.2176336746,
+          "bic": 1255905.2434846046,
+          "ks_stat": 0.0766333230192574,
+          "sq_error": 1.0518167480925116e-05,
+          "params": {
+            "mean": 222.53036894584992,
+            "cv": 1.8464869351471782
+          }
+        },
+        {
+          "name": "normal",
+          "rank": 7,
+          "aic": 1403460.5030790155,
+          "bic": 1403479.5289299455,
+          "ks_stat": 0.2390729412892525,
+          "sq_error": 0.0035450620839553586,
+          "params": {
+            "mean": 192.49278,
+            "sd": 269.97894708267825
+          }
+        },
+        {
+          "name": "triangular",
+          "rank": 8,
+          "aic": 1796555.1137213095,
+          "bic": 1796583.6524977044,
+          "ks_stat": 0.8748334935731179,
+          "sq_error": 0.010101294999376537,
+          "params": {
+            "low": 0.0,
+            "mode": 0.9999945632973665,
+            "high": 15731.75
+          }
+        },
+        {
+          "name": "uniform",
+          "rank": 9,
+          "aic": 1932691.2484496427,
+          "bic": 1932710.2743005727,
+          "ks_stat": 0.921435573124414,
+          "sq_error": 0.010541537966619555,
+          "params": {
+            "low": 0.0,
+            "high": 15731.75
+          }
+        }
+      ],
+      "melhor": "weibull",
+      "proposta": {
+        "dist": "weibull",
+        "params": {
+          "shape": 0.9374335116363259,
+          "scale": 186.14441129307096
+        }
+      },
+      "limpeza": {
+        "kept": 351893,
+        "dropped_empty": 0,
+        "dropped_non_numeric": 0,
+        "dropped_nonpositive": 1250
+      }
+    },
+    "chegadas_nyc": [
+      {
+        "faixa": "0-6h",
+        "n_total": 148438,
+        "n_usado": 100000,
+        "melhor": "gamma",
+        "ranking": [
+          {
+            "name": "gamma",
+            "rank": 1,
+            "aic": 1032456.0764168022,
+            "bic": 1032475.1022677321,
+            "ks_stat": 0.04077403913092886,
+            "sq_error": 1.4939248236890792e-05,
+            "params": {
+              "mean": 75.63252777433873,
+              "cv": 1.3599989536018084
+            }
+          },
+          {
+            "name": "beta",
+            "rank": 2,
+            "aic": 1032581.4629951385,
+            "bic": 1032619.5146969984,
+            "ks_stat": 0.03946647353929,
+            "sq_error": 1.2138325069889612e-05,
+            "params": {
+              "low": 0.0,
+              "high": 3846.8859351468086,
+              "a": 0.5326519680805766,
+              "b": 26.518046256189923
+            }
+          },
+          {
+            "name": "weibull",
+            "rank": 3,
+            "aic": 1036825.6088956663,
+            "bic": 1036844.6347465962,
+            "ks_stat": 0.051848673992680325,
+            "sq_error": 3.899571608094816e-05,
+            "params": {
+              "shape": 0.6746252723331483,
+              "scale": 59.86878951042587
+            }
+          }
+        ]
+      },
+      {
+        "faixa": "9-17h",
+        "n_total": 912893,
+        "n_usado": 100000,
+        "melhor": "beta",
+        "ranking": [
+          {
+            "name": "beta",
+            "rank": 1,
+            "aic": 676159.4902206932,
+            "bic": 676197.5419225531,
+            "ks_stat": 0.08279164339229828,
+            "sq_error": 1.4584097925659689e-05,
+            "params": {
+              "low": 0.0,
+              "high": 625.043149857521,
+              "a": 0.39609536189187505,
+              "b": 14.713295390580077
+            }
+          },
+          {
+            "name": "gamma",
+            "rank": 2,
+            "aic": 676420.5838586005,
+            "bic": 676439.6097095304,
+            "ks_stat": 0.08356239366979734,
+            "sq_error": 2.043255901311169e-05,
+            "params": {
+              "mean": 16.41807396483898,
+              "cv": 1.575899028171358
+            }
+          },
+          {
+            "name": "weibull",
+            "rank": 3,
+            "aic": 680308.8255158488,
+            "bic": 680327.8513667787,
+            "ks_stat": 0.08926818396666678,
+            "sq_error": 0.0001004330560727077,
+            "params": {
+              "shape": 0.5308688878640204,
+              "scale": 9.98010232258524
+            }
+          }
+        ]
+      },
+      {
+        "faixa": "18-24h",
+        "n_total": 310014,
+        "n_usado": 100000,
+        "melhor": "beta",
+        "ranking": [
+          {
+            "name": "beta",
+            "rank": 1,
+            "aic": 869978.3663149348,
+            "bic": 870016.4180167947,
+            "ks_stat": 0.051995319067846574,
+            "sq_error": 1.8327707917819203e-05,
+            "params": {
+              "low": 0.0,
+              "high": 2277.1200219249727,
+              "a": 0.4772850255908716,
+              "b": 29.416126061746592
+            }
+          },
+          {
+            "name": "gamma",
+            "rank": 2,
+            "aic": 870030.8405375076,
+            "bic": 870049.8663884375,
+            "ks_stat": 0.05289957125138599,
+            "sq_error": 2.1962614606122944e-05,
+            "params": {
+              "mean": 36.36623880074263,
+              "cv": 1.4397141797352695
+            }
+          },
+          {
+            "name": "weibull",
+            "rank": 3,
+            "aic": 875937.5332460708,
+            "bic": 875956.5590970007,
+            "ks_stat": 0.07064621535032957,
+            "sq_error": 5.983752741809184e-05,
+            "params": {
+              "shape": 0.616792236770423,
+              "scale": 26.731259962090835
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "validacao_banco": {
+    "n_calls": 27624,
+    "n_days": 251,
+    "real_mean_wait_s": 89.1873370981755,
+    "sim_mean_wait_s": 41.148404810872165,
+    "real_service_level": 0.3737691862148856,
+    "sim_service_level": 0.7309585867361714,
+    "abandoned_share": 0.22807801933717095,
+    "agentes": 8,
+    "meta_espera_s": 20,
+    "hora": 10,
+    "dias": "dias úteis do banco (domingo a quinta)",
+    "ressalva": "O banco real tem abandono de fila e o simulador não; só ligações atendidas entram como chegadas.",
+    "varredura": [
+      {
+        "agentes": 4,
+        "sim_mean_wait_s": 947.627844117175,
+        "sim_service_level": 0.10780480741384303
+      },
+      {
+        "agentes": 5,
+        "sim_mean_wait_s": 479.70473697792795,
+        "sim_service_level": 0.2077903272516652
+      },
+      {
+        "agentes": 6,
+        "sim_mean_wait_s": 228.0588132866851,
+        "sim_service_level": 0.37735302635389517
+      },
+      {
+        "agentes": 7,
+        "sim_mean_wait_s": 101.12714954186747,
+        "sim_service_level": 0.5661019403417318
+      },
+      {
+        "agentes": 8,
+        "sim_mean_wait_s": 41.148404810872165,
+        "sim_service_level": 0.7309585867361714
+      },
+      {
+        "agentes": 9,
+        "sim_mean_wait_s": 15.669631891368235,
+        "sim_service_level": 0.8519403417318274
+      },
+      {
+        "agentes": 10,
+        "sim_mean_wait_s": 5.975442409482315,
+        "sim_service_level": 0.9258615696495801
+      },
+      {
+        "agentes": 11,
+        "sim_mean_wait_s": 2.323843544835755,
+        "sim_service_level": 0.9661164205039097
+      },
+      {
+        "agentes": 12,
+        "sim_mean_wait_s": 0.8992137182400238,
+        "sim_service_level": 0.9857370402548509
+      }
+    ],
+    "agentes_mais_proximo_espera": 7
+  },
+  "investigacao": {
+    "hora": 10,
+    "meta_espera_s": 20,
+    "ligacoes_janela": 27624,
+    "cenarios": [
+      {
+        "chave": "real",
+        "rotulo_pt": "Real",
+        "rotulo_en": "Real",
+        "janela": {
+          "espera_media_s": 89.1873370981755,
+          "nivel_servico": 0.3737691862148856,
+          "mediana_s": 46.0
+        },
+        "dia": {
+          "espera_media_s": 60.7571126053018,
+          "nivel_servico": 0.531849447407064,
+          "mediana_s": 15.0
+        }
+      },
+      {
+        "chave": "fixo8",
+        "rotulo_pt": "8 fixos",
+        "rotulo_en": "8 fixed",
+        "janela": {
+          "espera_media_s": 55.52049081569432,
+          "nivel_servico": 0.6751737619461338,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 29.86759502970763,
+          "nivel_servico": 0.8388159826879975,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "presenca",
+        "rotulo_pt": "Atendentes medidos (presença na hora)",
+        "rotulo_en": "Measured agents (present in the hour)",
+        "janela": {
+          "espera_media_s": 13.931742685852347,
+          "nivel_servico": 0.908593976252534,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 30.25160443261975,
+          "nivel_servico": 0.9166025195146457,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "turno",
+        "rotulo_pt": "Atendentes medidos (turno)",
+        "rotulo_en": "Measured agents (shift)",
+        "janela": {
+          "espera_media_s": 5.5796248199722465,
+          "nivel_servico": 0.953627280625543,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 24.99774037944869,
+          "nivel_servico": 0.9392936084705155,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "fixo8_A",
+        "rotulo_pt": "8 fixos + intervalo A",
+        "rotulo_en": "8 fixed + gap A",
+        "janela": {
+          "espera_media_s": 85.28557107576631,
+          "nivel_servico": 0.6037141615986099,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 44.97916614108929,
+          "nivel_servico": 0.7972857253265322,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "fixo8_B",
+        "rotulo_pt": "8 fixos + intervalo B",
+        "rotulo_en": "8 fixed + gap B",
+        "janela": {
+          "espera_media_s": 184.16302623397698,
+          "nivel_servico": 0.4673110338835795,
+          "mediana_s": 35.576789417402324
+        },
+        "dia": {
+          "espera_media_s": 107.59231939138672,
+          "nivel_servico": 0.7077332096761728,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "presenca_A",
+        "rotulo_pt": "Medidos + intervalo A",
+        "rotulo_en": "Measured + gap A",
+        "janela": {
+          "espera_media_s": 20.065170843370804,
+          "nivel_servico": 0.8765204170286707,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 37.30530356264387,
+          "nivel_servico": 0.8956302650900378,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "presenca_B",
+        "rotulo_pt": "Medidos + intervalo B",
+        "rotulo_en": "Measured + gap B",
+        "janela": {
+          "espera_media_s": 41.91885162054592,
+          "nivel_servico": 0.7976759339704604,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 58.39118370142839,
+          "nivel_servico": 0.8483035783290827,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "pausas2",
+        "rotulo_pt": "Medidos com pausas de 2 min ou mais",
+        "rotulo_en": "Measured with breaks of 2 min or more",
+        "janela": {
+          "espera_media_s": 133.07221554270205,
+          "nivel_servico": 0.5781204749493194,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 145.1953031913993,
+          "nivel_servico": 0.6281845583120798,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "pausas2_A",
+        "rotulo_pt": "Medidos com pausas de 2 min ou mais + intervalo A",
+        "rotulo_en": "Measured with breaks of 2 min or more + gap A",
+        "janela": {
+          "espera_media_s": 184.2115031614053,
+          "nivel_servico": 0.4938097306689835,
+          "mediana_s": 22.375144822406583
+        },
+        "dia": {
+          "espera_media_s": 198.10416303839762,
+          "nivel_servico": 0.562924491846356,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "pausas5",
+        "rotulo_pt": "Medidos com pausas de 5 min ou mais",
+        "rotulo_en": "Measured with breaks of 5 min or more",
+        "janela": {
+          "espera_media_s": 107.03018354558039,
+          "nivel_servico": 0.6406023747465972,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 114.15306161568849,
+          "nivel_servico": 0.6841641548805936,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "pausas5_A",
+        "rotulo_pt": "Medidos com pausas de 5 min ou mais + intervalo A",
+        "rotulo_en": "Measured with breaks of 5 min or more + gap A",
+        "janela": {
+          "espera_media_s": 144.71659574342956,
+          "nivel_servico": 0.5567984361424848,
+          "mediana_s": 1.9610139427277318
+        },
+        "dia": {
+          "espera_media_s": 152.4749798485583,
+          "nivel_servico": 0.6246541463791637,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "pausas10",
+        "rotulo_pt": "Medidos com pausas de 10 min ou mais",
+        "rotulo_en": "Measured with breaks of 10 min or more",
+        "janela": {
+          "espera_media_s": 73.70668232959348,
+          "nivel_servico": 0.7228496959165943,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 79.4871219547384,
+          "nivel_servico": 0.7591282170183167,
+          "mediana_s": 0.0
+        }
+      },
+      {
+        "chave": "pausas10_A",
+        "rotulo_pt": "Medidos com pausas de 10 min ou mais + intervalo A",
+        "rotulo_en": "Measured with breaks of 10 min or more + gap A",
+        "janela": {
+          "espera_media_s": 96.66390507734178,
+          "nivel_servico": 0.6509556907037359,
+          "mediana_s": 0.0
+        },
+        "dia": {
+          "espera_media_s": 104.45491409477674,
+          "nivel_servico": 0.7097951928278847,
+          "mediana_s": 0.0
+        }
+      }
+    ],
+    "intervalos": {
+      "A": {
+        "n": 142812,
+        "media_s": 10.441867630171133,
+        "mediana_s": 5.0
+      },
+      "B": {
+        "n": 167619,
+        "media_s": 29.00866250246094,
+        "mediana_s": 5.0
+      }
+    },
+    "disponiveis_na_janela": {
+      "0": 9.418604651162791,
+      "2": 7.114644702842377,
+      "5": 7.388305340223945,
+      "10": 7.825789190353143
+    },
+    "livre": {
+      "janela": {
+        "ligacoes": 2622,
+        "fracao_do_total": 0.09491059147180192,
+        "fracao_na_fila": 0.22540045766590389,
+        "mediana_s": 0.0,
+        "media_s": 11.171243325705568
+      },
+      "dia": {
+        "ligacoes": 88205,
+        "fracao_do_total": 0.2726727525094054,
+        "fracao_na_fila": 0.21245961113315573,
+        "mediana_s": 0.0,
+        "media_s": 11.144844396576158
+      },
+      "criterio_mediana_s": 10,
+      "relevante": false
+    }
+  }
+}

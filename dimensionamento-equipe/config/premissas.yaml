@@ -1,0 +1,10 @@
+﻿# Premissas FICTÍCIAS do cenário didático (não são dados do NYC 311).
+aht_seconds: 360        # tempo médio de atendimento
+shrinkage: 0.30         # folga para ausências e pausas
+alert_threshold: 0.30   # desvio relativo que dispara alerta
+train_year: 2024        # 2 anos completos mais recentes com canal PHONE (conferido na API)
+test_year: 2025
+scenarios:
+  - {name: "80/20", sl_target: 0.80, wait_seconds: 20}
+  - {name: "90/30", sl_target: 0.90, wait_seconds: 30}
+

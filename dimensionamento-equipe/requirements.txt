@@ -1,0 +1,13 @@
+﻿pyspark
+pandas
+numpy
+statsmodels
+pyyaml
+requests
+matplotlib
+jupyter
+nbformat
+nbconvert
+ipykernel
+pytest
+pyarrow

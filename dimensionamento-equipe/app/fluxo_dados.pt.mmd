@@ -1,0 +1,24 @@
+flowchart LR
+    classDef fonte fill:#1f3a5f,stroke:#7aa2d6,color:#ffffff
+    classDef etapa fill:#2f2f2f,stroke:#9a9a9a,color:#ffffff
+    classDef extra fill:#3d3d3d,stroke:#9a9a9a,stroke-dasharray:4 3,color:#e6e6e6
+
+    NYC["NYC 311 (2024-2025, telefone)<br/>Dá: chegadas reais, hora a hora<br/>Não tem: tempo de atendimento"]:::fonte
+    TECH["Technion, banco em Israel (1999)<br/>Dá: tempo real de atendimento<br/>Por isso entra: poucas bases públicas têm"]:::fonte
+    USER["Seu arquivo de tempos<br/>(opcional)"]:::extra
+
+    PIPE["Pipeline PySpark<br/>limpa e agrega por hora"]:::etapa
+    PREV["Previsão por hora<br/>Poisson x regra simples"]:::etapa
+    ERL["Erlang C<br/>pessoas por hora e por meta"]:::etapa
+    ANA["Analisador de entrada<br/>ajusta e ranqueia distribuições"]:::etapa
+    SIM["Simulador de filas<br/>distribuições à sua escolha"]:::etapa
+    VAL["Validação<br/>espera simulada x espera real"]:::etapa
+
+    NYC --> PIPE --> PREV --> ERL
+    PREV --> SIM
+    TECH --> ANA
+    USER -.-> ANA
+    ANA --> SIM
+    ERL -. "confere" .-> SIM
+    TECH --> VAL
+    SIM --> VAL
