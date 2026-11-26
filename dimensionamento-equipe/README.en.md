@@ -8,6 +8,8 @@
 
 **See the story in interactive charts:** [open the page](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/) (use the English button)
 
+**Want to play with the numbers?** [Download the Excel calculator](https://github.com/safsalles/portfolio-ds/raw/main/dimensionamento-equipe/planilha/dimensionamento_equipe.xlsx): Erlang C formulas, no macros (in Portuguese).
+
 [![pagina](docs/pagina.jpg)](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/)
 
 > **Notice:** the team, handling time, shrinkage and service targets in this project are **fictional**. It is a teaching Workforce Management (WFM) scenario. NYC 311 only supplies call arrivals; no real staffing, cost or handling-time data was used.
@@ -259,6 +261,7 @@ python scripts/investigar_espera.py
 python scripts/atualizar_readme.py
 python scripts/gerar_figuras.py
 python scripts/gerar_pagina.py
+python scripts/gerar_planilha.py
 pytest
 streamlit run app/app.py
 ```

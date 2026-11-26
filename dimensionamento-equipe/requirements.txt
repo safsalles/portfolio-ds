@@ -11,3 +11,4 @@ nbconvert
 ipykernel
 pytest
 pyarrow
+openpyxl

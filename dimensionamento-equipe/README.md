@@ -8,6 +8,8 @@
 
 **Veja a história em gráficos interativos:** [abrir a página](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/)
 
+**Quer mexer nos números?** [Baixar a calculadora em Excel](https://github.com/safsalles/portfolio-ds/raw/main/dimensionamento-equipe/planilha/dimensionamento_equipe.xlsx): fórmulas de Erlang C, sem macro.
+
 [![pagina](docs/pagina.jpg)](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/)
 
 > **Aviso:** a equipe, o tempo de atendimento, a folga e as metas de serviço deste projeto são **fictícios**. É um cenário didático de Workforce Management (WFM). O NYC 311 fornece só as chegadas de chamadas; nenhum dado real de pessoal, custo ou tempo de atendimento foi usado.
@@ -259,6 +261,7 @@ python scripts/investigar_espera.py
 python scripts/atualizar_readme.py
 python scripts/gerar_figuras.py
 python scripts/gerar_pagina.py
+python scripts/gerar_planilha.py
 pytest
 streamlit run app/app.py
 ```
