@@ -4,7 +4,26 @@
 
 Quem entrega mais do que os minutos em campo e o tamanho do clube fariam esperar? Este projeto mede a eficiência de jogadores das Séries A e B de 2026, por posição, com Análise Envoltória de Dados (DEA).
 
-Ele revisita um artigo meu de 2018, que aplicou DEA a sete campeonatos europeus ([Salles et al., 2018](https://doi.org/10.4322/PODes.2018.002)), com dados brasileiros, mais métodos e pesos que refletem a função de cada posição.
+## Objetivo e artigo de origem
+
+O objetivo desta análise vem de um artigo que publiquei em 2018 com três coautores:
+
+> SALLES, S. A. F.; ALMEIDA, L. C.; HORA, H. R. M.; ERTHAL JÚNIOR, M. **Análise da eficiência de jogadores dos principais campeonatos europeus de futebol através de DEA**. Pesquisa Operacional para o Desenvolvimento, v. 10, n. 1, p. 9-26, 2018. [Ler o artigo](https://doi.org/10.4322/PODes.2018.002).
+
+O artigo mediu, por posição, a eficiência de jogadores de sete campeonatos europeus na temporada 2015/2016 e testou duas hipóteses: quanto maior o valor de mercado, mais eficiente o jogador (H1); e jogadores são mais eficientes na fase intermediária da carreira (H2).
+
+Aqui a pergunta é levada ao futebol brasileiro e ampliada:
+
+| | Artigo de 2018 | Este projeto |
+| --- | --- | --- |
+| Campeonatos | sete europeus, 2015/2016 | Séries A e B de 2026, com as copas |
+| Jogadores avaliados | 1.799 | 739 |
+| Métodos | DEA CCR | CCR com pesos por AHP, comparado a cinco outros |
+| Eficientes | 49% | 13,8% (52,5% sem os pesos) |
+| H1 e H2 | sem relação relevante | sem relação relevante |
+| Uso prático | classificação por posição, liga e clube | também jogadores eficientes e baratos, e o que torna cada um eficiente |
+
+Os percentuais de eficientes não são diretamente comparáveis, porque mudam a amostra, as variáveis e o modelo.
 
 ![Eficientes por posição](figuras/eficientes_por_posicao.png)
 

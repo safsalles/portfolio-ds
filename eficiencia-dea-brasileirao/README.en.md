@@ -2,9 +2,28 @@
 
 *Read in: [Português](README.md)*
 
-Who delivers more than their minutes on the pitch and the size of their club would suggest? This project measures the efficiency of players from the 2026 Brazilian first (Série A) and second (Série B) divisions, by position, using Data Envelopment Analysis (DEA).
+Who delivers more than their minutes on the pitch and the size of their club would suggest? This project measures the efficiency of players from the 2026 Brazilian first (Série A) and second (Série B) divisions, by position, using Data Envelopment Analysis (DEA). The charts are labelled in Portuguese.
 
-It revisits a 2018 paper of mine that applied DEA to seven European leagues ([Salles et al., 2018](https://doi.org/10.4322/PODes.2018.002), in Portuguese), now with Brazilian data, more methods and weights that reflect the role of each position. The charts are labelled in Portuguese.
+## Objective and source paper
+
+The objective of this analysis comes from a paper I published in 2018 with three co-authors:
+
+> SALLES, S. A. F.; ALMEIDA, L. C.; HORA, H. R. M.; ERTHAL JÚNIOR, M. **Análise da eficiência de jogadores dos principais campeonatos europeus de futebol através de DEA** (Efficiency analysis of players in the main European football leagues using DEA). Pesquisa Operacional para o Desenvolvimento, v. 10, n. 1, p. 9-26, 2018. [Read the paper](https://doi.org/10.4322/PODes.2018.002) (in Portuguese).
+
+The paper measured, by position, the efficiency of players from seven European leagues in the 2015/2016 season and tested two hypotheses: the higher the market value, the more efficient the player (H1); and players are more efficient in the middle stage of their careers (H2).
+
+Here the question is taken to Brazilian football and extended:
+
+| | 2018 paper | This project |
+| --- | --- | --- |
+| Competitions | seven European leagues, 2015/2016 | 2026 Série A and B, plus cups |
+| Players evaluated | 1,799 | 739 |
+| Methods | DEA CCR | CCR with AHP weights, compared with five others |
+| Efficient | 49% | 13.8% (52.5% without the weights) |
+| H1 and H2 | no relevant relationship | no relevant relationship |
+| Practical use | classification by position, league and club | also efficient low-priced players, and what makes each one efficient |
+
+The shares of efficient players are not directly comparable, because the sample, the variables and the model all change.
 
 ![Efficient players by position](figuras/eficientes_por_posicao.png)
 
