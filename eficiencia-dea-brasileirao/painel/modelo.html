@@ -123,6 +123,7 @@ function marca(rotulo, texto, acao, ...filhos) {
   return g;
 }
 function abrir(j) { estado.aba = "jogador"; estado.jogador = j.id; $("fNome").value = rotulo(j); desenhar(); scrollTo({top: 0}); }
+const barato = j => j.ef && j.valorPct != null && j.valorPct < 100;
 const rotulo = j => `${j.nome} (${j.time})`;
 const filtrados = () => J.filter(j => (!estado.pos || j.pos === estado.pos) && (!estado.serie || j.serie === estado.serie));
 const legendaSeries = () => el("div", {class: "legenda"},
@@ -171,7 +172,7 @@ function fronteira(raiz) {
 
 function baratos(raiz) {
   const todos = filtrados();
-  const alvo = todos.filter(j => j.ef && j.valorPct < 100);
+  const alvo = todos.filter(barato);
   raiz.append(el("h2", {}, `${estado.pos || "Todas as posições"}: eficiência contra valor de mercado`),
     el("p", {class: "sub"}, "Na vertical, quem não é eficiente aparece pela nota (abaixo de 1,0) e o eficiente, por quanto passa da fronteira. O valor é comparado com a mediana do grupo (100%), em escala logarítmica. Interessa o canto superior esquerdo."),
     el("div", {class: "legenda"},
@@ -179,6 +180,9 @@ function baratos(raiz) {
       el("span", {}, el("span", {class: "ponto", style: "background:var(--b)"}), "Eficiente, Série B"),
       el("span", {}, el("span", {class: "ponto", style: "background:var(--apagado)"}), "Não eficiente")));
   const com = todos.filter(j => j.valorPct > 0);
+  const fora = todos.filter(j => j.valorPct == null), foraEf = fora.filter(j => j.ef);
+  if (fora.length) raiz.append(el("p", {class: "sub"}, `Sem valor de mercado na fonte, e por isso fora do gráfico e da lista: ${fora.length} de ${todos.length} jogadores` +
+    (foraEf.length ? `, ${foraEf.length} deles eficientes (${foraEf.map(rotulo).join(", ")}).` : ".")));
   if (!com.length) { raiz.append(el("p", {}, "Sem jogadores com esse filtro.")); return; }
   const L = 800, H = 420, m = {e: 46, d: 12, t: 12, b: 40};
   const lo = Math.log10(Math.min(50, ...com.map(j => j.valorPct))), hi = Math.log10(Math.max(200, ...com.map(j => j.valorPct)));
@@ -223,7 +227,7 @@ function jogador(raiz) {
   raiz.append(el("h2", {}, j.nome), el("p", {class: "sub"}, `${j.time}, Série ${j.serie}. ${j.grupo}.`),
     el("p", {}, el("span", {class: j.ef ? "selo sim" : "selo"}, j.ef ? "Eficiente" : "Não eficiente"),
       el("span", {class: "selo"}, `Nota ${f(j.nota)}`), el("span", {class: "selo"}, `${j.rank}º de ${j.n} no grupo`),
-      el("span", {class: "selo"}, `Valor: ${f(j.valorPct, 0)}% da mediana`)),
+      el("span", {class: "selo"}, j.valorPct == null ? "Sem valor de mercado na fonte" : `Valor: ${f(j.valorPct, 0)}% da mediana`)),
     el("h3", {}, "Onde se destaca no grupo"),
     el("p", {class: "sub"}, "Posição relativa por 90 minutos, de 0 a 100 (média dos itens da categoria). O traço marca o meio do grupo. É um retrato à parte: o DEA usa totais, minutos e o valor do clube."),
     ...j.cats.map(([n, w, p]) => barra(n, `peso ${w}%`, p, String(p))),
@@ -355,7 +359,7 @@ function desenhar() {
 const ef = J.filter(j => j.ef).length;
 $("numeros").append(...[[String(J.length), "jogadores avaliados"], [`${f(ef / J.length * 100, 1)}%`, `são eficientes (${ef})`],
   [`${f(J.filter(j => j.livre >= 0.9999).length / J.length * 100, 1)}%`, "seriam sem os pesos por categoria"],
-  [String(J.filter(j => j.ef && j.valorPct < 100).length), "eficientes valem menos que a mediana"]]
+  [String(J.filter(barato).length), "eficientes valem menos que a mediana"]]
   .map(([v, t]) => el("div", {class: "numero"}, el("b", {}, v), el("span", {}, t))));
 $("fPos").append(el("option", {value: ""}, "Todas"), ...D.ordem.map(p => el("option", {value: p}, p)));
 $("nomes").append(...J.map(j => el("option", {value: rotulo(j)})));
