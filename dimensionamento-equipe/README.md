@@ -6,6 +6,10 @@
 
 **O que o projeto demonstra:** PySpark e Databricks, previsão de séries temporais, Erlang C, ajuste de distribuições, simulação de filas, app em Streamlit, alertas e testes automatizados.
 
+**Veja a história em gráficos interativos:** [abrir a página](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/)
+
+[![pagina](docs/pagina.jpg)](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/)
+
 > **Aviso:** a equipe, o tempo de atendimento, a folga e as metas de serviço deste projeto são **fictícios**. É um cenário didático de Workforce Management (WFM). O NYC 311 fornece só as chegadas de chamadas; nenhum dado real de pessoal, custo ou tempo de atendimento foi usado.
 
 Mostra, com código que roda e testes, o ciclo de dimensionamento de uma central telefônica: dado bruto → agregação por hora em PySpark → previsão → Erlang C → simulação de filas → monitoramento com alerta.
@@ -254,6 +258,7 @@ python scripts/analisar_entradas.py
 python scripts/investigar_espera.py
 python scripts/atualizar_readme.py
 python scripts/gerar_figuras.py
+python scripts/gerar_pagina.py
 pytest
 streamlit run app/app.py
 ```

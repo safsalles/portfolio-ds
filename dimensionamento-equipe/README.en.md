@@ -6,6 +6,10 @@
 
 **What the project shows:** PySpark and Databricks, time series forecasting, Erlang C, distribution fitting, queue simulation, a Streamlit app, alerts and automated tests.
 
+**See the story in interactive charts:** [open the page](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/) (use the English button)
+
+[![pagina](docs/pagina.jpg)](https://safsalles.github.io/portfolio-ds/dimensionamento-equipe/site/)
+
 > **Notice:** the team, handling time, shrinkage and service targets in this project are **fictional**. It is a teaching Workforce Management (WFM) scenario. NYC 311 only supplies call arrivals; no real staffing, cost or handling-time data was used.
 
 It shows, with running code and tests, the sizing cycle of a phone contact center: raw data → hourly PySpark aggregation → forecast → Erlang C → queue simulation → monitoring with alerts.
@@ -254,6 +258,7 @@ python scripts/analisar_entradas.py
 python scripts/investigar_espera.py
 python scripts/atualizar_readme.py
 python scripts/gerar_figuras.py
+python scripts/gerar_pagina.py
 pytest
 streamlit run app/app.py
 ```

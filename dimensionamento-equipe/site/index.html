@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quantas pessoas, hora a hora? Dimensionamento de equipe</title>
+<style>
+:root{color-scheme:light;--page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--ring:rgba(11,11,11,.10);--s1:#2a78d6;--s2:#eb6834;--soft:#86b6ef;--crit:#d03b3b;
+ --h0:#eef5fd;--h1:#cde2fb;--h2:#9ec5f4;--h3:#6da7ec;--h4:#3987e5;--h5:#256abf;--h6:#184f95;--h7:#0d366b}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#3987e5;--s2:#d95926;--soft:#1c5cab;
+ --h0:#1f2326;--h1:#0d366b;--h2:#104281;--h3:#184f95;--h4:#256abf;--h5:#3987e5;--h6:#6da7ec;--h7:#cde2fb}}
+:root[data-theme=dark]{color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--grid:#2c2c2a;--axis:#383835;--ring:rgba(255,255,255,.10);--s1:#3987e5;--s2:#d95926;--soft:#1c5cab;
+ --h0:#1f2326;--h1:#0d366b;--h2:#104281;--h3:#184f95;--h4:#256abf;--h5:#3987e5;--h6:#6da7ec;--h7:#cde2fb}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:880px;margin:0 auto;padding:0 18px 80px}
+header{padding:64px 0 24px}
+.bar{display:flex;gap:8px;justify-content:flex-end;padding-top:14px}
+h1{font-size:clamp(30px,5.4vw,52px);line-height:1.12;margin:0 0 16px;letter-spacing:-.02em}
+h2{font-size:clamp(21px,3vw,28px);line-height:1.25;margin:6px 0 8px;letter-spacing:-.01em}
+p{color:var(--ink2);margin:0 0 14px;max-width:68ch}
+.step{font-size:13px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+section{padding:52px 0 0}
+.card{background:var(--surface);border:1px solid var(--ring);border-radius:14px;padding:18px;position:relative}
+button{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--ring);border-radius:999px;padding:6px 14px;cursor:pointer}
+button[aria-pressed=true]{background:var(--ink);color:var(--page)}
+button:focus-visible,input:focus-visible,svg:focus-visible,summary:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;align-items:center}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:0 0 14px}
+.tile{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:14px}
+.tile b{display:block;font-size:30px;line-height:1.15;letter-spacing:-.01em}
+.tile span{font-size:13px;color:var(--ink2)}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:13px;color:var(--ink2);margin:0 0 8px}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+svg{display:block;width:100%;overflow:visible;touch-action:pan-y}
+svg text{fill:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+svg text.lab{fill:var(--ink);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+#tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--axis);border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.18);display:none;z-index:9;max-width:260px;white-space:pre-line}
+input[type=range]{width:100%;accent-color:var(--s1);height:32px}
+details{margin-top:12px;font-size:13px;color:var(--ink2)}
+summary{cursor:pointer}
+.scroll{overflow:auto;max-height:320px}
+table{border-collapse:collapse;width:100%;margin-top:8px;font-variant-numeric:tabular-nums}
+th,td{text-align:right;padding:4px 8px;border-bottom:1px solid var(--grid);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+footer{margin-top:64px;border-top:1px solid var(--grid);padding-top:20px;font-size:14px}
+a{color:var(--s1)}
+@media (prefers-reduced-motion:no-preference){.fade{transition:opacity .25s}}
+</style>
+</head>
+<body>
+<main>
+<div class="bar"><button id="lang" type="button">English</button><button id="theme" type="button"></button></div>
+<header>
+ <div class="step" data-t="kicker"></div>
+ <h1 data-t="h1"></h1>
+ <p data-t="intro"></p>
+ <p><strong data-t="ficticio"></strong></p>
+</header>
+<section id="q1"><div class="step" data-t="s1"></div><h2 id="t1"></h2><p data-t="p1"></p><div class="card"><div id="c1"></div><details><summary data-t="tabela"></summary><div class="scroll" id="d1"></div></details></div></section>
+<section id="q2"><div class="step" data-t="s2"></div><h2 id="t2"></h2><p data-t="p2"></p><div class="tiles" id="k2"></div><div class="card"><div class="row" id="b2"></div><div class="legend" id="l2"></div><div id="c2"></div><details><summary data-t="tabela"></summary><div class="scroll" id="d2"></div></details></div></section>
+<section id="q3"><div class="step" data-t="s3"></div><h2 id="t3"></h2><p data-t="p3"></p><div class="card"><div class="row" id="b3"></div><div class="legend" id="l3"></div><div id="c3"></div><details><summary data-t="tabela"></summary><div class="scroll" id="d3"></div></details></div></section>
+<section id="q4"><div class="step" data-t="s4"></div><h2 id="t4"></h2><p id="p4"></p><div class="card"><label for="sl" id="lb4"></label><input type="range" id="sl"><div class="tiles" id="k4" aria-live="polite"></div><div id="c4"></div><details><summary data-t="tabela"></summary><div class="scroll" id="d4"></div></details></div></section>
+<section id="q5"><div class="step" data-t="s5"></div><h2 id="t5"></h2><p id="p5"></p><div class="card"><div id="c5"></div><details><summary data-t="tabela"></summary><div class="scroll" id="d5"></div></details></div><p id="f5" style="margin-top:14px"></p></section>
+<footer><p data-t="limites"></p><p data-t="fontes"></p><p><a href="https://github.com/safsalles/portfolio-ds/tree/main/dimensionamento-equipe" data-t="codigo"></a></p></footer>
+</main>
+<div id="tip" role="status"></div>
+<script id="dados" type="application/json">{"chegadas":{"media":[[99.87,65.56,43.46,33.33,31.36,39.05,64.51,96.93,157.7,243.47,258.69,250.22,232.57,222.2,224.96,217.71,196.42,142.91,130.36,112.47,102.95,90.01,76.6,100.32],[79.62,52.26,35.56,29.71,30.28,39.85,67.92,100.5,168.33,236.6,255.56,251.84,237.6,225.38,212.62,207.39,190.56,145.1,132.09,117.54,102.09,90.35,74.59,100.07],[82.47,54.25,38.7,29.95,29.98,40.16,71.01,98.49,159.18,215.12,234.2,231.72,219.25,214.49,207.73,195.44,176.02,137.89,128.77,115.47,101.52,84.89,71.12,95.8],[79.1,51.39,39.98,30.91,31.12,38.9,66.43,96.51,160.61,226.62,236.42,233.22,227.84,221.72,202.62,193.2,179.96,139.42,121.09,108.26,98.81,89.68,71.91,104.34],[89.86,59.91,42.35,33.69,32.57,38.89,65.66,95.26,161.34,213.13,225.83,224.69,219.69,207.55,198.15,191.02,171.88,133.42,108.42,96.85,85.91,76.69,69.43,109.96],[114.84,86.03,64.81,48.23,38.92,35.79,45.61,50.66,82.79,106.21,118.14,114.97,113.06,121.4,106.61,102.28,98.73,85.96,77.96,76.7,73.82,71.13,74.22,118.78],[130.61,109.46,82.38,61.83,48.31,42.19,46.47,45.33,71.41,92.4,104.47,110.7,110.67,115.33,104.63,97.48,89.43,85.44,80.92,79.93,74.23,69.04,66.03,101.93]],"total":2037631},"previsao":{"inicio":"2025-06-02","real":[88,48,41,42,27,32,83,95,169,228,304,187,190,212,230,180,198,104,79,95,81,81,61,89,77,53,25,24,18,41,67,126,162,229,249,227,195,157,172,152,186,142,157,113,106,92,89,100,94,39,35,13,21,29,80,126,140,199,275,220,189,192,219,200,168,159,135,152,126,97,60,126,83,63,39,37,18,28,73,86,171,250,213,238,221,226,196,191,204,118,112,137,87,87,66,123,111,63,42,41,44,32,85,82,179,205,235,239,200,195,186,170,182,135,115,109,78,83,77,99,103,75,64,46,37,29,60,52,79,110,104,110,103,99,88,84,84,64,70,68,61,63,77,140,122,92,78,52,31,42,46,39,76,105,107,86,87,95,107,87,89,77,73,81,78,66,57,84],"modelo":[98.7,64.87,42.47,33.28,30.01,38.88,64.97,98.95,157.1,242.75,254.03,247.56,228.85,221.79,225.02,219.21,195.56,139.61,129.89,107.12,103.0,91.61,78.37,98.47,74.14,50.14,33.98,27.02,27.96,36.25,64.66,94.45,162.72,227.74,247.01,242.65,229.83,218.14,203.76,197.67,182.11,138.27,126.32,111.96,97.1,86.6,72.13,93.99,80.0,51.97,37.26,28.18,28.59,39.75,69.27,95.52,154.11,207.34,227.1,229.24,217.39,210.79,206.79,191.09,173.06,134.28,125.81,111.08,101.22,84.44,71.88,91.48,75.7,48.52,37.4,28.48,29.66,37.25,64.12,91.2,156.42,221.74,230.01,227.86,224.47,216.4,194.78,183.91,169.75,132.22,115.76,105.3,97.6,90.59,71.1,101.55,85.89,56.74,39.87,32.05,29.74,35.94,62.26,92.53,156.49,206.24,215.06,218.5,212.69,201.04,193.16,186.98,168.53,124.02,102.48,94.52,83.79,74.38,65.95,98.74,106.31,79.28,59.96,44.73,36.19,33.43,42.98,46.92,78.15,100.77,112.8,109.79,107.1,114.35,101.93,97.06,95.17,82.99,76.33,75.31,75.09,72.16,75.96,111.93,125.34,101.67,77.15,57.72,46.26,39.7,44.39,43.23,67.8,86.82,100.04,106.86,109.09,113.97,101.71,94.0,85.78,81.31,79.68,76.52,72.59,66.78,65.32,99.69],"regra":[101.75,66.0,39.75,33.0,21.25,29.5,59.75,85.0,147.5,223.75,221.0,248.0,200.25,181.75,175.0,191.0,148.75,122.75,117.25,85.5,98.25,86.0,80.5,93.0,76.0,57.0,34.25,23.75,25.0,36.5,72.0,108.25,164.25,214.0,259.25,233.0,234.0,215.75,211.5,216.25,178.5,131.25,137.0,126.75,84.0,77.75,55.25,84.5,64.5,45.25,27.5,22.75,25.75,38.25,72.0,111.5,146.75,180.75,208.75,221.0,192.25,189.5,178.25,186.25,164.75,142.5,127.25,105.25,90.25,68.75,63.25,84.75,60.75,38.5,29.0,26.75,21.25,28.25,75.0,107.0,151.0,224.5,229.25,250.25,214.0,213.0,177.75,205.75,184.5,144.75,116.25,116.5,110.75,94.5,74.0,106.0,82.0,44.5,37.75,30.75,29.75,36.5,58.0,105.25,151.25,220.25,226.75,239.75,218.75,195.5,182.5,200.5,164.25,117.0,93.75,99.25,77.75,51.0,52.5,119.75,104.25,80.5,51.5,43.25,26.5,31.25,41.25,45.5,74.75,98.0,115.5,99.0,103.0,119.25,107.25,82.5,79.0,89.0,75.75,89.5,84.5,89.75,92.0,165.0,152.25,111.5,91.5,56.5,53.25,31.25,42.75,41.5,62.75,59.25,82.0,87.5,86.75,103.75,91.0,80.0,82.75,69.0,71.0,76.5,70.25,79.25,76.5,132.5],"erros":{"regra":0.20018761706727398,"unico":0.25710891441194594,"modelo":0.19807883090752518}},"equipe":{"por_hora":{"80/20":[17.7,12.92,9.79,8.56,8.57,9.64,14.88,19.54,30.04,40.14,42.2,41.84,40.13,38.89,37.58,36.03,33.37,26.48,24.14,21.84,19.96,18.29,16.11,19.79],"90/30":[19.23,14.04,10.95,9.34,9.16,10.6,15.83,20.96,31.95,42.02,44.21,43.83,42.15,40.66,39.54,37.84,35.07,28.18,25.67,23.25,21.58,19.56,17.52,21.38]},"custo":{"80/20":197442,"90/30":210309}},"varredura":{"atual":15,"chamadas_hora":218.0,"meta":0.8,"espera_s":20,"linhas":[{"agents":10,"service_level":0.0,"wait_mean_s":29736.3792725493,"stable":false},{"agents":11,"service_level":0.0013240741,"wait_mean_s":10869.8305369195,"stable":false},{"agents":12,"service_level":0.15675,"wait_mean_s":475.8833518502,"stable":true},{"agents":13,"service_level":0.4735833333,"wait_mean_s":90.9819642785,"stable":true},{"agents":14,"service_level":0.6774907407,"wait_mean_s":35.6134626066,"stable":true},{"agents":15,"service_level":0.8122314815,"wait_mean_s":16.1650606854,"stable":true},{"agents":16,"service_level":0.8934814815,"wait_mean_s":7.7796718064,"stable":true},{"agents":17,"service_level":0.9412685185,"wait_mean_s":3.8413907232,"stable":true},{"agents":18,"service_level":0.9683703704,"wait_mean_s":1.8966896863,"stable":true},{"agents":19,"service_level":0.9840185185,"wait_mean_s":0.9203455736,"stable":true},{"agents":20,"service_level":0.9924907407,"wait_mean_s":0.4222091256,"stable":true},{"agents":21,"service_level":0.9965648148,"wait_mean_s":0.1905579374,"stable":true}]},"banco":{"cenarios":[{"chave":"real","rotulo_pt":"Real","rotulo_en":"Real","janela":{"espera_media_s":89.1873370981755,"nivel_servico":0.3737691862148856,"mediana_s":46.0},"dia":{"espera_media_s":60.7571126053018,"nivel_servico":0.531849447407064,"mediana_s":15.0}},{"chave":"fixo8","rotulo_pt":"8 fixos","rotulo_en":"8 fixed","janela":{"espera_media_s":55.52049081569432,"nivel_servico":0.6751737619461338,"mediana_s":0.0},"dia":{"espera_media_s":29.86759502970763,"nivel_servico":0.8388159826879975,"mediana_s":0.0}},{"chave":"presenca","rotulo_pt":"Atendentes medidos (presença na hora)","rotulo_en":"Measured agents (present in the hour)","janela":{"espera_media_s":13.931742685852347,"nivel_servico":0.908593976252534,"mediana_s":0.0},"dia":{"espera_media_s":30.25160443261975,"nivel_servico":0.9166025195146457,"mediana_s":0.0}},{"chave":"turno","rotulo_pt":"Atendentes medidos (turno)","rotulo_en":"Measured agents (shift)","janela":{"espera_media_s":5.5796248199722465,"nivel_servico":0.953627280625543,"mediana_s":0.0},"dia":{"espera_media_s":24.99774037944869,"nivel_servico":0.9392936084705155,"mediana_s":0.0}},{"chave":"fixo8_A","rotulo_pt":"8 fixos + intervalo A","rotulo_en":"8 fixed + gap A","janela":{"espera_media_s":85.28557107576631,"nivel_servico":0.6037141615986099,"mediana_s":0.0},"dia":{"espera_media_s":44.97916614108929,"nivel_servico":0.7972857253265322,"mediana_s":0.0}},{"chave":"fixo8_B","rotulo_pt":"8 fixos + intervalo B","rotulo_en":"8 fixed + gap B","janela":{"espera_media_s":184.16302623397698,"nivel_servico":0.4673110338835795,"mediana_s":35.576789417402324},"dia":{"espera_media_s":107.59231939138672,"nivel_servico":0.7077332096761728,"mediana_s":0.0}},{"chave":"presenca_A","rotulo_pt":"Medidos + intervalo A","rotulo_en":"Measured + gap A","janela":{"espera_media_s":20.065170843370804,"nivel_servico":0.8765204170286707,"mediana_s":0.0},"dia":{"espera_media_s":37.30530356264387,"nivel_servico":0.8956302650900378,"mediana_s":0.0}},{"chave":"presenca_B","rotulo_pt":"Medidos + intervalo B","rotulo_en":"Measured + gap B","janela":{"espera_media_s":41.91885162054592,"nivel_servico":0.7976759339704604,"mediana_s":0.0},"dia":{"espera_media_s":58.39118370142839,"nivel_servico":0.8483035783290827,"mediana_s":0.0}},{"chave":"pausas2","rotulo_pt":"Medidos com pausas de 2 min ou mais","rotulo_en":"Measured with breaks of 2 min or more","janela":{"espera_media_s":133.07221554270205,"nivel_servico":0.5781204749493194,"mediana_s":0.0},"dia":{"espera_media_s":145.1953031913993,"nivel_servico":0.6281845583120798,"mediana_s":0.0}},{"chave":"pausas2_A","rotulo_pt":"Medidos com pausas de 2 min ou mais + intervalo A","rotulo_en":"Measured with breaks of 2 min or more + gap A","janela":{"espera_media_s":184.2115031614053,"nivel_servico":0.4938097306689835,"mediana_s":22.375144822406583},"dia":{"espera_media_s":198.10416303839762,"nivel_servico":0.562924491846356,"mediana_s":0.0}},{"chave":"pausas5","rotulo_pt":"Medidos com pausas de 5 min ou mais","rotulo_en":"Measured with breaks of 5 min or more","janela":{"espera_media_s":107.03018354558039,"nivel_servico":0.6406023747465972,"mediana_s":0.0},"dia":{"espera_media_s":114.15306161568849,"nivel_servico":0.6841641548805936,"mediana_s":0.0}},{"chave":"pausas5_A","rotulo_pt":"Medidos com pausas de 5 min ou mais + intervalo A","rotulo_en":"Measured with breaks of 5 min or more + gap A","janela":{"espera_media_s":144.71659574342956,"nivel_servico":0.5567984361424848,"mediana_s":1.9610139427277318},"dia":{"espera_media_s":152.4749798485583,"nivel_servico":0.6246541463791637,"mediana_s":0.0}},{"chave":"pausas10","rotulo_pt":"Medidos com pausas de 10 min ou mais","rotulo_en":"Measured with breaks of 10 min or more","janela":{"espera_media_s":73.70668232959348,"nivel_servico":0.7228496959165943,"mediana_s":0.0},"dia":{"espera_media_s":79.4871219547384,"nivel_servico":0.7591282170183167,"mediana_s":0.0}},{"chave":"pausas10_A","rotulo_pt":"Medidos com pausas de 10 min ou mais + intervalo A","rotulo_en":"Measured with breaks of 10 min or more + gap A","janela":{"espera_media_s":96.66390507734178,"nivel_servico":0.6509556907037359,"mediana_s":0.0},"dia":{"espera_media_s":104.45491409477674,"nivel_servico":0.7097951928278847,"mediana_s":0.0}}],"hora":10,"ligacoes":27624}}</script>
+<script>
+const D=JSON.parse(document.getElementById('dados').textContent);
+const T={pt:{
+kicker:'Workforce Management',h1:'Quantas pessoas são necessárias, hora a hora?',
+intro:'Cinco perguntas, da chegada das chamadas à escala: o que os dados respondem e onde eles não chegam.',
+ficticio:'Equipe, metas, folga e tempo de atendimento do dimensionamento são fictícios: é um cenário didático.',
+s1:'1 · Quando as chamadas chegam?',s2:'2 · Dá para prever?',s3:'3 · Quanta gente é preciso?',s4:'4 · E se entrar ou sair uma pessoa?',s5:'5 · Dá para confiar na conta?',
+t1:(d,h,v)=>`O pico é ${d}, às ${h}h, com ${v} chamadas por hora em média`,
+p1:'Chamadas de telefone ao NYC 311 em 2024 e 2025, média por dia da semana e hora (horário de Nova York). Quanto mais a cor se destaca do fundo, mais chamadas (veja a legenda).',
+t2:(m,r)=>`A previsão empata com a regra simples: erro de ${m} contra ${r}`,
+p2:'Uma semana do ano de teste. O modelo é reajustado todo mês só com dados passados; a regra simples é a média das quatro semanas anteriores. Erro medido no ano inteiro (WAPE, menor é melhor).',
+t3:x=>`Atender mais rápido custa ${x} a mais de pessoas-hora`,
+p3:'Pessoas escaladas na média dos dias úteis do ano de teste, calculadas por Erlang C. A meta 90/30 quer 90% atendidos em até 30 s; a 80/20, 80% em até 20 s.',
+t4:(a,b,c)=>`Com ${a} pessoas o serviço fica em ${b}; com uma a menos, ${c}`,
+p4:(c,m,s)=>`Simulação com ${c} chamadas por hora e atendimento ajustado em tempos reais. Meta: ${m} atendidos em até ${s} s. Arraste para contratar ou perder gente.`,
+t5:(i,r)=>`Contar só quem está presente subestima a espera: ${i} s na simulação, ${r} s na vida real`,
+b5real:'O que aconteceu no banco',b5ideal:'Com os atendentes presentes, sem pausas',b5pausas:'Tirando as pausas',faixa:'A faixa depende do que se conta como pausa.',
+f5:'A barra com pausas vai do menor ao maior valor, conforme o que se conta como pausa. As pausas mudam muito o resultado, por isso o dimensionamento leva uma folga. Elas foram medidas no próprio dia simulado, e a diferença ainda não está totalmente explicada.',
+p5:(h,n)=>`Call center de um banco (Technion, 1999), dias úteis das ${h}h às ${h+1}h, ${n} ligações atendidas. Antes de decidir com a conta, comparamos a simulação com um banco que registrou a espera de verdade. Abaixo, a espera média.`,
+tabela:'Ver os dados em tabela',dias:['segunda','terça','quarta','quinta','sexta','sábado','domingo'],dc:['seg','ter','qua','qui','sex','sáb','dom'],
+noDia:d=>(d>4?'no ':'na ')+['segunda','terça','quarta','quinta','sexta','sábado','domingo'][d],
+chamadas:'chamadas/h',hora:'hora',real:'Real',modelo:'Modelo',regra:'Regra simples',unico:'Modelo ajustado uma vez',ver:'Mostrar:',pessoas:'pessoas escaladas',
+agentes:'agentes',nivel:'nível de serviço',esperaM:'espera média',atual:'cenário base',meta:'meta',instavel:'fila sem controle',equipeDe:'Equipe de',emAte:s=>`atendidos em até ${s} s`,
+vsBase:'contra o cenário base',metricas:{espera_media_s:'Espera média (s)',nivel_servico:'Atendidas em até 20 s',mediana_s:'Mediana da espera (s)'},
+grupos:{todos:'Todos',fixo:'Equipe fixa',medidos:'Atendentes medidos',pausas:'Com pausas'},cenario:'Cenário',
+limites:'Limites: a hora de abertura do chamado é tratada como hora de chegada; o Erlang C supõe chegadas aleatórias, atendimento exponencial e ninguém desistindo; a simulação não modela abandono.',
+fontes:'Fontes: NYC 311 (NYC Open Data) para as chegadas; Technion SEE Center, base Anonymous Bank (Guedj e Mandelbaum, 2000), para os tempos de atendimento. As duas bases não têm relação entre si.',
+codigo:'Ver o código, os testes e a análise completa no GitHub',claro:'Tema claro',escuro:'Tema escuro',outra:'English'},
+en:{
+kicker:'Workforce Management',h1:'How many people are needed, hour by hour?',
+intro:'Five questions, from call arrivals to staffing: what the data answers and where it stops.',
+ficticio:'Team, targets, shrinkage and handling time in the staffing scenario are fictional: this is a teaching scenario.',
+s1:'1 · When do calls arrive?',s2:'2 · Can it be forecast?',s3:'3 · How many people?',s4:'4 · What if one person joins or leaves?',s5:'5 · Can the numbers be trusted?',
+t1:(d,h,v)=>`The peak is ${d} at ${h}:00, with ${v} calls per hour on average`,
+p1:'NYC 311 phone calls in 2024 and 2025, average by weekday and hour (New York time). The more a cell stands out from the background, the more calls (see the legend).',
+t2:(m,r)=>`The forecast ties the simple rule: ${m} error versus ${r}`,
+p2:'One week of the test year. The model is refitted every month with past data only; the simple rule averages the previous four weeks. Error measured on the whole year (WAPE, lower is better).',
+t3:x=>`Answering faster costs ${x} more agent-hours`,
+p3:'Scheduled staff, weekday average over the test year, from Erlang C. The 90/30 target wants 90% answered within 30 s; 80/20 wants 80% within 20 s.',
+t4:(a,b,c)=>`With ${a} people service level is ${b}; with one fewer, ${c}`,
+p4:(c,m,s)=>`Simulation with ${c} calls per hour and handling time fitted on real data. Target: ${m} answered within ${s} s. Drag to hire or lose people.`,
+t5:(i,r)=>`Counting only who is present underestimates the wait: ${i} s simulated, ${r} s in real life`,
+b5real:'What happened at the bank',b5ideal:'With the agents present, no breaks',b5pausas:'Removing breaks',faixa:'The range depends on what counts as a break.',
+f5:'The breaks bar spans the lowest to the highest value, depending on what counts as a break. Breaks change the result a lot, which is why staffing includes shrinkage. They were measured on the simulated day itself, and the gap is still not fully explained.',
+p5:(h,n)=>`A bank call center (Technion, 1999), weekdays ${h}:00 to ${h+1}:00, ${n} served calls. Before deciding on these numbers, we compare the simulation with a bank that recorded the real wait. Below, the mean wait.`,
+tabela:'View the data as a table',dias:['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],dc:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+noDia:d=>'on '+['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][d],
+chamadas:'calls/h',hora:'hour',real:'Actual',modelo:'Model',regra:'Simple rule',unico:'Model fitted once',ver:'Show:',pessoas:'scheduled people',
+agentes:'agents',nivel:'service level',esperaM:'mean wait',atual:'base scenario',meta:'target',instavel:'queue out of control',equipeDe:'Team of',emAte:s=>`answered within ${s} s`,
+vsBase:'vs base scenario',metricas:{espera_media_s:'Mean wait (s)',nivel_servico:'Answered within 20 s',mediana_s:'Median wait (s)'},
+grupos:{todos:'All',fixo:'Fixed team',medidos:'Measured agents',pausas:'With breaks'},cenario:'Scenario',
+limites:'Limits: ticket opening time is treated as arrival time; Erlang C assumes random arrivals, exponential handling and no abandonment; the simulation does not model abandonment.',
+fontes:'Sources: NYC 311 (NYC Open Data) for arrivals; Technion SEE Center, Anonymous Bank data (Guedj and Mandelbaum, 2000), for handling times. The two datasets are unrelated.',
+codigo:'See the code, tests and full analysis on GitHub',claro:'Light theme',escuro:'Dark theme',outra:'Português'}};
+let L='pt',t=T.pt,modo={modelo:true,regra:true},metaSel='todas',metrica='espera_media_s',grupo='todos',ag=D.varredura.atual;
+const $=id=>document.getElementById(id),tip=$('tip');
+const nf=(v,d=0)=>v.toLocaleString(L==='pt'?'pt-BR':'en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const pc=(v,d=1)=>nf(v*100,d)+'%';
+function el(n,a={},p){const e=document.createElementNS('http://www.w3.org/2000/svg',n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,a={}){const e=el('text',{x,y,...a},p);e.textContent=s;return e}
+function svg(id,h,label){const host=$(id);host.textContent='';const w=Math.max(300,host.clientWidth||800);const s=el('svg',{viewBox:`0 0 ${w} ${h}`,height:h,role:'img','aria-label':label},host);return[s,w,h]}
+function show(e,s){tip.textContent=s;tip.style.display='block';const x=e.clientX,y=e.clientY,w=tip.offsetWidth;tip.style.left=Math.min(x+14,innerWidth-w-8)+'px';tip.style.top=(y+16)+'px'}
+const hide=()=>tip.style.display='none';
+function hover(node,s){node.addEventListener('pointermove',e=>show(e,s));node.addEventListener('pointerleave',hide);node.setAttribute('tabindex','0');node.addEventListener('focus',()=>{const r=node.getBoundingClientRect();show({clientX:r.right,clientY:r.top},s)});node.addEventListener('blur',hide)}
+function table(id,head,rows){const host=$(id);host.textContent='';const tb=document.createElement('table');[head,...rows].forEach((r,i)=>{const tr=tb.insertRow();r.forEach(c=>{const td=document.createElement(i?'td':'th');td.textContent=c;tr.appendChild(td)})});host.appendChild(tb)}
+function buttons(id,list,active,fn){const h=$(id);h.textContent='';list.forEach(([k,label])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.setAttribute('aria-pressed',String(active(k)));b.onclick=()=>fn(k);h.appendChild(b)})}
+function legend(id,items){const h=$(id);h.textContent='';items.forEach(([c,s])=>{const e=document.createElement('span'),i=document.createElement('i');i.style.background=`var(${c})`;e.append(i,s);h.appendChild(e)})}
+function yAxis(s,w,m,y,max,fmt){for(let i=0;i<=4;i++){const v=max*i/4,py=y(v);el('line',{x1:m.l,x2:w-m.r,y1:py,y2:py,stroke:i?'var(--grid)':'var(--axis)'},s);txt(s,m.l-8,py+4,fmt(v),{'text-anchor':'end'})}}
+const path=(a,x,y)=>a.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join('');
+function crosshair(s,w,h,m,n,x,fn){const g=el('line',{y1:m.t,y2:h-m.b,stroke:'var(--muted)',opacity:0},s),hit=el('rect',{x:m.l,y:m.t,width:w-m.l-m.r,height:h-m.t-m.b,fill:'transparent'},s);let k=0;
+ const go=(i,e)=>{k=Math.max(0,Math.min(n-1,i));g.setAttribute('x1',x(k));g.setAttribute('x2',x(k));g.setAttribute('opacity',1);show(e,fn(k))};
+ hit.addEventListener('pointermove',e=>{const r=s.getBoundingClientRect(),px=(e.clientX-r.left)*w/r.width;go(Math.round((px-m.l)/(w-m.l-m.r)*(n-1)),e)});
+ hit.addEventListener('pointerleave',()=>{g.setAttribute('opacity',0);hide()});
+ s.setAttribute('tabindex','0');s.addEventListener('keydown',e=>{if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;e.preventDefault();const r=s.getBoundingClientRect();go(k+(e.key==='ArrowRight'?1:-1),{clientX:r.left+x(k)*r.width/w,clientY:r.top+20})});s.addEventListener('blur',()=>{g.setAttribute('opacity',0);hide()})}
+
+function c1(){const M=D.chegadas.media,max=Math.max(...M.flat());let pd=0,ph=0;M.forEach((r,d)=>r.forEach((v,h)=>{if(v>M[pd][ph]){pd=d;ph=h}}));
+ $('t1').textContent=t.t1(t.noDia(pd),ph,nf(M[pd][ph]));
+ const[s,w]=svg('c1',300,$('t1').textContent),m={l:40,r:4,t:4},cw=(w-m.l-m.r)/24,ch=34;
+ M.forEach((r,d)=>{txt(s,m.l-8,m.t+d*ch+21,t.dc[d],{'text-anchor':'end'});r.forEach((v,h)=>{const c=el('rect',{x:m.l+h*cw+1,y:m.t+d*ch+1,width:Math.max(2,cw-2),height:ch-2,rx:3,fill:`var(--h${Math.min(7,Math.floor(v/max*7.999))})`},s);if(d===pd&&h===ph){c.setAttribute('stroke','var(--ink)');c.setAttribute('stroke-width',2)}hover(c,`${t.dias[d]}, ${h}h\n${nf(v,1)} ${t.chamadas}`)})});
+ for(let h=0;h<24;h+=3)txt(s,m.l+h*cw+cw/2,m.t+7*ch+16,h+'h',{'text-anchor':'middle'});
+ for(let i=0;i<8;i++)el('rect',{x:m.l+i*22,y:m.t+7*ch+30,width:20,height:10,rx:2,fill:`var(--h${i})`},s);
+ txt(s,m.l+8*22+8,m.t+7*ch+39,`0 – ${nf(max)} ${t.chamadas}`);
+ table('d1',[t.hora,...t.dc],[...Array(24).keys()].map(h=>[h+'h',...M.map(r=>nf(r[h],1))]))}
+
+function c2(){const P=D.previsao,E=P.erros;$('t2').textContent=t.t2(pc(E.modelo),pc(E.regra));
+ const k=$('k2');k.textContent='';[['regra','--s2'],['modelo','--s1'],['unico',null]].forEach(([n])=>{const d=document.createElement('div');d.className='tile';const b=document.createElement('b'),sp=document.createElement('span');b.textContent=pc(E[n]);sp.textContent=t[n];d.append(sp,b);k.appendChild(d)});
+ buttons('b2',[['modelo',t.modelo],['regra',t.regra]],x=>modo[x],x=>{modo[x]=!modo[x];c2()});
+ legend('l2',[['--ink',t.real],...(modo.modelo?[['--s1',t.modelo]]:[]),...(modo.regra?[['--s2',t.regra]]:[])]);
+ const[s,w,h]=svg('c2',320,$('t2').textContent),m={l:44,r:8,t:10,b:28},max=Math.ceil(Math.max(...P.real,...P.modelo,...P.regra)/100)*100,x=i=>m.l+i/167*(w-m.l-m.r),y=v=>h-m.b-v/max*(h-m.t-m.b);
+ yAxis(s,w,m,y,max,v=>nf(v));for(let d=0;d<7;d++){if(d)el('line',{x1:x(d*24),x2:x(d*24),y1:m.t,y2:h-m.b,stroke:'var(--grid)'},s);txt(s,x(d*24+12),h-8,t.dc[d],{'text-anchor':'middle'})}
+ const line=(a,c,wd)=>el('path',{d:path(a,x,y),fill:'none',stroke:c,'stroke-width':wd,'stroke-linejoin':'round'},s);
+ if(modo.regra)line(P.regra,'var(--s2)',2);if(modo.modelo)line(P.modelo,'var(--s1)',2);line(P.real,'var(--ink)',1.5);
+ crosshair(s,w,h,m,168,x,i=>`${t.dc[Math.floor(i/24)]} ${i%24}h\n${t.real}: ${nf(P.real[i])}\n${t.modelo}: ${nf(P.modelo[i])}\n${t.regra}: ${nf(P.regra[i])}`);
+ table('d2',[t.hora,t.real,t.modelo,t.regra],P.real.map((v,i)=>[`${t.dc[Math.floor(i/24)]} ${i%24}h`,nf(v),nf(P.modelo[i],1),nf(P.regra[i],1)]))}
+
+function c3(){const Q=D.equipe,names=Object.keys(Q.por_hora),cost=Q.custo;$('t3').textContent=t.t3(pc(cost['90/30']/cost['80/20']-1));
+ buttons('b3',[['todas',t.grupos.todos],...names.map(n=>[n,n])],x=>metaSel===x,x=>{metaSel=x;c3()});
+ const col={'80/20':'--s1','90/30':'--s2'},vis=names.filter(n=>metaSel==='todas'||metaSel===n);legend('l3',vis.map(n=>[col[n],`${t.meta} ${n}`]));
+ const[s,w,h]=svg('c3',300,$('t3').textContent),m={l:44,r:52,t:12,b:28},max=Math.ceil(Math.max(...names.flatMap(n=>Q.por_hora[n]))/20)*20,x=i=>m.l+i/23*(w-m.l-m.r),y=v=>h-m.b-v/max*(h-m.t-m.b);
+ yAxis(s,w,m,y,max,v=>nf(v));for(let i=0;i<24;i+=3)txt(s,x(i),h-8,i+'h',{'text-anchor':'middle'});
+ vis.forEach(n=>{const a=Q.por_hora[n];el('path',{d:path(a,x,y),fill:'none',stroke:`var(${col[n]})`,'stroke-width':2},s);const p=a.indexOf(Math.max(...a));el('circle',{cx:x(p),cy:y(a[p]),r:4,fill:`var(${col[n]})`,stroke:'var(--surface)','stroke-width':2},s);txt(s,w-m.r+6,y(a[23])+(n==='90/30'?-3:11),n,{class:'lab'})});
+ crosshair(s,w,h,m,24,x,i=>`${i}h\n`+vis.map(n=>`${n}: ${nf(Q.por_hora[n][i],1)} ${t.pessoas}`).join('\n'));
+ table('d3',[t.hora,...names],[...Array(24).keys()].map(i=>[i+'h',...names.map(n=>nf(Q.por_hora[n][i],1))]))}
+
+function c4(){const V=D.varredura,R=V.linhas,get=a=>R.find(r=>r.agents===a),base=get(V.atual),less=get(V.atual-1);
+ $('t4').textContent=t.t4(V.atual,pc(base.service_level,0),pc(less.service_level,0));$('p4').textContent=t.p4(nf(V.chamadas_hora),pc(V.meta,0),V.espera_s);
+ const sl=$('sl');sl.min=R[0].agents;sl.max=R[R.length-1].agents;sl.value=ag;const r=get(ag),ok=r.service_level>=V.meta;
+ $('lb4').textContent=`${t.equipeDe} ${ag} ${t.agentes}`;
+ const k=$('k4');k.textContent='';[[t.nivel+' · '+t.emAte(V.espera_s),pc(r.service_level)],[t.esperaM,r.stable?nf(r.wait_mean_s)+' s':t.instavel],[t.vsBase,(r.service_level>=base.service_level?'+':'')+nf((r.service_level-base.service_level)*100,1)+' p.p.'],[t.meta+' '+pc(V.meta,0),ok?'✓':'✗']].forEach(([a,b])=>{const d=document.createElement('div');d.className='tile';const s=document.createElement('span'),v=document.createElement('b');s.textContent=a;v.textContent=b;d.append(s,v);k.appendChild(d)});
+ const[s,w,h]=svg('c4',290,$('t4').textContent),m={l:48,r:12,t:14,b:36},n=R.length,x=i=>m.l+i/(n-1)*(w-m.l-m.r),y=v=>h-m.b-v*(h-m.t-m.b);
+ yAxis(s,w,m,y,1,v=>pc(v,0));el('line',{x1:m.l,x2:w-m.r,y1:y(V.meta),y2:y(V.meta),stroke:'var(--ink2)','stroke-dasharray':'6 4'},s);txt(s,m.l+6,y(V.meta)-6,t.meta+' '+pc(V.meta,0),{class:'lab'});
+ el('path',{d:path(R.map(q=>q.service_level),x,y),fill:'none',stroke:'var(--s1)','stroke-width':2},s);
+ R.forEach((q,i)=>{const sel=q.agents===ag;txt(s,x(i),h-m.b+18,q.agents,{'text-anchor':'middle',...(sel?{class:'lab'}:{})});
+  if(!q.stable)el('path',{d:`M${x(i)-5} ${y(q.service_level)-5}l10 10m0-10l-10 10`,stroke:'var(--crit)','stroke-width':2},s);
+  else el('circle',{cx:x(i),cy:y(q.service_level),r:sel?8:4,fill:'var(--s1)',stroke:'var(--surface)','stroke-width':2},s);
+  const hit=el('circle',{cx:x(i),cy:y(q.service_level),r:14,fill:'transparent',style:'cursor:pointer'},s);hover(hit,`${q.agents} ${t.agentes}\n${t.nivel}: ${pc(q.service_level)}\n${q.stable?t.esperaM+': '+nf(q.wait_mean_s)+' s':t.instavel}`);hit.addEventListener('click',()=>{ag=q.agents;hide();c4()})});
+ txt(s,(m.l+w-m.r)/2,h-2,t.agentes,{'text-anchor':'middle'});
+ table('d4',[t.agentes,t.nivel,t.esperaM+' (s)'],R.map(q=>[q.agents,pc(q.service_level),q.stable?nf(q.wait_mean_s,1):t.instavel]))}
+
+function c5(){const B=D.banco,get=k=>B.cenarios.find(c=>c.chave===k),m5=k=>get(k).janela.espera_media_s;
+ const real=m5('real'),ideal=m5('presenca'),ps=['pausas2','pausas5','pausas10'].map(m5),lo=Math.min(...ps),hi=Math.max(...ps);
+ $('t5').textContent=t.t5(nf(ideal),nf(real));$('p5').textContent=t.p5(B.hora,nf(B.ligacoes));$('f5').textContent=t.f5;
+ const rows=[[t.b5real,real,null,'--ink'],[t.b5ideal,ideal,null,'--s1'],[t.b5pausas,lo,hi,'--s1']];
+ const[s,w,h]=svg('c5',rows.length*72+28,$('t5').textContent),m={l:2,r:12},max=Math.ceil(hi/50)*50,x=v=>m.l+v/max*(w-m.l-m.r);
+ for(let i=0;i<=max;i+=50){el('line',{x1:x(i),x2:x(i),y1:0,y2:h-24,stroke:i?'var(--grid)':'var(--axis)'},s);txt(s,x(i),h-6,nf(i)+' s',{'text-anchor':i?(i===max?'end':'middle'):'start'})}
+ rows.forEach(([nome,a,b,cor],i)=>{const y=i*72+4,g=el('g',{},s),val=b?`${nf(a)} – ${nf(b)} s`:nf(a)+' s';
+  txt(g,m.l+6,y+13,`${nome}: ${val}`,{class:'lab'});
+  const bar=(v,op)=>el('path',{d:`M${x(0)} ${y+22}H${x(v)-4}q4 0 4 4v18q0 4 -4 4H${x(0)}z`,fill:`var(${cor})`,opacity:op},g);
+  if(b){bar(b,.35);bar(a,1)}else bar(a,1);
+  const hit=el('rect',{x:0,y,width:w,height:56,fill:'transparent'},g);hover(hit,`${nome}\n${t.metricas.espera_media_s}: ${val}`+(b?'\n'+t.faixa:''))});
+ table('d5',[t.cenario,...Object.values(t.metricas)],['real','presenca','pausas10','pausas5','pausas2'].map(k=>{const c=get(k);return[c[L==='pt'?'rotulo_pt':'rotulo_en'],...Object.keys(t.metricas).map(q=>q==='nivel_servico'?pc(c.janela[q]):nf(c.janela[q],1))]}))}
+const dark=()=>document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+function all(){t=T[L];document.documentElement.lang=L==='pt'?'pt-BR':'en';document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t[e.dataset.t]);$('lang').textContent=t.outra;$('theme').textContent=dark()?t.claro:t.escuro;c1();c2();c3();c4();c5()}
+$('lang').onclick=()=>{L=L==='pt'?'en':'pt';all()};
+$('theme').onclick=()=>{document.documentElement.dataset.theme=dark()?'light':'dark';all()};
+$('sl').addEventListener('input',e=>{ag=+e.target.value;c4()});
+let rz,lw=innerWidth;addEventListener('resize',()=>{if(innerWidth===lw)return;lw=innerWidth;clearTimeout(rz);rz=setTimeout(all,150)});
+addEventListener('scroll',hide,{passive:true});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>all());
+all();
+</script>
+</body>
+</html>
