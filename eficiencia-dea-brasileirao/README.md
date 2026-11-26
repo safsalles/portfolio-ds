@@ -6,7 +6,7 @@ Quem entrega mais do que os minutos em campo e o tamanho do clube fariam esperar
 
 <sub>\* Dados coletados em 22/11/2026, antes do fim da temporada. Série A: rodadas 1 a 35 completas e 3 dos 10 jogos da 36ª (353 de 380 partidas). Série B: as 38 rodadas da fase regular, sem os playoffs de acesso. Copa do Brasil e Libertadores ainda sem a final.</sub>
 
-**Painel interativo:** baixe o arquivo [painel/index.html](painel/index.html) e abra no navegador. Ele tem os eficientes por posição, os eficientes e baratos, a ficha de cada jogador, os clubes e o passo a passo do método.
+**[Abrir o painel interativo](https://safsalles.github.io/portfolio-ds/eficiencia-dea-brasileirao/painel/)**: eficientes por posição, eficientes e baratos, ficha de cada jogador, clubes e o passo a passo do método.
 
 ## Objetivo e artigo de origem
 

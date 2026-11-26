@@ -6,7 +6,7 @@ Who delivers more than their minutes on the pitch and the size of their club wou
 
 <sub>\* Data collected on 22 November 2026, before the end of the season. Série A: rounds 1 to 35 complete plus 3 of the 10 matches of round 36 (353 of 380 matches). Série B: all 38 rounds of the regular stage, without the promotion play-offs. Copa do Brasil and Libertadores still without their finals.</sub>
 
-**Interactive dashboard** (in Portuguese): download [painel/index.html](painel/index.html) and open it in a browser. It shows efficient players by position, efficient low-priced players, a page for each player, the clubs and the method step by step.
+**[Open the interactive dashboard](https://safsalles.github.io/portfolio-ds/eficiencia-dea-brasileirao/painel/)** (in Portuguese): efficient players by position, efficient low-priced players, a page for each player, the clubs and the method step by step.
 
 ## Objective and source paper
 
