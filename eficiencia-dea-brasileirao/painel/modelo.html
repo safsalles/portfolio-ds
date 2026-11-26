@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eficiência no Brasileirão 2026</title>
+<style>
+:root{--fundo:#f4f3ef;--cartao:#fcfcfb;--tinta:#0b0b0b;--tinta2:#52514e;--grade:#e4e3df;--a:#2a78d6;--b:#eb6834;--apagado:#b9b7b0;--realce:#e8f0fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fundo:#111110;--cartao:#1a1a19;--tinta:#f2f1ec;--tinta2:#b4b2aa;--grade:#33322f;--a:#3987e5;--b:#d95926;--apagado:#5c5a55;--realce:#1d2a3b}}
+:root[data-theme="dark"]{--fundo:#111110;--cartao:#1a1a19;--tinta:#f2f1ec;--tinta2:#b4b2aa;--grade:#33322f;--a:#3987e5;--b:#d95926;--apagado:#5c5a55;--realce:#1d2a3b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fundo);color:var(--tinta);font:15px/1.5 "Segoe UI",system-ui,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:18px;margin:0 0 4px}
+h3{font-size:15px;margin:20px 0 6px}
+p{margin:0 0 10px}
+.sub{color:var(--tinta2)}
+a{color:var(--a)}
+.numeros{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:16px 0}
+.numero,.cartao{background:var(--cartao);border:1px solid var(--grade);border-radius:10px}
+.numero{padding:12px 14px}
+.numero b{display:block;font-size:24px}
+.numero span{color:var(--tinta2);font-size:13px}
+.cartao{padding:16px}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin:8px 0 12px;border-bottom:1px solid var(--grade)}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--tinta2);font:inherit;padding:8px 12px;cursor:pointer}
+nav button[aria-selected="true"]{color:var(--tinta);border-bottom-color:var(--a);font-weight:600}
+.filtros{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px}
+label{font-size:13px;color:var(--tinta2);display:flex;flex-direction:column;gap:2px}
+select,input{font:inherit;color:var(--tinta);background:var(--cartao);border:1px solid var(--grade);border-radius:6px;padding:6px 8px;min-width:150px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--tinta2);font-size:12px}
+svg text.forte{fill:var(--tinta)}
+.rolagem{overflow-x:auto}
+.legenda{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--tinta2);margin:6px 0}
+.ponto{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.marca{cursor:pointer;outline:none}
+.marca:hover circle.m,.marca:focus circle.m{stroke:var(--tinta);stroke-width:2}
+.marca:hover rect.alvo,.marca:focus rect.alvo{fill:var(--realce)}
+#dica{position:fixed;pointer-events:none;background:var(--cartao);color:var(--tinta);border:1px solid var(--tinta2);border-radius:8px;padding:8px 10px;font-size:13px;max-width:280px;display:none;z-index:9;white-space:pre-line}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--grade);white-space:nowrap}
+th{color:var(--tinta2);font-weight:600;font-size:13px}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+button.link{background:none;border:0;padding:0;font:inherit;color:var(--a);cursor:pointer;text-decoration:underline}
+.barra{display:grid;grid-template-columns:minmax(120px,220px) 1fr 44px;gap:10px;align-items:center;margin:6px 0}
+.barra .trilho{height:10px;background:var(--grade);border-radius:4px;position:relative}
+.barra .cheio{height:10px;background:var(--a);border-radius:4px}
+.barra .meio{position:absolute;left:50%;top:-3px;width:1px;height:16px;background:var(--tinta2)}
+.barra small{color:var(--tinta2)}
+.barra output{text-align:right;font-variant-numeric:tabular-nums}
+.selo{display:inline-block;border:1px solid var(--grade);border-radius:99px;padding:2px 10px;font-size:13px;margin-right:6px}
+.selo.sim{border-color:var(--a);background:var(--realce);font-weight:600}
+.fluxo{list-style:none;margin:16px auto 0;padding:0;max-width:760px}
+.fluxo li{border:1px solid var(--grade);border-left:4px solid var(--a);border-radius:8px;padding:12px 14px;margin:0 0 10px}
+.fluxo li:last-child{margin-bottom:0}
+.fluxo h3{margin:0 0 4px}
+.fluxo p{margin:0}
+.fluxo .porque{color:var(--tinta2);margin-top:6px}
+svg .no rect{fill:var(--cartao);stroke:var(--tinta2)}
+svg .no.fonte rect{fill:var(--realce);stroke:var(--a);stroke-width:1.5}
+svg .no.extra rect{stroke-dasharray:5 4}
+svg .no text{text-anchor:middle;font-size:12.5px}
+svg .no text.forte{font-weight:600;font-size:13px}
+svg .liga{fill:none;stroke:var(--tinta2)}
+svg .liga.extra{stroke-dasharray:5 4}
+details summary{cursor:pointer;margin-top:20px;font-weight:600}
+.aviso{font-size:13px;color:var(--tinta2);margin:-4px 0 0}
+footer{color:var(--tinta2);font-size:13px;margin-top:24px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Eficiência de jogadores no Brasileirão 2026</h1>
+  <p class="sub">Quem entrega mais do que os minutos em campo e o tamanho do clube fariam esperar? Séries A e B*, com DEA e pesos por posição.</p>
+  <p class="aviso">* Dados coletados em 22/11/2026, antes do fim da temporada. Série A: rodadas 1 a 35 completas e 3 dos 10 jogos da 36ª (353 de 380 partidas). Série B: as 38 rodadas da fase regular, sem os playoffs de acesso. Copa do Brasil e Libertadores ainda sem a final.</p>
+  <div class="numeros" id="numeros"></div>
+  <nav role="tablist" id="abas"></nav>
+  <div class="filtros">
+    <label id="fPosL">Posição<select id="fPos"></select></label>
+    <label id="fSerieL">Série<select id="fSerie"><option value="">A e B</option><option value="A">Série A</option><option value="B">Série B</option></select></label>
+    <label id="fNomeL">Jogador ou clube<input id="fNome" list="nomes" placeholder="Digite um nome" autocomplete="off"><datalist id="nomes"></datalist></label>
+  </div>
+  <section class="cartao" id="conteudo" aria-live="polite"></section>
+  <footer>
+    Projeto de <a href="https://github.com/safsalles/portfolio-ds/tree/main/eficiencia-dea-brasileirao">portfólio</a>, a partir do artigo
+    <a href="https://doi.org/10.4322/PODes.2018.002">Salles et al. (2018)</a>. Eficiência é relativa ao grupo de posição e às variáveis escolhidas; não é uma nota geral de qualidade.
+  </footer>
+</main>
+<div id="dica" role="tooltip"></div>
+<script id="dados" type="application/json">__DADOS__</script>
+<script>
+const D = JSON.parse(document.getElementById("dados").textContent);
+const J = D.jogadores, C = D.clubes;
+const $ = id => document.getElementById(id);
+const f = (v, c = 2) => v == null ? "sem par" : v.toLocaleString("pt-BR", {minimumFractionDigits: c, maximumFractionDigits: c});
+const ABAS = [["fronteira", "Quem passa da fronteira"], ["baratos", "Eficientes e baratos"], ["jogador", "Ficha do jogador"], ["clubes", "Clubes"], ["metodo", "Como foi feito"]];
+const estado = {aba: "fronteira", pos: "Atacante", serie: "", jogador: null};
+
+function el(tag, attrs = {}, ...filhos) {
+  const svg = ["svg", "g", "line", "circle", "rect", "text", "path", "defs", "marker"].includes(tag);
+  const n = svg ? document.createElementNS("http://www.w3.org/2000/svg", tag) : document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) k.startsWith("on") ? n.addEventListener(k.slice(2), v) : n.setAttribute(k, v);
+  n.append(...filhos.filter(x => x != null));
+  return n;
+}
+function dica(no, texto) {
+  const d = $("dica");
+  const por = (x, y) => {
+    d.textContent = texto; d.style.display = "block";
+    d.style.left = Math.max(8, Math.min(x + 14, innerWidth - d.offsetWidth - 8)) + "px";
+    d.style.top = Math.max(8, Math.min(y + 14, innerHeight - d.offsetHeight - 8)) + "px";
+  };
+  no.addEventListener("mousemove", e => por(e.clientX, e.clientY));
+  no.addEventListener("focus", () => { const r = no.getBoundingClientRect(); por(r.left, r.bottom); });
+  for (const ev of ["mouseleave", "blur"]) no.addEventListener(ev, () => d.style.display = "none");
+}
+function marca(rotulo, texto, acao, ...filhos) {
+  const g = el("g", {class: "marca", tabindex: 0, role: "button", "aria-label": rotulo, onclick: acao,
+    onkeydown: e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); acao(); } }}, ...filhos);
+  dica(g, texto);
+  return g;
+}
+function abrir(j) { estado.aba = "jogador"; estado.jogador = j.id; $("fNome").value = rotulo(j); desenhar(); scrollTo({top: 0}); }
+const rotulo = j => `${j.nome} (${j.time})`;
+const filtrados = () => J.filter(j => (!estado.pos || j.pos === estado.pos) && (!estado.serie || j.serie === estado.serie));
+const legendaSeries = () => el("div", {class: "legenda"},
+  el("span", {}, el("span", {class: "ponto", style: "background:var(--a)"}), "Série A"),
+  el("span", {}, el("span", {class: "ponto", style: "background:var(--b)"}), "Série B"));
+const cor = s => s === "A" ? "var(--a)" : "var(--b)";
+function tabela(cab, linhas) {
+  return el("div", {class: "rolagem"}, el("table", {},
+    el("thead", {}, el("tr", {}, ...cab.map(([t, n]) => el("th", n ? {class: "n"} : {}, t)))),
+    el("tbody", {}, ...linhas.map(l => el("tr", {}, ...l.map((v, i) => el("td", cab[i][1] ? {class: "n"} : {}, v)))))));
+}
+const link = j => el("button", {class: "link", onclick: () => abrir(j)}, j.nome);
+
+function fronteira(raiz) {
+  const lista = filtrados().filter(j => j.ef).sort((x, y) => x.grupo.localeCompare(y.grupo) || (y.acima ?? 99) - (x.acima ?? 99));
+  raiz.append(el("h2", {}, `${estado.pos || "Todas as posições"}: eficientes e quanto passam da fronteira`),
+    el("p", {class: "sub"}, "1,00 é a fronteira formada pelos demais jogadores do grupo; 1,60 é ir 60% além dela. Passe o mouse para ver o que sustenta o jogador e clique para abrir a ficha."),
+    legendaSeries());
+  if (!lista.length) { raiz.append(el("p", {}, "Nenhum eficiente com esse filtro.")); return; }
+  const L = 700, x0 = 270, x1 = 520, passo = 24, teto = 2;
+  const grupos = [...new Set(lista.map(j => j.grupo))];
+  const H = 30 + lista.length * passo + grupos.length * 24;
+  const s = el("svg", {viewBox: `0 0 ${L} ${H}`, style: "min-width:620px"});
+  const X = v => x0 + (Math.min(v ?? teto, teto) - 1) / (teto - 1) * (x1 - x0);
+  for (const t of [1, 1.25, 1.5, 1.75, 2]) s.append(
+    el("line", {x1: X(t), x2: X(t), y1: 18, y2: H, stroke: t === 1 ? "var(--tinta2)" : "var(--grade)"}),
+    el("text", {x: X(t), y: 12, "text-anchor": "middle"}, (t === 2 ? "≥ " : "") + f(t)));
+  s.append(el("text", {x: x1 + 60, y: 12, class: "forte"}, "Critério decisivo"));
+  let y = 22, grupo = "";
+  for (const j of lista) {
+    if (j.grupo !== grupo) { grupo = j.grupo; y += 24; s.append(el("text", {x: 0, y: y - 6, class: "forte", "font-weight": "bold"}, grupo)); }
+    const m = y + passo / 2;
+    const quedas = j.sem.map(([k, v]) => `Sem ${k.toLowerCase()}: ${f(v)}`).join("\n");
+    s.append(marca(`${rotulo(j)}, ${f(j.acima)}`,
+      `${rotulo(j)}, Série ${j.serie}\nAlém da fronteira: ${f(j.acima)}\n${quedas}`, () => abrir(j),
+      el("rect", {class: "alvo", x: 0, y, width: L, height: passo, fill: "transparent"}),
+      el("text", {x: x0 - 12, y: m + 4, "text-anchor": "end", class: "forte"}, rotulo(j)),
+      el("line", {x1: x0, x2: X(j.acima), y1: m, y2: m, stroke: "var(--grade)", "stroke-width": 3}),
+      el("circle", {class: "m", cx: X(j.acima), cy: m, r: 6, fill: cor(j.serie)}),
+      el("text", {x: X(j.acima) + 12, y: m + 4}, f(j.acima)),
+      el("text", {x: x1 + 60, y: m + 4}, j.decisivo)));
+    y += passo;
+  }
+  raiz.append(el("div", {class: "rolagem"}, s));
+}
+
+function baratos(raiz) {
+  const todos = filtrados();
+  const alvo = todos.filter(j => j.ef && j.valorPct < 100);
+  raiz.append(el("h2", {}, `${estado.pos || "Todas as posições"}: eficiência contra valor de mercado`),
+    el("p", {class: "sub"}, "Na vertical, quem não é eficiente aparece pela nota (abaixo de 1,0) e o eficiente, por quanto passa da fronteira. O valor é comparado com a mediana do grupo (100%), em escala logarítmica. Interessa o canto superior esquerdo."),
+    el("div", {class: "legenda"},
+      el("span", {}, el("span", {class: "ponto", style: "background:var(--a)"}), "Eficiente, Série A"),
+      el("span", {}, el("span", {class: "ponto", style: "background:var(--b)"}), "Eficiente, Série B"),
+      el("span", {}, el("span", {class: "ponto", style: "background:var(--apagado)"}), "Não eficiente")));
+  const com = todos.filter(j => j.valorPct > 0);
+  if (!com.length) { raiz.append(el("p", {}, "Sem jogadores com esse filtro.")); return; }
+  const L = 800, H = 420, m = {e: 46, d: 12, t: 12, b: 40};
+  const lo = Math.log10(Math.min(50, ...com.map(j => j.valorPct))), hi = Math.log10(Math.max(200, ...com.map(j => j.valorPct)));
+  const alt = j => j.ef ? Math.min(j.acima ?? 2, 2) : j.nota;
+  const piso = Math.floor(Math.min(...com.map(alt)) * 5) / 5;
+  const X = v => m.e + (Math.log10(v) - lo) / (hi - lo) * (L - m.e - m.d);
+  const Y = v => m.t + (2 - v) / (2 - piso) * (H - m.t - m.b);
+  const s = el("svg", {viewBox: `0 0 ${L} ${H}`, style: "min-width:560px"});
+  for (let i = Math.round(piso * 5); i <= 10; i++) s.append(
+    el("line", {x1: m.e, x2: L - m.d, y1: Y(i / 5), y2: Y(i / 5), stroke: i === 5 ? "var(--tinta2)" : "var(--grade)"}),
+    el("text", {x: m.e - 8, y: Y(i / 5) + 4, "text-anchor": "end"}, (i === 10 ? "≥ " : "") + f(i / 5, 1)));
+  for (const t of [1, 3, 10, 30, 100, 300, 1000, 3000, 10000]) if (Math.log10(t) >= lo && Math.log10(t) <= hi) s.append(
+    el("line", {x1: X(t), x2: X(t), y1: m.t, y2: H - m.b, stroke: t === 100 ? "var(--tinta2)" : "var(--grade)"}),
+    el("text", {x: X(t), y: H - m.b + 16, "text-anchor": "middle"}, f(t, 0) + "%"));
+  s.append(el("text", {x: (L + m.e) / 2, y: H - 4, "text-anchor": "middle"}, "Valor de mercado em relação à mediana do grupo"),
+    el("text", {x: 12, y: H / 2, "text-anchor": "middle", transform: `rotate(-90 12 ${H / 2})`}, "Posição em relação à fronteira"));
+  for (const j of [...com].sort((a, b) => a.ef - b.ef)) s.append(marca(rotulo(j),
+    `${rotulo(j)}, ${j.grupo}\n${j.ef ? "Eficiente, além da fronteira: " + f(j.acima) : "Nota: " + f(j.nota)}\nValor: ${f(j.valorPct, 0)}% da mediana`, () => abrir(j),
+    el("circle", {class: "m", cx: X(j.valorPct), cy: Y(alt(j)), r: j.ef ? 6 : 4, fill: j.ef ? cor(j.serie) : "var(--apagado)", stroke: "var(--cartao)", "stroke-width": 1.5})));
+  raiz.append(el("div", {class: "rolagem"}, s), el("h3", {}, `Eficientes abaixo da mediana (${alvo.length})`),
+    el("p", {class: "sub"}, "Ordenados pela eficiência cruzada, em que cada jogador é avaliado também com os pesos dos colegas de grupo."),
+    tabela([["Jogador"], ["Clube"], ["Série"], ["Grupo"], ["% da mediana", 1], ["Eficiência cruzada", 1]],
+      alvo.sort((a, b) => b.cruzada - a.cruzada).map(j => [link(j), j.time, j.serie, j.grupo, f(j.valorPct, 0) + "%", f(j.cruzada)])));
+}
+
+function barra(nome, extra, pct, texto) {
+  return el("div", {class: "barra"}, el("div", {}, nome, el("br"), el("small", {}, extra)),
+    el("div", {class: "trilho"}, el("div", {class: "cheio", style: `width:${pct}%`}), el("div", {class: "meio"})),
+    el("output", {}, texto));
+}
+function jogador(raiz) {
+  const j = J.find(x => x.id === estado.jogador);
+  if (!j) {
+    const termo = $("fNome").value.trim().toLocaleLowerCase("pt-BR");
+    const achados = J.filter(x => (!estado.serie || x.serie === estado.serie) && (!estado.pos || x.pos === estado.pos) && rotulo(x).toLocaleLowerCase("pt-BR").includes(termo))
+      .sort((a, b) => b.nota - a.nota || b.cruzada - a.cruzada);
+    raiz.append(el("h2", {}, "Escolha um jogador"), el("p", {class: "sub"}, `${achados.length} com esse filtro${achados.length > 50 ? "; mostrando os 50 primeiros pela nota" : ""}.`),
+      tabela([["Jogador"], ["Clube"], ["Grupo"], ["Nota", 1], ["Posição no grupo", 1]],
+        achados.slice(0, 50).map(x => [link(x), x.time, x.grupo, f(x.nota), `${x.rank}º de ${x.n}`])));
+    return;
+  }
+  raiz.append(el("h2", {}, j.nome), el("p", {class: "sub"}, `${j.time}, Série ${j.serie}. ${j.grupo}.`),
+    el("p", {}, el("span", {class: j.ef ? "selo sim" : "selo"}, j.ef ? "Eficiente" : "Não eficiente"),
+      el("span", {class: "selo"}, `Nota ${f(j.nota)}`), el("span", {class: "selo"}, `${j.rank}º de ${j.n} no grupo`),
+      el("span", {class: "selo"}, `Valor: ${f(j.valorPct, 0)}% da mediana`)),
+    el("h3", {}, "Onde se destaca no grupo"),
+    el("p", {class: "sub"}, "Posição relativa por 90 minutos, de 0 a 100 (média dos itens da categoria). O traço marca o meio do grupo. É um retrato à parte: o DEA usa totais, minutos e o valor do clube."),
+    ...j.cats.map(([n, w, p]) => barra(n, `peso ${w}%`, p, String(p))),
+    el("h3", {}, "Como a nota muda com o modelo"),
+    tabela([["Modelo"], ["Nota", 1]], [["Principal, com os pesos de cada categoria", f(j.nota)], ["Leve, com metade dos pesos como mínimo", f(j.leve)],
+      ["Sem restrição de pesos, como em 2018", f(j.livre)], ["Eficiência cruzada", f(j.cruzada)]]));
+  if (j.ef) {
+    raiz.append(el("h3", {}, `Critério decisivo: ${j.decisivo}`),
+      el("p", {class: "sub"}, "Quanto o jogador passa da fronteira ao refazer a conta sem cada categoria. Abaixo de 1,00 ele deixa de ser eficiente."),
+      tabela([["Cenário"], ["Além da fronteira", 1]], [["Com todas as categorias", f(j.acima)], ...j.sem.map(([k, v]) => [`Sem ${k.toLowerCase()}`, f(v)])]));
+  } else {
+    if (j.ref.length) raiz.append(el("h3", {}, "Referências no grupo"), el("p", {}, j.ref.join(", ")));
+    if (j.melhorar.length) raiz.append(el("h3", {}, "Maiores distâncias até a fronteira"), el("p", {}, j.melhorar.join("; ")),
+      el("p", {class: "sub"}, "Aumento que o alvo do modelo pede em cada item; o limite exibido é 999%."));
+  }
+}
+
+function clubes(raiz) {
+  const lista = C.filter(c => !estado.serie || c.serie === estado.serie);
+  raiz.append(el("h2", {}, "Clubes: nota média dos jogadores contra pontos por jogo"),
+    el("p", {class: "sub"}, "Cada ponto é um clube. Passe o mouse para ver os detalhes. A tabela abaixo ordena pelo percentual de eficientes, porque o número de avaliados varia."),
+    legendaSeries());
+  const L = 800, H = 420, m = {e: 46, d: 90, t: 12, b: 40};
+  const ex = (k, p) => [Math.floor(Math.min(...C.map(c => c[k])) / p) * p, Math.ceil(Math.max(...C.map(c => c[k])) / p) * p];
+  const [a0, a1] = ex("nota", .05), [b0, b1] = ex("pts", .5);
+  const X = v => m.e + (v - a0) / (a1 - a0) * (L - m.e - m.d), Y = v => m.t + (b1 - v) / (b1 - b0) * (H - m.t - m.b);
+  const s = el("svg", {viewBox: `0 0 ${L} ${H}`, style: "min-width:560px"});
+  for (let i = 0; i <= Math.round((b1 - b0) / .5); i++) { const v = b0 + i * .5; s.append(
+    el("line", {x1: m.e, x2: L - m.d, y1: Y(v), y2: Y(v), stroke: "var(--grade)"}), el("text", {x: m.e - 8, y: Y(v) + 4, "text-anchor": "end"}, f(v, 1))); }
+  for (let i = 0; i <= Math.round((a1 - a0) / .05); i++) { const v = a0 + i * .05; s.append(
+    el("line", {x1: X(v), x2: X(v), y1: m.t, y2: H - m.b, stroke: "var(--grade)"}), el("text", {x: X(v), y: H - m.b + 16, "text-anchor": "middle"}, f(v))); }
+  s.append(el("text", {x: (L - m.d + m.e) / 2, y: H - 4, "text-anchor": "middle"}, "Nota média dos jogadores avaliados"),
+    el("text", {x: 12, y: H / 2, "text-anchor": "middle", transform: `rotate(-90 12 ${H / 2})`}, "Pontos por jogo*"));
+  const marcados = new Set();
+  for (const k of ["nota", "pts"]) { const o = [...lista].sort((a, b) => b[k] - a[k]); [o[0], o[1], o.at(-1)].forEach(c => c && marcados.add(c)); }
+  for (const c of lista) s.append(marca(c.time,
+    `${c.time}, Série ${c.serie} (${c.colocacao}º)\nNota média: ${f(c.nota)}\nPontos por jogo: ${f(c.pts)}\nEficientes: ${c.eficientes} de ${c.avaliados} (${f(c.pct, 0)}%)`,
+    () => { estado.aba = "jogador"; estado.jogador = null; estado.pos = ""; $("fNome").value = c.time; desenhar(); },
+    el("circle", {class: "m", cx: X(c.nota), cy: Y(c.pts), r: 7, fill: cor(c.serie), stroke: "var(--cartao)", "stroke-width": 2}),
+    marcados.has(c) ? el("text", {x: X(c.nota) + 11, y: Y(c.pts) + 4, class: "forte"}, c.time) : null));
+  raiz.append(el("div", {class: "rolagem"}, s), el("h3", {}, "Todos os clubes"),
+    tabela([["Clube"], ["Série"], ["Colocação", 1], ["Pontos por jogo", 1], ["Nota média", 1], ["Eficientes", 1], ["Avaliados", 1], ["% eficientes", 1]],
+      [...lista].sort((a, b) => b.pct - a.pct || b.nota - a.nota).map(c => [c.time, c.serie, `${c.colocacao}º`, f(c.pts), f(c.nota), String(c.eficientes), String(c.avaliados), f(c.pct, 0) + "%"])));
+}
+
+const ETAPAS = [
+  ["Pergunta", "Quem entrega mais do que os minutos em campo e o tamanho do clube fariam esperar?",
+   "A pergunta vem do artigo de 2018, que usou DEA em sete campeonatos europeus. Aqui ela vai para o futebol brasileiro, com foco em um uso prático."],
+  ["Dados*", "Estatísticas do FotMob por partida, de cinco competições de 2026: Série A, Série B, Copa do Brasil, Libertadores e Sul-Americana. Só jogadores dos 40 clubes das Séries A e B.",
+   "O dado por partida mostra onde cada um jogou nas escalações. As copas aumentam os minutos observados de cada jogador."],
+  ["Filtro de minutos", "Metade com mais minutos, a partir de 899: 739 de 1.477 jogadores.",
+   "É a regra do artigo de 2018 e evita julgar quem quase não jogou. Com 600, 1.200 e 1.500 minutos as conclusões se mantêm."],
+  ["Dez grupos de posição", "Goleiro, zagueiro, lateral, volante, meia atacante, ponta e atacante; zagueiro, lateral e ponta divididos em direita e esquerda.",
+   "Cada jogador só é comparado com quem faz função parecida. O lado do zagueiro é o mais atuado e, em caso de empate, o do pé preferido."],
+  ["Variáveis do modelo", "Entradas: minutos e valor do elenco (em logaritmo); no ataque, também xG + xA. Saídas: ações escolhidas por posição, com os erros reunidos em um índice.",
+   "O valor bruto do elenco invertia a comparação entre as séries. xG e xA separados criavam entradas demais. Saídas muito correlacionadas (|r| ≥ 0,60) foram cortadas, preservando gols, assistências e grandes chances criadas."],
+  ["Pesos por categoria (AHP)", "Cada categoria responde por uma fatia fixa da nota, definida por comparações de importância feitas pelo autor.",
+   "Sem restrição, cada jogador escolhe os pesos que mais o favorecem e 52,5% seriam eficientes. O AHP dá um procedimento reconhecido para os pesos, embora sejam julgamentos de uma só pessoa."],
+  ["DEA", "CCR com restrição de pesos como modelo principal: 13,8% eficientes. Comparado a CCR livre, BCC, supereficiência, eficiência cruzada e TOPSIS.",
+   "O DEA junta várias entradas e saídas sem reduzir o futebol a um único número de gols. A comparação mostra quanto o resultado depende do método."],
+  ["Explicação dos resultados", "Distância além da fronteira, critério decisivo e árvores de decisão por posição.",
+   "A nota para em 1 e não diz quem se destaca mais nem por quê. As árvores são só um resumo aproximado e erram bastante em jogadores que não viram."],
+  ["Testes", "Cortes de minutos, comparação com xG sem DEA, relação com valor de mercado e idade, e desempenho dos clubes.",
+   "Servem para ver se as conclusões se sustentam e repetir as duas hipóteses do artigo."]];
+function fluxograma() {
+  const L = 980, W = 224, A = 92, cx = [112, 364, 616, 868], linha = i => 10 + i * 136;
+  const nos = {
+    art: [cx[0], 0, "fonte", "Artigo de 2018", "Dá: pergunta, método,", "filtro e hipóteses"],
+    part: [cx[1], 0, "fonte", "FotMob, por partida*", "Dá: estatísticas e escalações", "5 competições, 40 clubes"],
+    perf: [cx[2], 0, "fonte", "FotMob, perfil", "Dá: posição, pé, idade", "e valor de mercado"],
+    base: [490, 1, "", "Uma linha por jogador", "10 grupos de posição,", "para comparar funções parecidas"],
+    fil: [490, 2, "", "Filtro de minutos", "739 de 1.477 jogadores,", "regra do artigo"],
+    out: [cx[0], 3, "", "Saídas por posição", "sem variáveis redundantes,", "erros em um índice"],
+    ent: [cx[1], 3, "", "Entradas", "minutos e valor do elenco", "em logaritmo"],
+    xg: [cx[2], 3, "extra", "Só no ataque", "xG + xA entra como", "mais uma entrada"],
+    ahp: [cx[3], 3, "fonte", "Pesos por categoria (AHP)", "julgamentos do autor; sem eles,", "52,5% seriam eficientes"],
+    dea: [490, 4, "", "DEA principal", "CCR com restrição de pesos:", "13,8% eficientes"],
+    min: [cx[3], 4, "extra", "Outros cortes de minutos", "600, 1.200 e 1.500:", "as conclusões se mantêm"],
+    comp: [cx[0], 5, "", "Cinco outros métodos", "quanto o resultado", "depende da escolha"],
+    test: [cx[1], 5, "", "Hipóteses e clubes", "valor, idade e pontos", "por jogo nas tabelas*"],
+    bar: [cx[2], 5, "", "Eficientes e baratos", "o uso prático:", "quem entrega e vale pouco"],
+    exp: [cx[3], 5, "", "Por que é eficiente", "além da fronteira e", "critério decisivo"],
+    soxg: [cx[0], 6, "extra", "Só xG, sem DEA", "uma medida basta", "para julgar o ataque?"],
+    arv: [cx[3], 6, "extra", "Árvores de decisão", "resumo aproximado,", "erra em casos novos"]};
+  const s = el("svg", {viewBox: `0 0 ${L} ${linha(6) + A + 10}`, style: "min-width:760px;margin-top:16px", role: "img",
+    "aria-label": "Fluxograma: fontes, preparo dos dados, modelo DEA e análises. A lista abaixo explica cada escolha."});
+  s.append(el("defs", {}, el("marker", {id: "seta", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 8, markerHeight: 8, orient: "auto"},
+    el("path", {d: "M0 0L10 5L0 10z", fill: "var(--tinta2)"}))));
+  const liga = (d, extra) => s.append(el("path", {d, class: extra ? "liga extra" : "liga", "marker-end": "url(#seta)"}));
+  const desce = (de, para, extra, dx = 0) => {
+    const [x1, l1] = nos[de], [x2, l2] = nos[para], y2 = linha(l2);
+    liga(`M${x1} ${linha(l1) + A}V${y2 - 22}H${x2 + dx}V${y2}`, extra);
+  };
+  desce("art", "base", true, -50); desce("part", "base"); desce("perf", "base", false, 50); desce("base", "fil");
+  desce("fil", "out"); desce("fil", "ent"); desce("fil", "xg", true);
+  desce("out", "dea", false, -60); desce("ent", "dea", false, -20); desce("xg", "dea", true, 20); desce("ahp", "dea", false, 60);
+  const direita = 490 + W / 2, esquerda = cx[3] - W / 2;
+  liga(`M${esquerda} ${linha(4) + A / 2}H${direita}`, true);
+  s.append(el("text", {x: (esquerda + direita) / 2, y: linha(4) + A / 2 - 6, "text-anchor": "middle"}, "confere"));
+  for (const k of ["comp", "test", "bar", "exp"]) desce("dea", k);
+  desce("comp", "soxg", true); desce("exp", "arv", true);
+  for (const [x, l, tipo, ...textos] of Object.values(nos)) s.append(el("g", {class: `no ${tipo}`},
+    el("rect", {x: x - W / 2, y: linha(l), width: W, height: A, rx: 8}),
+    ...textos.map((v, i) => el("text", {x, y: linha(l) + 28 + i * 22, class: i ? "" : "forte"}, v))));
+  return el("div", {class: "rolagem"}, s);
+}
+function metodo(raiz) {
+  raiz.append(el("h2", {}, "Etapas do projeto e motivo das escolhas"),
+    el("p", {class: "sub"}, "Caixas azuis são fontes; tracejadas, caminhos paralelos ou de verificação."), fluxograma(),
+    el("details", {}, el("summary", {}, "Motivo de cada escolha"),
+      el("ol", {class: "fluxo"}, ...ETAPAS.map(([t, o, p], i) => el("li", {}, el("h3", {}, `${i + 1}. ${t}`), el("p", {}, o),
+        el("p", {class: "porque"}, el("strong", {}, "Por quê: "), p))))));
+}
+
+function desenhar() {
+  $("dica").style.display = "none";
+  $("abas").replaceChildren(...ABAS.map(([k, t]) => el("button", {role: "tab", "aria-selected": k === estado.aba,
+    onclick: () => { estado.aba = k; if (k === "jogador") { estado.jogador = null; $("fNome").value = ""; } desenhar(); }}, t)));
+  $("fPos").value = estado.pos;
+  $("fPosL").hidden = ["clubes", "metodo"].includes(estado.aba);
+  $("fSerieL").hidden = estado.aba === "metodo";
+  $("fNomeL").hidden = estado.aba !== "jogador";
+  for (const id of ["fPosL", "fSerieL", "fNomeL"]) $(id).style.display = $(id).hidden ? "none" : "";
+  const raiz = $("conteudo");
+  raiz.replaceChildren();
+  ({fronteira, baratos, jogador, clubes, metodo})[estado.aba](raiz);
+}
+
+const ef = J.filter(j => j.ef).length;
+$("numeros").append(...[[String(J.length), "jogadores avaliados"], [`${f(ef / J.length * 100, 1)}%`, `são eficientes (${ef})`],
+  [`${f(J.filter(j => j.livre >= 0.9999).length / J.length * 100, 1)}%`, "seriam sem os pesos por categoria"],
+  [String(J.filter(j => j.ef && j.valorPct < 100).length), "eficientes valem menos que a mediana"]]
+  .map(([v, t]) => el("div", {class: "numero"}, el("b", {}, v), el("span", {}, t))));
+$("fPos").append(el("option", {value: ""}, "Todas"), ...D.ordem.map(p => el("option", {value: p}, p)));
+$("nomes").append(...J.map(j => el("option", {value: rotulo(j)})));
+$("fPos").addEventListener("change", e => { estado.pos = e.target.value; estado.jogador = null; if (estado.aba === "jogador") $("fNome").value = ""; desenhar(); });
+$("fSerie").addEventListener("change", e => { estado.serie = e.target.value; estado.jogador = null; if (estado.aba === "jogador") $("fNome").value = ""; desenhar(); });
+$("fNome").addEventListener("input", e => { const j = J.find(x => rotulo(x) === e.target.value); estado.jogador = j ? j.id : null; if (j) estado.pos = j.pos; desenhar(); });
+desenhar();
+</script>
+</body>
+</html>

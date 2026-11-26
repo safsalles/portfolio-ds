@@ -2,7 +2,11 @@
 
 *Read in: [Português](README.md)*
 
-Who delivers more than their minutes on the pitch and the size of their club would suggest? This project measures the efficiency of players from the 2026 Brazilian first (Série A) and second (Série B) divisions, by position, using Data Envelopment Analysis (DEA). The charts are labelled in Portuguese.
+Who delivers more than their minutes on the pitch and the size of their club would suggest? This project measures the efficiency of players from the 2026 Brazilian first (Série A) and second (Série B) divisions\*, by position, using Data Envelopment Analysis (DEA). The charts are labelled in Portuguese.
+
+<sub>\* Data collected on 22 November 2026, before the end of the season. Série A: rounds 1 to 35 complete plus 3 of the 10 matches of round 36 (353 of 380 matches). Série B: all 38 rounds of the regular stage, without the promotion play-offs. Copa do Brasil and Libertadores still without their finals.</sub>
+
+**Interactive dashboard** (in Portuguese): download [painel/index.html](painel/index.html) and open it in a browser. It shows efficient players by position, efficient low-priced players, a page for each player, the clubs and the method step by step.
 
 ## Objective and source paper
 
@@ -27,9 +31,74 @@ The shares of efficient players are not directly comparable, because the sample,
 
 ![Efficient players by position](figuras/eficientes_por_posicao.png)
 
+## Steps and methodology
+
+```mermaid
+flowchart LR
+    classDef fonte fill:#1f3a5f,stroke:#7aa2d6,color:#ffffff
+    classDef etapa fill:#2f2f2f,stroke:#9a9a9a,color:#ffffff
+    classDef extra fill:#3d3d3d,stroke:#9a9a9a,stroke-dasharray:4 3,color:#e6e6e6
+
+    ART["2018 paper<br/>Gives: question, method,<br/>filter and hypotheses"]:::fonte
+    PART["FotMob, match level*<br/>Gives: statistics and line-ups<br/>5 competitions, 40 clubs"]:::fonte
+    PERF["FotMob, profile<br/>Gives: position, foot, age<br/>and market value"]:::fonte
+    AHP["My judgements (AHP)<br/>Gives: weight of each category<br/>Why: without weights,<br/>52.5% would be efficient"]:::fonte
+    TAB["League tables*<br/>Give: points per match"]:::fonte
+
+    BASE["One row per player<br/>10 position groups<br/>to compare similar roles"]:::etapa
+    FIL["Minutes filter<br/>739 of 1,477 players<br/>the paper's rule"]:::etapa
+    OUT["Outputs by position<br/>redundant variables removed<br/>errors in one index"]:::etapa
+    IN["Inputs<br/>minutes and log of<br/>squad value"]:::etapa
+    XG["Attack only<br/>xG + xA as an input"]:::extra
+    DEA["Main DEA<br/>weight-restricted CCR<br/>13.8% efficient"]:::etapa
+
+    COMP["Five other methods<br/>how much the result<br/>depends on the choice"]:::etapa
+    SOXG["xG only, no DEA<br/>is one measure enough?"]:::extra
+    MIN["Cut-offs of 600, 1,200 and 1,500<br/>conclusions hold"]:::extra
+    EXP["Why someone is efficient<br/>beyond the frontier and<br/>deciding criterion"]:::etapa
+    ARV["Decision trees<br/>approximate summary"]:::extra
+    BAR["Efficient and low-priced<br/>practical use"]:::etapa
+    HIP["The paper's hypotheses<br/>market value and age"]:::etapa
+    CLU["Clubs<br/>efficiency x points"]:::etapa
+
+    PART --> BASE
+    PERF --> BASE
+    BASE --> FIL
+    ART -.-> FIL
+    FIL --> OUT --> DEA
+    FIL --> IN --> DEA
+    FIL -. "attack" .-> XG -.-> DEA
+    AHP --> DEA
+    FIL -. "tests the cut-off" .-> MIN
+    MIN -. "checks" .-> DEA
+    DEA --> COMP
+    COMP -. "compares" .-> SOXG
+    DEA --> EXP --> ARV
+    DEA --> BAR
+    PERF -- "value" --> BAR
+    DEA --> HIP
+    ART -. "H1 and H2" .-> HIP
+    DEA --> CLU
+    TAB --> CLU
+```
+
+Blue boxes are sources; dashed ones are side or checking paths.
+
+| Step | Choice | Why |
+| --- | --- | --- |
+| Question | Efficiency by position | It comes from the 2018 paper; here it moves to Brazilian football, with a focus on practical use |
+| Data | Match level, only players of the 40 clubs | Shows where each one played in the line-ups; the cups add observed minutes |
+| Filter | Half with the most minutes | The paper's rule; avoids judging those who barely played, and other cut-offs keep the conclusions |
+| Positions | Ten groups, sides split | Each player is only compared with others in a similar role |
+| Variables | Log of squad value, xG + xA combined, errors in one index, cut at \|r\| ≥ 0.60 | Raw value reversed the comparison between divisions; repeated inputs and outputs make too many players look efficient |
+| Weights | Fixed share per category, set by AHP | Without restrictions 52.5% would be efficient; AHP gives an established procedure, with one person's judgements |
+| Model | Weight-restricted CCR | Combines several measures without letting each player pick their own weights; the comparison shows how much the method matters |
+| Explanation | Beyond the frontier, deciding criterion and trees | The score stops at 1 and does not say who stands out more, or why |
+| Tests | Minutes cut-offs, xG without DEA, value, age and clubs | Check whether the conclusions hold and repeat the paper's hypotheses |
+
 ## Main results
 
-Data collected on 22 November 2026, with the season still in progress.
+Results for the partial season\* described at the top.
 
 - **13.8% of players are efficient** (102 of 739) in the main model. Without weight restrictions, as in 2018, it would be 52.5% (49% in the paper).
 - **Clubs that earn more points have players with higher scores.** The correlation between a club's mean score and its points per match is 0.46 (0.64 in Série A and 0.35 in Série B). In 2018 the number of efficient players per club was unrelated to points (-0.06); here the correlation is 0.32.
@@ -307,5 +376,6 @@ The scripts run from this folder and expect a dataset in `../../dados-fotmob`, w
 | `05_graficos.py` | Charts in this README |
 | `06_sensibilidade_minutos.py` | Runs the model again with other minute cut-offs |
 | `07_explicacao.py` | Distance beyond the frontier, deciding category and decision trees |
+| `08_painel.py` | Builds the interactive dashboard from `painel/modelo.html` |
 
 The models are in [dea.py](dea.py) and the weights in [ahp.py](ahp.py) and [ahp_respostas.json](ahp_respostas.json).
