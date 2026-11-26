@@ -2,7 +2,11 @@
 
 *Leia em: [English](README.en.md)*
 
-Quem entrega mais do que os minutos em campo e o tamanho do clube fariam esperar? Este projeto mede a eficiência de jogadores das Séries A e B de 2026, por posição, com Análise Envoltória de Dados (DEA).
+Quem entrega mais do que os minutos em campo e o tamanho do clube fariam esperar? Este projeto mede a eficiência de jogadores das Séries A e B de 2026\*, por posição, com Análise Envoltória de Dados (DEA).
+
+<sub>\* Dados coletados em 22/11/2026, antes do fim da temporada. Série A: rodadas 1 a 35 completas e 3 dos 10 jogos da 36ª (353 de 380 partidas). Série B: as 38 rodadas da fase regular, sem os playoffs de acesso. Copa do Brasil e Libertadores ainda sem a final.</sub>
+
+**Painel interativo:** baixe o arquivo [painel/index.html](painel/index.html) e abra no navegador. Ele tem os eficientes por posição, os eficientes e baratos, a ficha de cada jogador, os clubes e o passo a passo do método.
 
 ## Objetivo e artigo de origem
 
@@ -27,9 +31,74 @@ Os percentuais de eficientes não são diretamente comparáveis, porque mudam a 
 
 ![Eficientes por posição](figuras/eficientes_por_posicao.png)
 
+## Etapas e metodologia
+
+```mermaid
+flowchart LR
+    classDef fonte fill:#1f3a5f,stroke:#7aa2d6,color:#ffffff
+    classDef etapa fill:#2f2f2f,stroke:#9a9a9a,color:#ffffff
+    classDef extra fill:#3d3d3d,stroke:#9a9a9a,stroke-dasharray:4 3,color:#e6e6e6
+
+    ART["Artigo de 2018<br/>Dá: pergunta, método,<br/>filtro e hipóteses"]:::fonte
+    PART["FotMob, por partida*<br/>Dá: estatísticas e escalações<br/>5 competições, 40 clubes"]:::fonte
+    PERF["FotMob, perfil<br/>Dá: posição, pé, idade<br/>e valor de mercado"]:::fonte
+    AHP["Meus julgamentos (AHP)<br/>Dá: peso de cada categoria<br/>Por isso entra: sem pesos,<br/>52,5% seriam eficientes"]:::fonte
+    TAB["Tabelas das ligas*<br/>Dá: pontos por jogo"]:::fonte
+
+    BASE["Uma linha por jogador<br/>10 grupos de posição<br/>para comparar funções parecidas"]:::etapa
+    FIL["Filtro de minutos<br/>739 de 1.477 jogadores<br/>regra do artigo"]:::etapa
+    OUT["Saídas por posição<br/>sem variáveis redundantes<br/>erros em um índice"]:::etapa
+    IN["Entradas<br/>minutos e valor do elenco<br/>em logaritmo"]:::etapa
+    XG["Só no ataque<br/>xG + xA como entrada"]:::extra
+    DEA["DEA principal<br/>CCR com restrição de pesos<br/>13,8% eficientes"]:::etapa
+
+    COMP["Cinco outros métodos<br/>quanto o resultado<br/>depende da escolha"]:::etapa
+    SOXG["Só xG, sem DEA<br/>uma medida basta?"]:::extra
+    MIN["Cortes de 600, 1.200 e 1.500<br/>as conclusões se mantêm"]:::extra
+    EXP["Por que é eficiente<br/>além da fronteira e<br/>critério decisivo"]:::etapa
+    ARV["Árvores de decisão<br/>resumo aproximado"]:::extra
+    BAR["Eficientes e baratos<br/>uso prático"]:::etapa
+    HIP["Hipóteses do artigo<br/>valor de mercado e idade"]:::etapa
+    CLU["Clubes<br/>eficiência x pontos"]:::etapa
+
+    PART --> BASE
+    PERF --> BASE
+    BASE --> FIL
+    ART -.-> FIL
+    FIL --> OUT --> DEA
+    FIL --> IN --> DEA
+    FIL -. "ataque" .-> XG -.-> DEA
+    AHP --> DEA
+    FIL -. "testa o corte" .-> MIN
+    MIN -. "confere" .-> DEA
+    DEA --> COMP
+    COMP -. "compara" .-> SOXG
+    DEA --> EXP --> ARV
+    DEA --> BAR
+    PERF -- "valor" --> BAR
+    DEA --> HIP
+    ART -. "H1 e H2" .-> HIP
+    DEA --> CLU
+    TAB --> CLU
+```
+
+Caixas azuis são fontes; tracejadas, caminhos paralelos ou de verificação.
+
+| Etapa | Escolha | Por quê |
+| --- | --- | --- |
+| Pergunta | Eficiência por posição | Vem do artigo de 2018; aqui vai para o futebol brasileiro, com foco em uso prático |
+| Dados | Por partida, só jogadores dos 40 clubes | Mostra onde cada um jogou nas escalações; as copas aumentam os minutos observados |
+| Filtro | Metade com mais minutos | Regra do artigo; evita julgar quem quase não jogou, e outros cortes mantêm as conclusões |
+| Posições | Dez grupos, com lados separados | Cada jogador só é comparado com quem faz função parecida |
+| Variáveis | Valor do elenco em logaritmo, xG + xA somados, erros em um índice, corte com \|r\| ≥ 0,60 | O valor bruto invertia a comparação entre as séries; entradas e saídas repetidas fazem gente demais parecer eficiente |
+| Pesos | Fatia fixa por categoria, definida por AHP | Sem restrição, 52,5% seriam eficientes; o AHP dá um procedimento reconhecido, com julgamentos de uma só pessoa |
+| Modelo | CCR com restrição de pesos | Junta várias medidas sem deixar cada jogador escolher os próprios pesos; a comparação mostra o quanto o método pesa |
+| Explicação | Além da fronteira, critério decisivo e árvores | A nota para em 1 e não diz quem se destaca mais nem por quê |
+| Testes | Cortes de minutos, xG sem DEA, valor, idade e clubes | Verificar se as conclusões se sustentam e repetir as hipóteses do artigo |
+
 ## Principais resultados
 
-Dados coletados em 22/11/2026, com a temporada ainda em andamento.
+Resultados da temporada parcial\* descrita no início.
 
 - **13,8% dos jogadores são eficientes** (102 de 739) no modelo principal. Sem restrição de pesos, como em 2018, seriam 52,5% (no artigo, 49%).
 - **Clubes que pontuam mais têm jogadores com notas maiores.** A correlação entre a nota média do clube e os pontos por jogo é de 0,46 (0,64 na Série A e 0,35 na B). Em 2018, o número de eficientes por clube não tinha relação com a pontuação (-0,06); aqui a relação é de 0,32.
@@ -307,5 +376,6 @@ Os scripts rodam nesta pasta e esperam uma base em `../../dados-fotmob`, que nã
 | `05_graficos.py` | Gráficos deste README |
 | `06_sensibilidade_minutos.py` | Repete o modelo com outros cortes de minutos |
 | `07_explicacao.py` | Quanto cada um passa da fronteira, critério decisivo e árvores de decisão |
+| `08_painel.py` | Gera o painel interativo a partir de `painel/modelo.html` |
 
 Os modelos estão em [dea.py](dea.py) e os pesos em [ahp.py](ahp.py) e [ahp_respostas.json](ahp_respostas.json).
